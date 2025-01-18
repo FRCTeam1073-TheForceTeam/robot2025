@@ -15,7 +15,7 @@ public class ClimberLift extends SubsystemBase {
   
 
 
-  /** Creates a new ClimberLift. */
+  /* Creates a new ClimberLift. */
   public ClimberLift() {}
 
   @Override
@@ -34,8 +34,12 @@ public class ClimberLift extends SubsystemBase {
     return velocity;
   }
 
-  public void setZero(double input){
+  public void setZero(double zero){
 
+  }
+
+  public void setZero(){
+    position = 0.0;
   }
 
   public void setBrakeMode(Boolean mode){

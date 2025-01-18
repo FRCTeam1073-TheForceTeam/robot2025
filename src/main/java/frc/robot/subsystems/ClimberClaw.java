@@ -42,10 +42,10 @@ public class ClimberClaw extends SubsystemBase {
     return velocity;
   }
 
-  public void setZero(double input){
+  public void setZero(double zero){
 
   }
-
+  
   public void setBrakeMode(Boolean mode){
     brakeMode = mode;
   }

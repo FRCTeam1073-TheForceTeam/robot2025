@@ -19,7 +19,7 @@ public class ClimberLift extends SubsystemBase {
   public ClimberLift() {}
 
   @Override
-  public void periodic() {
+  public void periodic(){
     // This method will be called once per scheduler run
   }
   public double getLoad(){

@@ -368,4 +368,4 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
     {
         steerMotor.setControl(new DutyCycleOut(power));
     }
-}
+}   

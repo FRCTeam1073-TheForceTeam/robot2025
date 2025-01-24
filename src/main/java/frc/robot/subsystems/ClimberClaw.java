@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberClaw extends SubsystemBase {
@@ -25,6 +27,7 @@ public class ClimberClaw extends SubsystemBase {
   private double load;
   private boolean brakeMode;
   private boolean cageDetected;
+  private DigitalInput cageDetectorSensor;
 
   //TODO Name Motors Appropriately
   private TalonFX motor1, motor2;
@@ -35,6 +38,7 @@ public class ClimberClaw extends SubsystemBase {
     velocity = 0;
     brakeMode = false;
     cageDetected = false;
+    cageDetectorSensor = new DigitalInput(4);
 
     //TODO Name Motors Appropriately
     /*motor1 = new TalonFX(-1, kCANbus);
@@ -52,6 +56,8 @@ public class ClimberClaw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    cageDetected = cageDetectorSensor.get();
+    SmartDashboard.putBoolean("isCageThere", !cageDetected);
   }
 
   public double getLoad(){
@@ -82,6 +88,7 @@ public class ClimberClaw extends SubsystemBase {
   public boolean getCageDetected(){
     return cageDetected;
   }
+
   /*public void configureHardware(){
     //TODO: Name Motors Appropriately
     var motor1ClosedLoopConfig = new SlotConfigs();

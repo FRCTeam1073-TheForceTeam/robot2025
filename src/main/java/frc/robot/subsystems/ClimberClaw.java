@@ -26,6 +26,8 @@ public class ClimberClaw extends SubsystemBase {
   private final double sprocketDiameter = 0.054864;
   private final double leftMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
   private final double rightMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
+  private final double leftLoadThreshold = 0;
+  private final double rightLoadThreshold = 0;
   private final double leftKP = 0.1;
   private final double leftKI = 0.0;
   private final double leftKD = 0.0;
@@ -37,7 +39,10 @@ public class ClimberClaw extends SubsystemBase {
 
   private double leftVelocity;
   private double rightVelocity;
-  private double load;
+  private double leftObservedVelocity;
+  private double rightObservedVelocity;
+  private double leftLoad;
+  private double rightLoad;
   private boolean brakeMode;
   private boolean cageDetected;
   private DigitalInput cageDetectorSensor;
@@ -70,12 +75,32 @@ public class ClimberClaw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    leftObservedVelocity = leftClawMotor.getVelocity().refresh().getValueAsDouble() * leftMetersPerRotation;
+    rightObservedVelocity = rightClawMotor.getVelocity().refresh().getValueAsDouble() * rightMetersPerRotation;
+
+    leftLoad = leftClawMotor.getTorqueCurrent().getValueAsDouble();
+    rightLoad = rightClawMotor.getTorqueCurrent().getValueAsDouble();
+
     cageDetected = getCageDetected();
+    leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(leftVelocity/leftMetersPerRotation));//TODO: test these measurements
+    rightClawMotor.setControl(rightClawMotorVelocityVoltage.withVelocity(rightVelocity/rightMetersPerRotation));
     SmartDashboard.putBoolean("isCageThere", cageDetected);
   }
 
-  public double getLoad(){
-    return load;
+  public double getRightLoad(){
+    return rightLoad;
+  }
+
+  public double getLeftLoad(){
+    return leftLoad;
+  }
+
+  public double getRightLoadThreshold(){
+    return rightLoadThreshold;
+  }
+
+  public double getLeftLoadThreshold(){
+    return leftLoadThreshold;
   }
 
   public void setVelocity(double left, double right){
@@ -83,12 +108,12 @@ public class ClimberClaw extends SubsystemBase {
     rightVelocity = right;
   }
 
-  public double getLeftVelocity(){
-    return leftVelocity;
+  public double getLeftObservedVelocity(){
+    return leftObservedVelocity;
   }
 
-  public double getRightVelocity(){
-    return rightVelocity;
+  public double getRightObservedVelocity(){
+    return rightObservedVelocity;
   }
 
   public void setZero(double zero){
@@ -113,7 +138,7 @@ public class ClimberClaw extends SubsystemBase {
     builder.setSmartDashboardType("OI");
     builder.addBooleanProperty("is CageDetected", this::getCageDetected, null);
   }*/
-  /*public void configureHardware(){
+  public void configureHardware(){
 
     var leftClawMotorClosedLoopConfig = new SlotConfigs();
     leftClawMotorClosedLoopConfig.withKP(leftKP);
@@ -146,5 +171,5 @@ public class ClimberClaw extends SubsystemBase {
     rightClawMotor.setPosition(0);
 
     System.out.println("Climber Configured");
-  }*/
+  }
 }

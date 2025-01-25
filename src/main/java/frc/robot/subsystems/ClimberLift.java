@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberLift extends SubsystemBase {
   private final String kCANbus = "CANivore";
+  private final double loadThreshold = 0;
   private final double leftKP = 0.1;
   private final double leftKI = 0.0;
   private final double leftKD = 0.0;
@@ -30,7 +31,10 @@ public class ClimberLift extends SubsystemBase {
   private final double rightKV = 0.0;
 
   private double load;
+  private double rightLoad;
+  private double leftLoad;
   private double velocity;
+  private double leftObservedVelocity;
   private double position;
   private boolean brakeMode;
   private boolean isAtZero;
@@ -45,6 +49,7 @@ public class ClimberLift extends SubsystemBase {
   public ClimberLift() {
     /*leftLiftMotor = new TalonFX(-1, kCANbus);
     rightLiftMotor = new TalonFX(-1, kCANbus);*/
+    brakeMode = false;
 
     leftLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rightLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
@@ -59,23 +64,34 @@ public class ClimberLift extends SubsystemBase {
   @Override
   public void periodic(){
     // This method will be called once per scheduler run
+    leftObservedVelocity = leftLiftMotor.getVelocity().refresh().getValueAsDouble();//TODO: get meters per rotation and multiply by get value as double
+
+    leftLoad = leftLiftMotor.getTorqueCurrent().getValueAsDouble();
+    rightLoad = rightLiftMotor.getTorqueCurrent().getValueAsDouble();
+    load = Math.max(leftLoad, rightLoad);
+// could use load to determine when lift is at hard stop
     isAtZero = getIsAtZero();
     if (isAtZero){
-      setZero();// if lift hits the bottom the position restes
+      setZero();// if lift hits the bottom the position resets
     }
+    leftLiftMotor.setControl(leftLiftMotorVelocityVoltage.withVelocity(velocity));
     SmartDashboard.putBoolean("isLiftAtZero", isAtZero);
   }
   
-  public double getLoad(){
+  public double getMaxLoad(){
     return load;
+  }
+
+  public double getloadThreshold(){
+    return loadThreshold;
   }
 
   public void setVelocity(double velocity){
     this.velocity = velocity;
   }
 
-  public double getVelocity(){
-    return velocity;
+  public double getObservedVelocity(){
+    return leftObservedVelocity;
   }
 
   public void setZero(){
@@ -85,9 +101,15 @@ public class ClimberLift extends SubsystemBase {
   }
 
   public void setBrakeMode(Boolean mode){
+    if (mode){
+      leftLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+      rightLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    }
+    else{
+
+    }
     brakeMode = mode;
   }
-
 
   public boolean getBrakeMode(){
     return brakeMode;
@@ -100,7 +122,7 @@ public class ClimberLift extends SubsystemBase {
   public boolean getIsAtZero(){//button at botton of lift is hit
     return climberLiftDebouncer.calculate(!climberLiftZeroSensor.get());
   }
-  /*public void configureHardware(){
+  public void configureHardware(){
 
     var leftLiftMotorClosedLoopConfig = new SlotConfigs();
     leftLiftMotorClosedLoopConfig.withKP(leftKP);
@@ -126,8 +148,8 @@ public class ClimberLift extends SubsystemBase {
     //rightLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     //rightLiftMotor.getConfigurator().apply(rightLiftMotorConfig);
 
-    leftLiftMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    leftLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+    rightLiftMotor.setNeutralMode(NeutralModeValue.Coast);//TODO: consider changing brakemode
     //TODO: make sure to test ungeared setup before gearing
     rightLiftMotor.setControl(new Follower(leftLiftMotor.getDeviceID(), false));
 
@@ -135,5 +157,5 @@ public class ClimberLift extends SubsystemBase {
     rightLiftMotor.setPosition(0);
 
     System.out.println("Climber Configured");
-  }*/
+  }
 }

@@ -14,6 +14,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,6 +68,8 @@ public class ClimberLift extends SubsystemBase {
     // This method will be called once per scheduler run
     leftObservedVelocity = leftLiftMotor.getVelocity().refresh().getValueAsDouble();//TODO: get meters per rotation and multiply by get value as double
 
+    position = leftLiftMotor.getPosition().refresh().getValueAsDouble();
+
     leftLoad = leftLiftMotor.getTorqueCurrent().getValueAsDouble();
     rightLoad = rightLiftMotor.getTorqueCurrent().getValueAsDouble();
     load = Math.max(leftLoad, rightLoad);
@@ -75,7 +79,15 @@ public class ClimberLift extends SubsystemBase {
       setZero();// if lift hits the bottom the position resets
     }
     leftLiftMotor.setControl(leftLiftMotorVelocityVoltage.withVelocity(velocity));
-    SmartDashboard.putBoolean("isLiftAtZero", isAtZero);
+
+    SmartDashboard.putBoolean("[CLIMBER LIFT] isLiftAtZero", isAtZero);
+    SmartDashboard.putBoolean("[CLIMBER LIFT] BrakeMode", brakeMode);
+    SmartDashboard.putNumber("[CLIMBER LIFT] Position", position);
+    SmartDashboard.putNumber("[CLIMBER LIFT] left Observed velocity", leftObservedVelocity);
+
+    if(SmartDashboard.getBoolean("[CLIMBER LIFT] update", false)){
+      SmartDashboard.putNumber("[CLIMBER LIFT] Velocity", velocity);
+    }
   }
   
   public double getMaxLoad(){
@@ -106,7 +118,8 @@ public class ClimberLift extends SubsystemBase {
       rightLiftMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else{
-
+      leftLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+      rightLiftMotor.setNeutralMode(NeutralModeValue.Coast);
     }
     brakeMode = mode;
   }

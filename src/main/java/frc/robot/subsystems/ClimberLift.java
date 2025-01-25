@@ -5,45 +5,67 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberLift extends SubsystemBase {
   private final String kCANbus = "CANivore";
+  private final double leftKP = 0.1;
+  private final double leftKI = 0.0;
+  private final double leftKD = 0.0;
+  private final double leftKV = 0.0;
+  private final double rightKP = 0.1;
+  private final double rightKI = 0.0;
+  private final double rightKD = 0.0;
+  private final double rightKV = 0.0;
 
   private double load;
   private double velocity;
   private double position;
   private boolean brakeMode;
+  private boolean isAtZero;
 
-  //TODO: Name Motors Appropriately
-  private TalonFX motor1, motor2;
-  private VelocityVoltage motor1VelocityVoltage, motor2VelocityVoltage;
-  private PositionVoltage motor1PositionVoltage, motor2PositionVoltage;
+  private TalonFX leftLiftMotor, rightLiftMotor;
+  private VelocityVoltage leftLiftMotorVelocityVoltage, rightLiftMotorVelocityVoltage;
+  private PositionVoltage leftLiftMotorPositionVoltage, rightLiftMotorPositionVoltage;
+  private DigitalInput climberLiftZeroSensor;
+  public Debouncer climberLiftDebouncer = new Debouncer(0.05);
 
   /* Creates a new ClimberLift. */
   public ClimberLift() {
-    //TODO: Name Motors Appropriately
-    /*motor1 = new TalonFX(-1, kCANbus);
-    motor2 = new TalonFX(-1, kCANbus);*/
+    /*leftLiftMotor = new TalonFX(-1, kCANbus);
+    rightLiftMotor = new TalonFX(-1, kCANbus);*/
 
-    motor1VelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    motor2VelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    leftLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    rightLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    motor1PositionVoltage = new PositionVoltage(0).withSlot(0);
-    motor2PositionVoltage = new PositionVoltage(0).withSlot(0);
+    leftLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
+    rightLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
+    climberLiftZeroSensor = new DigitalInput(0);
     //configureHardware();
   }
 
   @Override
   public void periodic(){
     // This method will be called once per scheduler run
+    isAtZero = getIsAtZero();
+    if (isAtZero){
+      setZero();// if lift hits the bottom the position restes
+    }
+    SmartDashboard.putBoolean("isLiftAtZero", isAtZero);
   }
+  
   public double getLoad(){
     return load;
   }
@@ -56,12 +78,10 @@ public class ClimberLift extends SubsystemBase {
     return velocity;
   }
 
-  public void setZero(double zero){
-
-  }
-
   public void setZero(){
-    position = 0.0;
+    position = 0.0;//TODO: make sure this actually works
+    leftLiftMotor.setPosition(0);
+    rightLiftMotor.setPosition(0);
   }
 
   public void setBrakeMode(Boolean mode){
@@ -76,31 +96,43 @@ public class ClimberLift extends SubsystemBase {
   public double getPosition(){
     return position;
   }
+
+  public boolean getIsAtZero(){//button at botton of lift is hit
+    return climberLiftDebouncer.calculate(!climberLiftZeroSensor.get());
+  }
   /*public void configureHardware(){
-    //TODO: Name Motors Appropriately
-    var motor1ClosedLoopConfig = new SlotConfigs();
-    motor1ClosedLoopConfig.withKP(0.1);
-    motor1ClosedLoopConfig.withKI(0.0);
-    motor1ClosedLoopConfig.withKD(0.0);
-    motor1ClosedLoopConfig.withKV(0.0);
 
-    var error = motor1.getConfigurator().apply(motor1ClosedLoopConfig, 0.5);
+    var leftLiftMotorClosedLoopConfig = new SlotConfigs();
+    leftLiftMotorClosedLoopConfig.withKP(leftKP);
+    leftLiftMotorClosedLoopConfig.withKI(leftKI);
+    leftLiftMotorClosedLoopConfig.withKD(leftKD);
+    leftLiftMotorClosedLoopConfig.withKV(leftKV);
 
-    //TODO: Name Motors Appropriately
-    var motor2ClosedLoopConfig = new SlotConfigs();
-    motor2ClosedLoopConfig.withKP(0.1);
-    motor2ClosedLoopConfig.withKI(0.0);
-    motor2ClosedLoopConfig.withKD(0.0);
-    motor2ClosedLoopConfig.withKV(0.0);
+    var error = leftLiftMotor.getConfigurator().apply(leftLiftMotorClosedLoopConfig, 0.5);
 
-    error = motor2.getConfigurator().apply(motor2ClosedLoopConfig, 0.5);
+    var rightLiftMotorClosedLoopConfig = new SlotConfigs();
+    rightLiftMotorClosedLoopConfig.withKP(rightKP);
+    rightLiftMotorClosedLoopConfig.withKI(rightKI);
+    rightLiftMotorClosedLoopConfig.withKD(rightKD);
+    rightLiftMotorClosedLoopConfig.withKV(rightKV);
 
-    motor1.setNeutralMode(NeutralModeValue.Brake);
-    motor2.setNeutralMode(NeutralModeValue.Brake);
+    error = rightLiftMotor.getConfigurator().apply(rightLiftMotorClosedLoopConfig, 0.5);
 
-    //TODO: Name Motors Appropriately
-    motor1.setPosition(0);
-    motor2.setPosition(0);
+    var leftLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
+    leftLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    leftLiftMotor.getConfigurator().apply(leftLiftMotorConfig);
+
+    //var rightLiftMotorConfig = new TalonFXConfiguration();
+    //rightLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    //rightLiftMotor.getConfigurator().apply(rightLiftMotorConfig);
+
+    leftLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    //TODO: make sure to test ungeared setup before gearing
+    rightLiftMotor.setControl(new Follower(leftLiftMotor.getDeviceID(), false));
+
+    leftLiftMotor.setPosition(0);
+    rightLiftMotor.setPosition(0);
 
     System.out.println("Climber Configured");
   }*/

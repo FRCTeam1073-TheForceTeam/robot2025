@@ -5,11 +5,15 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +26,14 @@ public class ClimberClaw extends SubsystemBase {
   private final double sprocketDiameter = 0.054864;
   private final double leftMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
   private final double rightMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
+  private final double leftKP = 0.1;
+  private final double leftKI = 0.0;
+  private final double leftKD = 0.0;
+  private final double leftKV = 0.0;
+  private final double rightKP = 0.1;
+  private final double rightKI = 0.0;
+  private final double rightKD = 0.0;
+  private final double rightKV = 0.0;
 
   private double velocity;
   private double load;
@@ -29,10 +41,11 @@ public class ClimberClaw extends SubsystemBase {
   private boolean cageDetected;
   private DigitalInput cageDetectorSensor;
 
-  //TODO Name Motors Appropriately
-  private TalonFX motor1, motor2;
-  private VelocityVoltage motor1VelocityVoltage, motor2VelocityVoltage;
-  private PositionVoltage motor1PositionVoltage, motor2PositionVoltage;
+  private TalonFX leftClawMotor, rightClawMotor;
+  private VelocityVoltage leftClawMotorVelocityVoltage, rightClawMotorVelocityVoltage;
+  private PositionVoltage leftClawMotorPositionVoltage, rightClawMotorPositionVoltage;
+  
+  public Debouncer inductionSensorDebouncer = new Debouncer(0.05);
 
   public ClimberClaw() {
     velocity = 0;
@@ -40,15 +53,14 @@ public class ClimberClaw extends SubsystemBase {
     cageDetected = false;
     cageDetectorSensor = new DigitalInput(4);
 
-    //TODO Name Motors Appropriately
-    /*motor1 = new TalonFX(-1, kCANbus);
-    motor2 = new TalonFX(-1, kCANbus);*/
+    /*leftClawMotor = new TalonFX(-1, kCANbus);
+    rightClawMotorf = new TalonFX(-1, kCANbus);*/
 
-    motor1VelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    motor2VelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    leftClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    rightClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    motor1PositionVoltage = new PositionVoltage(0).withSlot(0);
-    motor2PositionVoltage = new PositionVoltage(0).withSlot(0);
+    leftClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
+    rightClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     //configureHardware();
   }
@@ -56,8 +68,8 @@ public class ClimberClaw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    cageDetected = cageDetectorSensor.get();
-    SmartDashboard.putBoolean("isCageThere", !cageDetected);
+    cageDetected = getCageDetected();
+    SmartDashboard.putBoolean("isCageThere", cageDetected);
   }
 
   public double getLoad(){
@@ -86,34 +98,45 @@ public class ClimberClaw extends SubsystemBase {
   }
 
   public boolean getCageDetected(){
-    return cageDetected;
+    return inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
   }
 
+  /*@Override
+  public void initSendable(SendableBuilder builder){
+    builder.setSmartDashboardType("OI");
+    builder.addBooleanProperty("is CageDetected", this::getCageDetected, null);
+  }*/
   /*public void configureHardware(){
-    //TODO: Name Motors Appropriately
-    var motor1ClosedLoopConfig = new SlotConfigs();
-    motor1ClosedLoopConfig.withKP(0.1);
-    motor1ClosedLoopConfig.withKI(0.0);
-    motor1ClosedLoopConfig.withKD(0.0);
-    motor1ClosedLoopConfig.withKV(0.0);
 
-    var error = motor1.getConfigurator().apply(motor1ClosedLoopConfig, 0.5);
+    var leftClawMotorClosedLoopConfig = new SlotConfigs();
+    leftClawMotorClosedLoopConfig.withKP(leftKP);
+    leftClawMotorClosedLoopConfig.withKI(leftKI);
+    leftClawMotorClosedLoopConfig.withKD(leftKD);
+    leftClawMotorClosedLoopConfig.withKV(leftKV);
 
-    //TODO: Name Motors Appropriately
-    var motor2ClosedLoopConfig = new SlotConfigs();
-    motor2ClosedLoopConfig.withKP(0.1);
-    motor2ClosedLoopConfig.withKI(0.0);
-    motor2ClosedLoopConfig.withKD(0.0);
-    motor2ClosedLoopConfig.withKV(0.0);
+    var error = leftClawMotor.getConfigurator().apply(leftClawMotorClosedLoopConfig, 0.5);
 
-    error = motor2.getConfigurator().apply(motor2ClosedLoopConfig, 0.5);
+    var rightClawMotorClosedLoopConfig = new SlotConfigs();
+    rightClawMotorClosedLoopConfig.withKP(rightKP);
+    rightClawMotorClosedLoopConfig.withKI(rightKI);
+    rightClawMotorClosedLoopConfig.withKD(rightKD);
+    rightClawMotorClosedLoopConfig.withKV(rightKV);
 
-    motor1.setNeutralMode(NeutralModeValue.Brake);
-    motor2.setNeutralMode(NeutralModeValue.Brake);
+    error = rightClawMotor.getConfigurator().apply(rightClawMotorClosedLoopConfig, 0.5);
 
-    //TODO: Name Motors Appropriately
-    motor1.setPosition(0);
-    motor2.setPosition(0);
+    var leftClawMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
+    leftClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    leftClawMotor.getConfigurator().apply(leftClawMotorConfig);
+    
+    var rightClawMotorConfig = new TalonFXConfiguration();
+    rightClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    rightClawMotor.getConfigurator().apply(rightClawMotorConfig);
+
+    leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    leftClawMotor.setPosition(0);
+    rightClawMotor.setPosition(0);
 
     System.out.println("Climber Configured");
   }*/

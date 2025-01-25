@@ -7,14 +7,18 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ClimberLiftTeleop;
+import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.OI;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,16 +28,20 @@ import frc.robot.subsystems.ClimberLift;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final OI m_oi = new OI();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ClimberClaw m_climberClaw = new ClimberClaw();
   private final ClimberLift m_climberLift = new ClimberLift();
+  private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_oi);
+  private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_oi);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
+    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw,m_climberClawTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberLift,m_climberLiftTeleop);
     // Configure the trigger bindings
     configureBindings();
   }

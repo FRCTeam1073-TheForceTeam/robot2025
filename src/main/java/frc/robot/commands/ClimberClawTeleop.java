@@ -5,12 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.OI;
+import frc.robot.subsystems.ClimberClaw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ClimberClawTeleop extends Command {
-  /** Creates a new ClimberClawTeleop. */
-  public ClimberClawTeleop() {
+
+  ClimberClaw claw;
+  OI oi;
+  private double leftVelocity;
+  private double rightVelocity;
+
+  public ClimberClawTeleop(ClimberClaw Claw, OI Oi) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.claw = Claw;
+    this.oi = Oi;
+    addRequirements(claw);
   }
 
   // Called when the command is initially scheduled.
@@ -19,9 +29,24 @@ public class ClimberClawTeleop extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(oi.getOperatorLeftBumper()){
+      leftVelocity = .1;
+      rightVelocity = .1;
+    }
+    else if(oi.getOperatorRightBumper()){
+      leftVelocity = -.1;
+      rightVelocity = -.1;
+    }
+    else{
+      leftVelocity = 0;
+      rightVelocity = 0;
+    }
+    claw.setVelocity(leftVelocity, rightVelocity);
+  }
 
   // Called once the command ends or is interrupted.
+
   @Override
   public void end(boolean interrupted) {}
 

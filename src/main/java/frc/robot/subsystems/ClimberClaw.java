@@ -35,7 +35,8 @@ public class ClimberClaw extends SubsystemBase {
   private final double rightKD = 0.0;
   private final double rightKV = 0.0;
 
-  private double velocity;
+  private double leftVelocity;
+  private double rightVelocity;
   private double load;
   private boolean brakeMode;
   private boolean cageDetected;
@@ -48,7 +49,8 @@ public class ClimberClaw extends SubsystemBase {
   public Debouncer inductionSensorDebouncer = new Debouncer(0.05);
 
   public ClimberClaw() {
-    velocity = 0;
+    leftVelocity = 0;
+    rightVelocity = 0;
     brakeMode = false;
     cageDetected = false;
     cageDetectorSensor = new DigitalInput(4);
@@ -76,12 +78,17 @@ public class ClimberClaw extends SubsystemBase {
     return load;
   }
 
-  public void setVelocity(double velocity){
-    this.velocity = velocity;
+  public void setVelocity(double left, double right){
+    leftVelocity = left;
+    rightVelocity = right;
   }
 
-  public double getVelocity(){
-    return velocity;
+  public double getLeftVelocity(){
+    return leftVelocity;
+  }
+
+  public double getRightVelocity(){
+    return rightVelocity;
   }
 
   public void setZero(double zero){

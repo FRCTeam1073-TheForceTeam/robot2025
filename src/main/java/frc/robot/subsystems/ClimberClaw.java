@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -133,11 +132,6 @@ public class ClimberClaw extends SubsystemBase {
     return inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
   }
 
-  /*@Override
-  public void initSendable(SendableBuilder builder){
-    builder.setSmartDashboardType("OI");
-    builder.addBooleanProperty("is CageDetected", this::getCageDetected, null);
-  }*/
   public void configureHardware(){
 
     var leftClawMotorClosedLoopConfig = new SlotConfigs();

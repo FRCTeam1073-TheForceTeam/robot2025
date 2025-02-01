@@ -57,7 +57,7 @@ public class ClimberClaw extends SubsystemBase {
     rightVelocity = 0;
     brakeMode = false;
     cageDetected = false;
-    cageDetectorSensor = new DigitalInput(4);
+    cageDetectorSensor = new DigitalInput(1);
 
     /*leftClawMotor = new TalonFX(-1, kCANbus);
     rightClawMotorf = new TalonFX(-1, kCANbus);*/

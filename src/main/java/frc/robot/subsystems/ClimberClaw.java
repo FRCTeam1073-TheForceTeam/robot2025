@@ -84,7 +84,17 @@ public class ClimberClaw extends SubsystemBase {
     cageDetected = getCageDetected();
     leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(leftVelocity/leftMetersPerRotation));//TODO: test these measurements
     rightClawMotor.setControl(rightClawMotorVelocityVoltage.withVelocity(rightVelocity/rightMetersPerRotation));
-    SmartDashboard.putBoolean("isCageThere", cageDetected);
+
+    SmartDashboard.putBoolean("[CLIMBER CLAW] isCageThere", cageDetected);
+    SmartDashboard.putBoolean("[CLIMBER CLAW] brake mode", brakeMode);
+    SmartDashboard.putNumber("[CLIMBER CLAW] left observed velocity", leftObservedVelocity);
+    SmartDashboard.putNumber("[CLIMBER CLAW] right observed velocity", rightObservedVelocity);
+    
+    if(SmartDashboard.getBoolean("[CLIMBER CLAW] update", false)){
+      leftVelocity = SmartDashboard.getNumber("[CLIMBER CLAW] left velocity", 0);
+      rightVelocity = SmartDashboard.getNumber("[CLIMBER CLAW] left velocity", 0);
+    }
+
   }
 
   public double getRightLoad(){
@@ -103,6 +113,11 @@ public class ClimberClaw extends SubsystemBase {
     return leftLoadThreshold;
   }
 
+  /**
+   * velociity is set in meters per rotation
+   * @param left velocity for left motor
+   * @param right velocity for right motor
+   */
   public void setVelocity(double left, double right){
     leftVelocity = left;
     rightVelocity = right;
@@ -119,12 +134,27 @@ public class ClimberClaw extends SubsystemBase {
   public void setZero(double zero){
 
   }
-  
+
+  /**
+   * sets brakemode to brake or coast
+   * @param mode boolean says true if it is set to brakemode
+   */
   public void setBrakeMode(Boolean mode){
+    if (mode){
+      leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
+      rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
+    }
+    else{
+      leftClawMotor.setNeutralMode(NeutralModeValue.Coast);
+      rightClawMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
     brakeMode = mode;
   }
 
-
+  /**
+   * gets current brakemode of climber claw
+   * @return true if set to brake  false if set to coast
+   */
   public boolean getBrakeMode(){
     return brakeMode;
   }
@@ -163,7 +193,7 @@ public class ClimberClaw extends SubsystemBase {
     var rightClawMotorConfig = new TalonFXConfiguration();
     rightClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rightClawMotor.getConfigurator().apply(rightClawMotorConfig);
-
+    //TODO: check correct brake mode
     leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
     rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
 

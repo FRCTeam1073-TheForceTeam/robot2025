@@ -1,8 +1,10 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copybottom (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+
+import java.util.TooManyListenersException;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -19,69 +21,69 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberLift extends SubsystemBase {
-  private final String kCANbus = "CANivore";
+  private final String kCANbus = "rio";
   private final double loadThreshold = 0;
-  private final double leftKP = 0.1;
-  private final double leftKI = 0.0;
-  private final double leftKD = 0.0;
-  private final double leftKV = 0.0;
-  private final double rightKP = 0.1;
-  private final double rightKI = 0.0;
-  private final double rightKD = 0.0;
-  private final double rightKV = 0.0;
+  private final double topKP = 0.1;
+  private final double topKI = 0.0;
+  private final double topKD = 0.0;
+  private final double topKV = 0.0;
+  private final double bottomKP = 0.1;
+  private final double bottomKI = 0.0;
+  private final double bottomKD = 0.0;
+  private final double bottomKV = 0.0;
 
   private double load;
-  private double rightLoad;
-  private double leftLoad;
+  private double bottomLoad;
+  private double topLoad;
   private double velocity;
-  private double leftObservedVelocity;
+  private double topObservedVelocity;
   private double position;
   private boolean brakeMode;
   private boolean isAtZero;
 
-  private TalonFX leftLiftMotor, rightLiftMotor;
-  private VelocityVoltage leftLiftMotorVelocityVoltage, rightLiftMotorVelocityVoltage;
-  private PositionVoltage leftLiftMotorPositionVoltage, rightLiftMotorPositionVoltage;
+  private TalonFX topLiftMotor, bottomLiftMotor;
+  private VelocityVoltage topLiftMotorVelocityVoltage, bottomLiftMotorVelocityVoltage;
+  private PositionVoltage topLiftMotorPositionVoltage, bottomLiftMotorPositionVoltage;
   private DigitalInput climberLiftZeroSensor;
   public Debouncer climberLiftDebouncer = new Debouncer(0.05);
 
   /* Creates a new ClimberLift. */
   public ClimberLift() {
-    /*leftLiftMotor = new TalonFX(-1, kCANbus);
-    rightLiftMotor = new TalonFX(-1, kCANbus);*/
+    topLiftMotor = new TalonFX(16, kCANbus);
+    bottomLiftMotor = new TalonFX(15, kCANbus);
     brakeMode = false;
 
-    leftLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    rightLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    topLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    bottomLiftMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    leftLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
-    rightLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
+    topLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
+    bottomLiftMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     climberLiftZeroSensor = new DigitalInput(0);
-    //configureHardware();
+    configureHardware();
   }
 
   @Override
   public void periodic(){
     // This method will be called once per scheduler run
-    leftObservedVelocity = leftLiftMotor.getVelocity().refresh().getValueAsDouble();//TODO: get meters per rotation and multiply by get value as double
+    topObservedVelocity = topLiftMotor.getVelocity().refresh().getValueAsDouble();//TODO: get meters per rotation and multiply by get value as double
 
-    position = leftLiftMotor.getPosition().refresh().getValueAsDouble();
+    position = topLiftMotor.getPosition().refresh().getValueAsDouble();
 
-    leftLoad = leftLiftMotor.getTorqueCurrent().getValueAsDouble();
-    rightLoad = rightLiftMotor.getTorqueCurrent().getValueAsDouble();
-    load = Math.max(leftLoad, rightLoad);
+    topLoad = topLiftMotor.getTorqueCurrent().getValueAsDouble();
+    bottomLoad = bottomLiftMotor.getTorqueCurrent().getValueAsDouble();
+    load = Math.max(topLoad, bottomLoad);
 // could use load to determine when lift is at hard stop
     isAtZero = getIsAtZero();
     if (isAtZero){
       setZero();// if lift hits the bottom the position resets
     }
-    leftLiftMotor.setControl(leftLiftMotorVelocityVoltage.withVelocity(velocity));
+    topLiftMotor.setControl(topLiftMotorVelocityVoltage.withVelocity(velocity));
 
     SmartDashboard.putBoolean("[CLIMBER LIFT] isLiftAtZero", isAtZero);
     SmartDashboard.putBoolean("[CLIMBER LIFT] BrakeMode", brakeMode);
     SmartDashboard.putNumber("[CLIMBER LIFT] Position", position);
-    SmartDashboard.putNumber("[CLIMBER LIFT] left Observed velocity", leftObservedVelocity);
+    SmartDashboard.putNumber("[CLIMBER LIFT] Top Observed velocity", topObservedVelocity);
 
     if(SmartDashboard.getBoolean("[CLIMBER LIFT] update", false)){
       SmartDashboard.putNumber("[CLIMBER LIFT] Velocity", velocity);
@@ -101,23 +103,23 @@ public class ClimberLift extends SubsystemBase {
   }
 
   public double getObservedVelocity(){
-    return leftObservedVelocity;
+    return topObservedVelocity;
   }
 
   public void setZero(){
     position = 0.0;//TODO: make sure this actually works
-    leftLiftMotor.setPosition(0);
-    rightLiftMotor.setPosition(0);
+    topLiftMotor.setPosition(0);
+    bottomLiftMotor.setPosition(0);
   }
 
   public void setBrakeMode(Boolean mode){
     if (mode){
-      leftLiftMotor.setNeutralMode(NeutralModeValue.Brake);
-      rightLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+      topLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+      bottomLiftMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else{
-      leftLiftMotor.setNeutralMode(NeutralModeValue.Coast);
-      rightLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+      topLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+      bottomLiftMotor.setNeutralMode(NeutralModeValue.Coast);
     }
     brakeMode = mode;
   }
@@ -135,37 +137,37 @@ public class ClimberLift extends SubsystemBase {
   }
   public void configureHardware(){
 
-    var leftLiftMotorClosedLoopConfig = new SlotConfigs();
-    leftLiftMotorClosedLoopConfig.withKP(leftKP);
-    leftLiftMotorClosedLoopConfig.withKI(leftKI);
-    leftLiftMotorClosedLoopConfig.withKD(leftKD);
-    leftLiftMotorClosedLoopConfig.withKV(leftKV);
+    var topLiftMotorClosedLoopConfig = new SlotConfigs();
+    topLiftMotorClosedLoopConfig.withKP(topKP);
+    topLiftMotorClosedLoopConfig.withKI(topKI);
+    topLiftMotorClosedLoopConfig.withKD(topKD);
+    topLiftMotorClosedLoopConfig.withKV(topKV);
 
-    var error = leftLiftMotor.getConfigurator().apply(leftLiftMotorClosedLoopConfig, 0.5);
+    var error = topLiftMotor.getConfigurator().apply(topLiftMotorClosedLoopConfig, 0.5);
 
-    var rightLiftMotorClosedLoopConfig = new SlotConfigs();
-    rightLiftMotorClosedLoopConfig.withKP(rightKP);
-    rightLiftMotorClosedLoopConfig.withKI(rightKI);
-    rightLiftMotorClosedLoopConfig.withKD(rightKD);
-    rightLiftMotorClosedLoopConfig.withKV(rightKV);
+    var bottomLiftMotorClosedLoopConfig = new SlotConfigs();
+    bottomLiftMotorClosedLoopConfig.withKP(bottomKP);
+    bottomLiftMotorClosedLoopConfig.withKI(bottomKI);
+    bottomLiftMotorClosedLoopConfig.withKD(bottomKD);
+    bottomLiftMotorClosedLoopConfig.withKV(bottomKV);
 
-    error = rightLiftMotor.getConfigurator().apply(rightLiftMotorClosedLoopConfig, 0.5);
+    error = bottomLiftMotor.getConfigurator().apply(bottomLiftMotorClosedLoopConfig, 0.5);
 
-    var leftLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    leftLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftLiftMotor.getConfigurator().apply(leftLiftMotorConfig);
+    var topLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
+    topLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    topLiftMotor.getConfigurator().apply(topLiftMotorConfig);
 
-    //var rightLiftMotorConfig = new TalonFXConfiguration();
-    //rightLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    //rightLiftMotor.getConfigurator().apply(rightLiftMotorConfig);
+    //var bottomLiftMotorConfig = new TalonFXConfiguration();
+    //bottomLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    //bottomLiftMotor.getConfigurator().apply(bottomLiftMotorConfig);
 
-    leftLiftMotor.setNeutralMode(NeutralModeValue.Coast);
-    rightLiftMotor.setNeutralMode(NeutralModeValue.Coast);//TODO: consider changing brakemode
+    topLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+    bottomLiftMotor.setNeutralMode(NeutralModeValue.Coast);//TODO: consider changing brakemode
     //TODO: make sure to test ungeared setup before gearing
-    rightLiftMotor.setControl(new Follower(leftLiftMotor.getDeviceID(), false));
+    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), false));
 
-    leftLiftMotor.setPosition(0);
-    rightLiftMotor.setPosition(0);
+    topLiftMotor.setPosition(0);
+    bottomLiftMotor.setPosition(0);
 
     System.out.println("Climber Configured");
   }

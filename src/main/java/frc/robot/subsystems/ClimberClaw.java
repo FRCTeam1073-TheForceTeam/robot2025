@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberClaw extends SubsystemBase {
-  private final String kCANbus = "CANivore";
+  private final String kCANbus = "rio";
 
   /** Creates a new ClimberClaw. */
   private final double gearRatio = 8;
@@ -59,8 +60,8 @@ public class ClimberClaw extends SubsystemBase {
     cageDetected = false;
     cageDetectorSensor = new DigitalInput(1);
 
-    /*leftClawMotor = new TalonFX(-1, kCANbus);
-    rightClawMotorf = new TalonFX(-1, kCANbus);*/
+    leftClawMotor = new TalonFX(17, kCANbus);
+    rightClawMotor = new TalonFX(18, kCANbus);
 
     leftClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rightClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
@@ -68,7 +69,7 @@ public class ClimberClaw extends SubsystemBase {
     leftClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
     rightClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
-    //configureHardware();
+    configureHardware();
   }
 
   @Override
@@ -190,6 +191,8 @@ public class ClimberClaw extends SubsystemBase {
     //TODO: check correct brake mode
     leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
     rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightClawMotor.setControl(new Follower(leftClawMotor.getDeviceID(), true));
+
 
     leftClawMotor.setPosition(0);
     rightClawMotor.setPosition(0);

@@ -16,9 +16,9 @@ public class ClimberLiftTeleop extends Command {
   private double velocity;
 
   /** Creates a new ClimberLiftTeleop. */
-  public ClimberLiftTeleop(ClimberLift Lift, OI Oi) {
+  public ClimberLiftTeleop(ClimberLift lift, OI Oi) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.lift = Lift;
+    this.lift = lift;
     this.oi = Oi;
     addRequirements(lift);
   }

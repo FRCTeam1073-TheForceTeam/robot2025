@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.networktables.IntegerArraySubscriber;
 import edu.wpi.first.networktables.IntegerArrayTopic;
 import edu.wpi.first.networktables.PubSubOption;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain extends DiagnosticsSubsystem 
 {
+  private final String kCANbus = "CAN";
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
   private SwerveModule[] modules;

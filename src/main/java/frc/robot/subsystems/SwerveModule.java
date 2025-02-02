@@ -48,8 +48,9 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
     private double targetSteerRotations = 0.0;
     private double targetDriveVelocity = 0.0;
     private double targetDriveVelocityRotations = 0.0;
-    
-    
+    private final String kCANbus = "CANivore";
+
+
     /** Constructs a swerve module class. Initializes drive and steer motors
      * 
      * @param cfg swerve module configuration values for this module
@@ -63,9 +64,9 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
 
         setName(String.format("SwerveModule[%d]", cfg.moduleNumber));
 
-        steerMotor = new TalonFX(ids.steerMotorID);
-        driveMotor = new TalonFX(ids.driveMotorID);
-        steerEncoder = new CANcoder(ids.steerEncoderID);
+        steerMotor = new TalonFX(ids.steerMotorID, kCANbus);
+        driveMotor = new TalonFX(ids.driveMotorID, kCANbus);
+        steerEncoder = new CANcoder(ids.steerEncoderID, kCANbus);
     
         driveVelocityVoltage = new VelocityVoltage(0).withSlot(0);
         steerPositionVoltage = new PositionVoltage(0).withSlot(0);

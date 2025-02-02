@@ -76,7 +76,6 @@ public class ClimberClaw extends SubsystemBase {
 
     cageDetected = getCageDetected();
     leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(velocity/leftMetersPerRotation));//TODO: test these measurements
-    // rightClawMotor.setControl(rightClawMotorVelocityVoltage.withVelocity(rightVelocity/rightMetersPerRotation));
 
     SmartDashboard.putBoolean("ClimberClaw/isCageThere", cageDetected);
     SmartDashboard.putBoolean("ClimberClaw/brake mode", brakeMode);
@@ -165,10 +164,8 @@ public class ClimberClaw extends SubsystemBase {
     rightClawMotor = new TalonFX(18, kCANbus);
     
     leftClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    // rightClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
     leftClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
-    // rightClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
 
@@ -180,21 +177,9 @@ public class ClimberClaw extends SubsystemBase {
 
     var error = leftClawMotor.getConfigurator().apply(leftClawMotorClosedLoopConfig, 0.5);
 
-    // var rightClawMotorClosedLoopConfig = new SlotConfigs();
-    // rightClawMotorClosedLoopConfig.withKP(rightKP);
-    // rightClawMotorClosedLoopConfig.withKI(rightKI);
-    // rightClawMotorClosedLoopConfig.withKD(rightKD);
-    // rightClawMotorClosedLoopConfig.withKV(rightKV);
-
-    // error = rightClawMotor.getConfigurator().apply(rightClawMotorClosedLoopConfig, 0.5);
-
     var leftClawMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    // leftClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftClawMotor.getConfigurator().apply(leftClawMotorConfig);
     
-    // var rightClawMotorConfig = new TalonFXConfiguration();
-    // rightClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    // rightClawMotor.getConfigurator().apply(rightClawMotorConfig);
     //TODO: check correct brake mode
     leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
     rightClawMotor.setNeutralMode(NeutralModeValue.Brake);

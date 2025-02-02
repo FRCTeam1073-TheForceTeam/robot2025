@@ -44,7 +44,7 @@ public class ClimberClawTeleop extends Command {
       leftVelocity = 0;
       rightVelocity = 0;
     }
-    claw.setVelocity(leftVelocity, rightVelocity);
+    claw.setVelocity(leftVelocity);
   }
 
   // Called once the command ends or is interrupted.

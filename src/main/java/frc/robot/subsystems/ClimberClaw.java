@@ -28,29 +28,23 @@ public class ClimberClaw extends SubsystemBase {
   private final double sprocketDiameter = 0.054864;
   private final double leftMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
   private final double rightMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
-  private final double leftLoadThreshold = 0;
-  private final double rightLoadThreshold = 0;
+  private final double loadThreshold = 5.0; // TODO: Current limiting
   private final double leftKP = 0.1;
   private final double leftKI = 0.0;
   private final double leftKD = 0.0;
   private final double leftKV = 0.0;
-  private final double rightKP = 0.1;
-  private final double rightKI = 0.0;
-  private final double rightKD = 0.0;
-  private final double rightKV = 0.0;
 
-  private double velocity;
-  private double leftObservedVelocity;
-  private double rightObservedVelocity;
-  private double leftLoad;
-  private double rightLoad;
-  private boolean brakeMode;
-  private boolean cageDetected;
+  private double velocity = 0.0;
+  private double load = 0.0;
+  private boolean brakeMode = false;
+  private boolean cageDetected = false;
   private DigitalInput cageDetectorSensor;
+  private double commandedVelocity = 0.0;
 
   private TalonFX leftClawMotor, rightClawMotor;
-  private VelocityVoltage leftClawMotorVelocityVoltage, rightClawMotorVelocityVoltage;
-  private PositionVoltage leftClawMotorPositionVoltage, rightClawMotorPositionVoltage;
+  // Control loops for the leader motor:
+  private VelocityVoltage leftClawMotorVelocityVoltage;
+  private PositionVoltage leftClawMotorPositionVoltage;
   
   public Debouncer inductionSensorDebouncer = new Debouncer(0.05);
 
@@ -68,42 +62,32 @@ public class ClimberClaw extends SubsystemBase {
   {
     // This method will be called once per scheduler run
 
-    leftObservedVelocity = leftClawMotor.getVelocity().refresh().getValueAsDouble() * leftMetersPerRotation;
-    rightObservedVelocity = rightClawMotor.getVelocity().refresh().getValueAsDouble() * rightMetersPerRotation;
+    double leftObservedVelocity = leftClawMotor.getVelocity().refresh().getValueAsDouble() * leftMetersPerRotation;
+    double rightObservedVelocity = rightClawMotor.getVelocity().refresh().getValueAsDouble() * rightMetersPerRotation;
+    velocity = (leftObservedVelocity + rightObservedVelocity) / 2.0;
 
-    leftLoad = leftClawMotor.getTorqueCurrent().getValueAsDouble();
-    rightLoad = rightClawMotor.getTorqueCurrent().getValueAsDouble();
+    double leftLoad = leftClawMotor.getTorqueCurrent().getValueAsDouble();
+    double rightLoad = rightClawMotor.getTorqueCurrent().getValueAsDouble();
+    load = leftLoad + rightLoad;
 
-    cageDetected = getCageDetected();
-    leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(velocity/leftMetersPerRotation));//TODO: test these measurements
-    // rightClawMotor.setControl(rightClawMotorVelocityVoltage.withVelocity(rightVelocity/rightMetersPerRotation));
+    cageDetected = inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
 
-    SmartDashboard.putBoolean("ClimberClaw/isCageThere", cageDetected);
-    SmartDashboard.putBoolean("ClimberClaw/brake mode", brakeMode);
-    SmartDashboard.putNumber("ClimberClaw/left observed velocity", leftObservedVelocity);
-    SmartDashboard.putNumber("ClimberClaw/right observed velocity", rightObservedVelocity);
+    // TODO: test these measurements
+    leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(commandedVelocity/leftMetersPerRotation));
     
-    if(SmartDashboard.getBoolean("[CLIMBER CLAW] update", false)){
-      // velocity = SmartDashboard.getNumber("[CLIMBER CLAW] left velocity", 0);
-      // rightVelocity = SmartDashboard.getNumber("[CLIMBER CLAW] left velocity", 0);
-    }
+    SmartDashboard.putBoolean("ClimberClaw/isCageThere", cageDetected);
+    SmartDashboard.putBoolean("ClimberClaw/Brake mode", brakeMode);
+    SmartDashboard.putNumber("ClimberClaw/velocity", velocity);
+    SmartDashboard.putNumber("ClimberClaw/load", load);
 
   }
 
-  public double getRightLoad(){
-    return rightLoad;
+  public double getLoad(){
+    return load;
   }
 
-  public double getLeftLoad(){
-    return leftLoad;
-  }
-
-  public double getRightLoadThreshold(){
-    return rightLoadThreshold;
-  }
-
-  public double getLeftLoadThreshold(){
-    return leftLoadThreshold;
+  public double getLoadThreshold(){
+    return loadThreshold;
   }
 
   /**
@@ -113,19 +97,15 @@ public class ClimberClaw extends SubsystemBase {
    */
   public void setVelocity(double velocity)
   {
-    this.velocity = velocity;
+    commandedVelocity = velocity;
   }
 
-  public double getLeftObservedVelocity(){
-    return leftObservedVelocity;
-  }
-
-  public double getRightObservedVelocity(){
-    return rightObservedVelocity;
+  public double getVelocity(){
+    return velocity;
   }
 
   public void setZero(double zero){
-
+    leftClawMotor.setPosition(0.0);
   }
 
   /**
@@ -153,22 +133,19 @@ public class ClimberClaw extends SubsystemBase {
   }
 
   public boolean getCageDetected(){
-    return inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
+    return cageDetected;
   }
 
   public void configureHardware()
   {
-
     cageDetectorSensor = new DigitalInput(1);
 
     leftClawMotor = new TalonFX(17, kCANbus);
     rightClawMotor = new TalonFX(18, kCANbus);
     
     leftClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    // rightClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-
+    // TODO: Position control slot assignment?
     leftClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
-    // rightClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
 
@@ -180,24 +157,14 @@ public class ClimberClaw extends SubsystemBase {
 
     var error = leftClawMotor.getConfigurator().apply(leftClawMotorClosedLoopConfig, 0.5);
 
-    // var rightClawMotorClosedLoopConfig = new SlotConfigs();
-    // rightClawMotorClosedLoopConfig.withKP(rightKP);
-    // rightClawMotorClosedLoopConfig.withKI(rightKI);
-    // rightClawMotorClosedLoopConfig.withKD(rightKD);
-    // rightClawMotorClosedLoopConfig.withKV(rightKV);
-
-    // error = rightClawMotor.getConfigurator().apply(rightClawMotorClosedLoopConfig, 0.5);
-
     var leftClawMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    // leftClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftClawMotor.getConfigurator().apply(leftClawMotorConfig);
-    
-    // var rightClawMotorConfig = new TalonFXConfiguration();
-    // rightClawMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    // rightClawMotor.getConfigurator().apply(rightClawMotorConfig);
+ 
     //TODO: check correct brake mode
     leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
     rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    // Claw motors are inverted follower configuration.
     rightClawMotor.setControl(new Follower(leftClawMotor.getDeviceID(), true));
 
     CurrentLimitsConfigs clawCurrentLimitsConfigs = new CurrentLimitsConfigs();
@@ -213,6 +180,7 @@ public class ClimberClaw extends SubsystemBase {
     leftClawMotor.getConfigurator().apply(clawConfigs);
     rightClawMotor.getConfigurator().apply(clawConfigs);
 
+    // Start at zero:
     leftClawMotor.setPosition(0);
     rightClawMotor.setPosition(0);
 

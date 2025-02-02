@@ -26,19 +26,19 @@ public class ClimberClawTeleop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw.setBrakeMode(true);//TODO check if it should start in brakemode
+    claw.setBrakeMode(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(oi.getOperatorLeftBumper()){
-      leftVelocity = .1;
-      rightVelocity = .1;
+      leftVelocity = 1;
+      rightVelocity = 1;
     }
     else if(oi.getOperatorRightBumper()){
-      leftVelocity = -.1;
-      rightVelocity = -.1;
+      leftVelocity = -1;
+      rightVelocity = -1;
     }
     else{
       leftVelocity = 0;

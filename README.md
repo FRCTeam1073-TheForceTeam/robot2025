@@ -23,8 +23,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Pigeon 2              |  13    |   CANivore    |
 | Lift Motor bottom     |  15    |   CANivore    |
 | Lift Motor top        |  16    |   CANivore    |
-| Climber Motor left    |  17    |   CANivore    |
-| Climber Motor right   |  18    |   CANivore    |
+| Claw Motor left       |  17    |   CANivore    |
+| Claw Motor right      |  18    |   CANivore    |
 | PDH                   |  36    |   CANivore    |
 
 | Collector Motor       |   ?    | CANivore |

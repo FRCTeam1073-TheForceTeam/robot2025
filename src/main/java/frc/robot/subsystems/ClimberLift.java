@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -27,7 +28,7 @@ public class ClimberLift extends SubsystemBase {
   private final double topKP = 0.2;
   private final double topKI = 0.0;
   private final double topKD = 0.0;
-  private final double topKV = 0.0;
+  private final double topKV = 0.1;
 
 
   private double load = 0.0;
@@ -83,6 +84,7 @@ public class ClimberLift extends SubsystemBase {
     }
 
     topLiftMotor.setControl(topLiftMotorVelocityVoltage.withVelocity(commandedVelocity));
+    bottomLiftMotor.setControl(new DutyCycleOut(0.0));
 
     SmartDashboard.putBoolean("ClimberLift/isAtZero", isAtZero);
     SmartDashboard.putBoolean("ClimberLift/BrakeMode", brakeMode);
@@ -140,6 +142,10 @@ public class ClimberLift extends SubsystemBase {
   }
   
   public void configureHardware(){
+    var topLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
+    topLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    topLiftMotor.getConfigurator().apply(topLiftMotorConfig);
+    bottomLiftMotor.getConfigurator().apply(topLiftMotorConfig);
 
     var topLiftMotorClosedLoopConfig = new SlotConfigs();
     topLiftMotorClosedLoopConfig.withKP(topKP);
@@ -148,27 +154,22 @@ public class ClimberLift extends SubsystemBase {
     topLiftMotorClosedLoopConfig.withKV(topKV);
 
     var error = topLiftMotor.getConfigurator().apply(topLiftMotorClosedLoopConfig, 0.5);
-
-    var topLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    topLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    topLiftMotor.getConfigurator().apply(topLiftMotorConfig);
-
-    CurrentLimitsConfigs topLiftCurrentLimitsConfigs = new CurrentLimitsConfigs();
-    topLiftCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                            .withSupplyCurrentLimit(10)
-                            .withSupplyCurrentLimit(6)
-                            .withSupplyCurrentLowerTime(0.25);
-
-    topLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
-    bottomLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
-
+    
 
     // TODO: Set in brake mode normally. For testing... coast.
     topLiftMotor.setNeutralMode(NeutralModeValue.Coast);
     bottomLiftMotor.setNeutralMode(NeutralModeValue.Coast);
 
+    CurrentLimitsConfigs topLiftCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    topLiftCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+                            .withSupplyCurrentLimit(15)
+                            .withSupplyCurrentLowerTime(0.25);
+
+    topLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
+    bottomLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
+
     //TODO: make sure to test ungeared setup before gearing
-    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), false));
+    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), true));
 
     topLiftMotor.setPosition(0);
     bottomLiftMotor.setPosition(0);

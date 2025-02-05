@@ -32,10 +32,10 @@ public class ClimberClawTeleop extends Command {
   @Override
   public void execute() {
     if(oi.getOperatorLeftBumper()){
-      velocity = 2;
+      velocity = 5;
     }
     else if(oi.getOperatorRightBumper()){
-      velocity = -2;
+      velocity = -5;
     }
     else{
       velocity = 0;

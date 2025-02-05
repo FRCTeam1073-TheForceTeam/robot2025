@@ -143,7 +143,8 @@ public class ClimberLift extends SubsystemBase {
   
   public void configureHardware(){
     var topLiftMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    topLiftMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    //set to clockwise is positive so that negative commanded velocity moved lift down
+    topLiftMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     topLiftMotor.getConfigurator().apply(topLiftMotorConfig);
     bottomLiftMotor.getConfigurator().apply(topLiftMotorConfig);
 

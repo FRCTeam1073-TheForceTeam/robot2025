@@ -31,7 +31,8 @@ public class ClimberLiftTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorRightY();
+    //make the minimum velocity -5, maximum 5, when joystick moves down, lift moves down
+    velocity = oi.getOperatorRightY() * 5;
     lift.setVelocity(velocity);
   }
   // Called once the command ends or is interrupted.

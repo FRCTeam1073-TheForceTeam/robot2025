@@ -26,10 +26,12 @@ public class ClimberClaw extends SubsystemBase {
   /** Creates a new ClimberClaw. */
   private final double gearRatio = 8;
   private final double sprocketDiameter = 0.054864;
-  private final double leftMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
-  private final double rightMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
+  // private final double leftMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
+  // private final double rightMetersPerRotation = sprocketDiameter * Math.PI / gearRatio;
+  private final double leftMetersPerRotation = 1;
+  private final double rightMetersPerRotation = 1;
   private final double loadThreshold = 5.0; // TODO: Current limiting
-  private final double leftKP = 0.1;
+  private final double leftKP = 0.3;
   private final double leftKI = 0.0;
   private final double leftKD = 0.0;
   private final double leftKV = 0.0;
@@ -52,6 +54,9 @@ public class ClimberClaw extends SubsystemBase {
     velocity = 0;
     brakeMode = false;
     cageDetected = false;
+    cageDetectorSensor = new DigitalInput(1);
+    leftClawMotor = new TalonFX(17, kCANbus);
+    rightClawMotor = new TalonFX(18, kCANbus);
     
 
     configureHardware();
@@ -77,6 +82,7 @@ public class ClimberClaw extends SubsystemBase {
     
     SmartDashboard.putBoolean("ClimberClaw/isCageThere", cageDetected);
     SmartDashboard.putBoolean("ClimberClaw/Brake mode", brakeMode);
+    SmartDashboard.putNumber("ClimberClaw/commanded velocity", commandedVelocity);
     SmartDashboard.putNumber("ClimberClaw/velocity", velocity);
     SmartDashboard.putNumber("ClimberClaw/load", load);
 
@@ -136,18 +142,16 @@ public class ClimberClaw extends SubsystemBase {
     return cageDetected;
   }
 
-  public void configureHardware()
-  {
-    cageDetectorSensor = new DigitalInput(1);
+  public void configureHardware(){
+    TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
+    clawConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    leftClawMotor.getConfigurator().apply(clawConfigs);
+    rightClawMotor.getConfigurator().apply(clawConfigs);
 
-    leftClawMotor = new TalonFX(17, kCANbus);
-    rightClawMotor = new TalonFX(18, kCANbus);
-    
     leftClawMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     // TODO: Position control slot assignment?
     leftClawMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
-    TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
 
     var leftClawMotorClosedLoopConfig = new SlotConfigs();
     leftClawMotorClosedLoopConfig.withKP(leftKP);
@@ -157,15 +161,11 @@ public class ClimberClaw extends SubsystemBase {
 
     var error = leftClawMotor.getConfigurator().apply(leftClawMotorClosedLoopConfig, 0.5);
 
-    var leftClawMotorConfig = new TalonFXConfiguration();//TODO: make sure config matches physical robot
-    leftClawMotor.getConfigurator().apply(leftClawMotorConfig);
  
     //TODO: check correct brake mode
-    leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
+    leftClawMotor.setNeutralMode(NeutralModeValue.Coast);
+    rightClawMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    // Claw motors are inverted follower configuration.
-    rightClawMotor.setControl(new Follower(leftClawMotor.getDeviceID(), true));
 
     CurrentLimitsConfigs clawCurrentLimitsConfigs = new CurrentLimitsConfigs();
     clawCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
@@ -176,9 +176,9 @@ public class ClimberClaw extends SubsystemBase {
     leftClawMotor.getConfigurator().apply(clawCurrentLimitsConfigs);
     rightClawMotor.getConfigurator().apply(clawCurrentLimitsConfigs);
 
-    clawConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    leftClawMotor.getConfigurator().apply(clawConfigs);
-    rightClawMotor.getConfigurator().apply(clawConfigs);
+
+    // Claw motors are inverted follower configuration.
+    rightClawMotor.setControl(new Follower(leftClawMotor.getDeviceID(), false));
 
     // Start at zero:
     leftClawMotor.setPosition(0);

@@ -13,8 +13,7 @@ public class ClimberClawTeleop extends Command {
 
   ClimberClaw claw;
   OI oi;
-  private double leftVelocity;
-  private double rightVelocity;
+  private double velocity;
 
   public ClimberClawTeleop(ClimberClaw Claw, OI Oi) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,18 +32,15 @@ public class ClimberClawTeleop extends Command {
   @Override
   public void execute() {
     if(oi.getOperatorLeftBumper()){
-      leftVelocity = 1;
-      rightVelocity = 1;
+      velocity = 2;
     }
     else if(oi.getOperatorRightBumper()){
-      leftVelocity = -1;
-      rightVelocity = -1;
+      velocity = -2;
     }
     else{
-      leftVelocity = 0;
-      rightVelocity = 0;
+      velocity = 0;
     }
-    claw.setVelocity(leftVelocity);
+    claw.setVelocity(velocity);
   }
 
   // Called once the command ends or is interrupted.

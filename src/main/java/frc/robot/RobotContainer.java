@@ -40,8 +40,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw,m_climberClawTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(m_climberLift,m_climberLiftTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
     // Configure the trigger bindings
     configureBindings();
   }

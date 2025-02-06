@@ -25,23 +25,24 @@ public class FieldMap
     
     private Localizer localizer;
     private Pose2d robot2DPose = localizer.getPose();
-    private ArrayList<Double> distances = new ArrayList<Double>();
+    //private ArrayList<Double> distances = new ArrayList<Double>();
    
     private List<AprilTag> aprilTags = fieldMap.getTags();
     
-    public FieldMap()
-    {
+    // public FieldMap()
+    // {
 
-    }
+    // }
 
     public int getBestAprilTag(Pose2d robot2DPose, List<AprilTag> aprilTags){
         int tagID = -1;
+        double shortestDistance = 100;
 
         for(AprilTag tag : aprilTags) {
-            distances.add(findDistance(robot2DPose, tag.ID));
+            if (findDistance(robot2DPose, tag.ID) < shortestDistance)
+                tagID = tag.ID;
         }
 
-        
         //return aprilTags.sort(lambda=AprilTag.findDistance(robot2DPose, tagID));
 
         return tagID;

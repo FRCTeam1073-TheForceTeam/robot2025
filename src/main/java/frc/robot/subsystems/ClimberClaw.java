@@ -34,11 +34,12 @@ public class ClimberClaw extends SubsystemBase {
   private final double leftKP = 0.3;
   private final double leftKI = 0.0;
   private final double leftKD = 0.0;
-  private final double leftKV = 0.0;
+  private final double leftKV = 0.12;
 
   private double velocity = 0.0;
   private double load = 0.0;
   private boolean brakeMode = false;
+  private double position;
   private boolean cageDetected = false;
   private DigitalInput cageDetectorSensor;
   private double commandedVelocity = 0.0;
@@ -71,8 +72,8 @@ public class ClimberClaw extends SubsystemBase {
     double rightObservedVelocity = rightClawMotor.getVelocity().refresh().getValueAsDouble() * rightMetersPerRotation;
     velocity = (leftObservedVelocity + rightObservedVelocity) / 2.0;
 
-    double leftLoad = leftClawMotor.getTorqueCurrent().getValueAsDouble();
-    double rightLoad = rightClawMotor.getTorqueCurrent().getValueAsDouble();
+    double leftLoad = Math.abs(leftClawMotor.getTorqueCurrent().getValueAsDouble());
+    double rightLoad = Math.abs(rightClawMotor.getTorqueCurrent().getValueAsDouble());
     load = leftLoad + rightLoad;
 
     cageDetected = inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
@@ -112,7 +113,9 @@ public class ClimberClaw extends SubsystemBase {
 
   public void setZero(double zero){
     leftClawMotor.setPosition(0.0);
+    rightClawMotor.setPosition(0.0);
   }
+
 
   /**
    * sets brakemode to brake or coast
@@ -142,6 +145,14 @@ public class ClimberClaw extends SubsystemBase {
     return cageDetected;
   }
 
+  public void setIsAtZero(boolean zero){
+    position = 0;
+  }
+
+  public boolean getIsAtZero(){
+    return position == 0;
+  }
+
   public void configureHardware(){
     TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
     clawConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -163,8 +174,8 @@ public class ClimberClaw extends SubsystemBase {
 
  
     //TODO: check correct brake mode
-    leftClawMotor.setNeutralMode(NeutralModeValue.Coast);
-    rightClawMotor.setNeutralMode(NeutralModeValue.Coast);
+    leftClawMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightClawMotor.setNeutralMode(NeutralModeValue.Brake);
 
 
     CurrentLimitsConfigs clawCurrentLimitsConfigs = new CurrentLimitsConfigs();

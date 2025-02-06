@@ -28,24 +28,22 @@ public class FieldMap
     //private ArrayList<Double> distances = new ArrayList<Double>();
    
     private List<AprilTag> aprilTags = fieldMap.getTags();
+    private AprilTag aprilTag;
     
     // public FieldMap()
     // {
 
     // }
 
-    public int getBestAprilTag(Pose2d robot2DPose, List<AprilTag> aprilTags){
-        int tagID = -1;
+    public AprilTag getBestAprilTag(Pose2d robot2DPose, List<AprilTag> aprilTags){
         double shortestDistance = 100;
 
         for(AprilTag tag : aprilTags) {
             if (findDistance(robot2DPose, tag.ID) < shortestDistance)
-                tagID = tag.ID;
+                aprilTag = tag;
         }
 
-        //return aprilTags.sort(lambda=AprilTag.findDistance(robot2DPose, tagID));
-
-        return tagID;
+        return aprilTag;
     }
 
     public double findDistance(Pose2d robot2DPose, int tagID){

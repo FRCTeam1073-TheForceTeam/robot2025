@@ -190,7 +190,7 @@ public class OI extends DiagnosticsSubsystem
   }
 
   public double getOperatorRightY() {
-    return MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
+    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
   }
 
   /** Returns a specified button from the operator controller */

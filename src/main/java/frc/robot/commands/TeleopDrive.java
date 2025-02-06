@@ -122,20 +122,28 @@ public class TeleopDrive extends Command
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
 
-        drivetrain.setTargetChassisSpeeds(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                    vx, 
-                    vy,
-                    w, 
-                    Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
-                )
-            );
+        if (fieldCentric)
+        {
+          drivetrain.setTargetChassisSpeeds(
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+              vx, 
+              vy,
+              w, 
+              Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
+            )
+          );
+        }
+        else 
+        {
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
+        }
+        
     }
     
     // Allow driver to zero the drive subsystem heading for field-centric control.
     if(m_OI.getDriverMenuButton())
     {
-      drivetrain.zeroHeading();
+      fieldCentric = !fieldCentric;
     }
 
     if(m_OI.getDriverAButton()){

@@ -6,99 +6,137 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.DigitalInput;
+
+// For the LaserCAN Sensor:
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.ConfigurationFailedException;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 /** Add your docs here. */
 public class CoralEndeffector extends SubsystemBase {
-    private final String kCANbus = "CANivore";
-    private final double loadThreshold = 0.0;
-    private final double leftKP = 0.1;
-    private final double leftKD = 0.0;
+    private final String kCANbus = "rio";
+    private final double leftKP = 0.15;
+    private final double leftKD = 0.02;
     private final double leftKI = 0.0;
-    private final double leftKV = 0.0;
-    private final double rightKP = 0.1;
-    private final double rightKD = 0.0;
-    private final double rightKI = 0.0;
-    private final double rightKV = 0.0;
+    private final double leftKV = 0.12; // Kraken.
+
+    private final double minCoralDistance = 0.01;
 
     private double velocity;
     private double position;
     private double load;
-    private double rightLoad;
-    private double leftLoad;
+    private double commandedVelocity;
+    private double coralDistance;
+    private boolean hasCoral;
 
-    private TalonFX leftEndeffectorMotor, rightEndeffectorMotor;
-    private VelocityVoltage leftEndeffectorMotorVelocityVoltage, rightEndeffectorMotorVelocityVoltage;
-    private PositionVoltage leftEndeffectorMotorPositionVoltage, rightEndeffectorMotorPositionVoltage;
-    private DigitalInput EndeffectorLeftZeroSensor;
-    public Debouncer coralEndeffectorDebouncer = new Debouncer(0.05);
+    private TalonFX motor;
+    private VelocityVoltage motorVelocityVoltage;
+   
+    // LaserCAN Sensor:
+    private LaserCan laserCAN;
 
-    public CoralEndeffector(){
+    public CoralEndeffector() {
+        hasCoral = false;
+        motor = new TalonFX(21, kCANbus);
+        
+        motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
+        // Sensor setup:
+        laserCAN = new LaserCan(21);
+
+
+        configureHardware();
     }
+
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+
+        // TODO: Scale factors.
+        velocity = motor.getVelocity().refresh().getValueAsDouble();
+        position = motor.getPosition().refresh().getValueAsDouble();
+
+        load = motor.getTorqueCurrent().getValueAsDouble();
+        
+        // Read the coral sensor.
+        LaserCan.Measurement measurement = laserCAN.getMeasurement();
+        if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            coralDistance = measurement.distance_mm * 0.001; // mm's
+            if (coralDistance < minCoralDistance) hasCoral = true;
+            else hasCoral = false;
+        } else {
+            coralDistance = 999.0;
+            hasCoral = false;
+        }
+
+        // Send motor command:
+        motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
+
+        SmartDashboard.putNumber("[CORAL End Effector] distance", coralDistance);
+        SmartDashboard.putBoolean("[CORAL End Effector] has Coral", hasCoral);
+        SmartDashboard.putNumber("[CORAL End Effector] velocity", velocity);
+        SmartDashboard.putNumber("[CORAL End Effector] command", commandedVelocity);
+        SmartDashboard.putNumber("[CORAL End Effector] load", load);
+       
     }
     
-    public void setPosition(double position){
-        this.position = position;
-    }
+    
     public double getPosition(){
         return position;
     }
+
     public void setVelocity(double velocity){
-        this.velocity = velocity;
+        // TODO: Scale factors.
+        this.commandedVelocity = velocity;
     }
-    public double getVelocity(){
-            return velocity;
+
+    public double getVelocity() {
+        return velocity;
     }
-    public double getLoad(){
+
+    public double getLoad() {
         return load;
     }
-    public boolean getHasCoral(){
-    //Pull from sensor
-        return false;
+
+    public boolean getHasCoral() {
+        return hasCoral;
     }
 
-    public void configureHardware(){
+    public void configureHardware() {
 
-    var leftEndeffectorMotorClosedLoopConfig = new SlotConfigs();
-    leftEndeffectorMotorClosedLoopConfig.withKP(leftKP);
-    leftEndeffectorMotorClosedLoopConfig.withKI(leftKI);
-    leftEndeffectorMotorClosedLoopConfig.withKD(leftKD);
-    leftEndeffectorMotorClosedLoopConfig.withKV(leftKV);
+    var motorConfig = new TalonFXConfiguration(); //TODO check configs with robots
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    motor.getConfigurator().apply(motorConfig);
 
-    var error = leftEndeffectorMotor.getConfigurator().apply(leftEndeffectorMotorClosedLoopConfig, 0.5);
+    var motorClosedLoopConfig = new SlotConfigs();
+    motorClosedLoopConfig.withKP(leftKP);
+    motorClosedLoopConfig.withKI(leftKI);
+    motorClosedLoopConfig.withKD(leftKD);
+    motorClosedLoopConfig.withKV(leftKV);
 
-    var rightEndeffectorMotorClosedLoopConfig = new SlotConfigs();
-    rightEndeffectorMotorClosedLoopConfig.withKP(rightKP);
-    rightEndeffectorMotorClosedLoopConfig.withKI(rightKI);
-    rightEndeffectorMotorClosedLoopConfig.withKD(rightKD);
-    rightEndeffectorMotorClosedLoopConfig.withKV(rightKV);
+    var error = motor.getConfigurator().apply(motorClosedLoopConfig, 0.5);
 
-    error = rightEndeffectorMotor.getConfigurator().apply(rightEndeffectorMotorClosedLoopConfig, 0.5);
+    motor.setNeutralMode(NeutralModeValue.Coast);//TODO consider changing brakemode (also test ungeared setup before gearing)
 
-    var leftEndeffectorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
-    leftEndeffectorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftEndeffectorMotor.getConfigurator().apply(leftEndeffectorMotorConfig);
+    motor.setPosition(0);
 
-    leftEndeffectorMotor.setNeutralMode(NeutralModeValue.Coast);//TODO consider changing brakemode (also test ungeared setup before gearing)
-    rightEndeffectorMotor.setNeutralMode(NeutralModeValue.Coast);
-    rightEndeffectorMotor.setControl(new Follower(leftEndeffectorMotor.getDeviceID(), true));
+    // Laser CAN Setup:
+    try {
+        laserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
+        laserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 8, 8));
+        laserCAN.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+      } catch (ConfigurationFailedException e) {
+        System.out.println("Configuration failed for LaserCAN: " + e);
+      }
 
-    leftEndeffectorMotor.setPosition(0);
-    rightEndeffectorMotor.setPosition(0);
-
-    System.out.println("yay the coral Endeffector was configured");
+    System.out.println("Coral Endeffector was configured");
   }
 }

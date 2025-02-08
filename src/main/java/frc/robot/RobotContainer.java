@@ -18,9 +18,11 @@ import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClaw;
+import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
@@ -44,6 +46,8 @@ public class RobotContainer
   private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
   private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
   private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
+  private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift, m_OI);
+  private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -63,6 +67,7 @@ public class RobotContainer
   private static final String level2 = "Level 2";
   private static final String level3 = "Level 3";
   private static final String level4 = "Level 4";
+  private static final String zeroClawAndLift = "Zero Claw And Lift";
 
   public RobotContainer() 
   {
@@ -79,6 +84,7 @@ public class RobotContainer
     m_positionChooser.addOption("Right Auto", rightAuto);
     m_positionChooser.addOption("Left Auto", leftAuto);
     m_positionChooser.addOption("Center Auto", centerAuto);
+    m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
     m_levelChooser.addOption("Test Auto", testLevel);
@@ -134,6 +140,8 @@ public class RobotContainer
 
     switch(m_positionChooser.getSelected())
     {
+      case zeroClawAndLift:
+        return ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI);
       case noPositionAuto:
         return null;
       case leftAuto:

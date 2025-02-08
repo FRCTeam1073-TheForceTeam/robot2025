@@ -84,7 +84,6 @@ public class ClimberLift extends SubsystemBase {
     }
 
     topLiftMotor.setControl(topLiftMotorVelocityVoltage.withVelocity(commandedVelocity));
-    bottomLiftMotor.setControl(new DutyCycleOut(0.0));
 
     SmartDashboard.putBoolean("ClimberLift/isAtZero", isAtZero);
     SmartDashboard.putBoolean("ClimberLift/BrakeMode", brakeMode);
@@ -170,7 +169,7 @@ public class ClimberLift extends SubsystemBase {
     bottomLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
 
     //TODO: make sure to test ungeared setup before gearing
-    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), true));
+    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), false));
 
     topLiftMotor.setPosition(0);
     bottomLiftMotor.setPosition(0);

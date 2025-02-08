@@ -76,7 +76,7 @@ public class ClimberClaw extends SubsystemBase {
     double rightLoad = Math.abs(rightClawMotor.getTorqueCurrent().getValueAsDouble());
     load = leftLoad + rightLoad;
 
-    cageDetected = inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
+    cageDetected = inductionSensorDebouncer.calculate(cageDetectorSensor.get());
 
     // TODO: test these measurements
     leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(commandedVelocity/leftMetersPerRotation));

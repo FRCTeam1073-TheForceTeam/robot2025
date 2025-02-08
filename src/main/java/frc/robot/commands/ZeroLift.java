@@ -5,52 +5,41 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.ClimberClaw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClimberClawTeleop extends Command {
-
-  ClimberClaw claw;
+public class ZeroLift extends Command {
+  ClimberLift lift;
   OI oi;
-  private double velocity;
-
-  public ClimberClawTeleop(ClimberClaw Claw, OI Oi) {
+  /** Creates a new ZeroLift. */
+  public ZeroLift(ClimberLift lift, OI oi) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.claw = Claw;
-    this.oi = Oi;
-    addRequirements(claw);
+    this.lift = lift;
+    this.oi = oi;
+    addRequirements(lift);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw.setBrakeMode(true);
+    lift.setVelocity(-9);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(oi.getOperatorLeftBumper()){
-      velocity = 9;
-    }
-    else if(oi.getOperatorRightBumper()){
-      velocity = -9;
-    }
-    else{
-      velocity = 0;
-    }
-    claw.setVelocity(velocity);
   }
 
   // Called once the command ends or is interrupted.
-
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    lift.setVelocity(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return lift.getIsAtZero();
   }
 }

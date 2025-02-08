@@ -16,12 +16,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
+import frc.robot.commands.EngageClaw;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClaw;
 import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.commands.Autos.RaiseLift;
 import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.ClimberClaw;
@@ -48,6 +50,8 @@ public class RobotContainer
   private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
   private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift, m_OI);
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
+  private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
+  private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -100,8 +104,12 @@ public class RobotContainer
     configureBindings();
   }
 
-  private void configureBindings() 
-  {}
+  private void configureBindings() {
+    Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
+      raiseLift.onTrue(m_raiseLift);
+    Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
+      engageClaw.onTrue(m_engageClaw);
+  }
 
   public void autonomousInit()
   {

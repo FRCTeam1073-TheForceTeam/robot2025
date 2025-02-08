@@ -36,6 +36,7 @@ public class ClimberLift extends SubsystemBase {
   private double topLoad = 0.0;
   private double velocity = 0.0;
   private double position = 0.0;
+  private double maxPosition = 67.0;
   private boolean brakeMode = false;
   private boolean isAtZero = false;
   private double commandedVelocity = 0.0;

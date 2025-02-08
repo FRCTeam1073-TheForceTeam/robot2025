@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain extends DiagnosticsSubsystem 
 {
-  private final String kCANbus = "CAN";
+  private final String kCANbus = "CANivore";
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
   private SwerveModule[] modules;
@@ -47,7 +47,7 @@ public class Drivetrain extends DiagnosticsSubsystem
   {
     super.setSubsystem("Drivetrain");
 
-    pigeon2 = new Pigeon2(13);
+    pigeon2 = new Pigeon2(13, kCANbus);
     var error = pigeon2.getConfigurator().apply(new Pigeon2Configuration());
     if (!error.isOK()) 
     {

@@ -26,14 +26,19 @@ public class CoralEndeffectorTeleop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(oi.getOperatorLeftTrigger()){
-      endeffector.setVelocity(velocity);
-    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(oi.getOperatorLeftTrigger()){
+      endeffector.setVelocity(velocity);
+    }
+    else{
+      endeffector.setVelocity(0);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

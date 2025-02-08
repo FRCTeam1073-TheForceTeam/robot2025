@@ -125,6 +125,11 @@ public class RobotContainer
       engageClaw.onTrue(m_engageClaw);
     Trigger zeroElevator = new Trigger (m_OI :: getOperatorXButton);
         zeroElevator.onTrue(m_zeroElevator);
+    Trigger loadCoral = new Trigger (m_OI :: getOperatorXButton);
+      loadCoral.onTrue(m_loadCoral);
+    Trigger scoreCoral = new Trigger (m_OI::getOperatorYButton);
+      scoreCoral.onTrue(m_scoreCoral);
+
   }
 
   public void autonomousInit()

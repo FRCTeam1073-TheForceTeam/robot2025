@@ -28,7 +28,7 @@ public class ClimberLift extends SubsystemBase {
   private final double topKP = 0.2;
   private final double topKI = 0.0;
   private final double topKD = 0.0;
-  private final double topKV = 0.1;
+  private final double topKV = 0.12;
 
 
   private double load = 0.0;

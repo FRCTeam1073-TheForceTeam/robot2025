@@ -19,7 +19,6 @@ import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
-import frc.robot.commands.ZeroClaw;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
@@ -67,7 +66,6 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
     CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
-    
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);

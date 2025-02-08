@@ -18,6 +18,7 @@ import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.EngageClaw;
+import frc.robot.commands.LoadCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClaw;
 import frc.robot.commands.ZeroElevator;
@@ -61,6 +62,7 @@ public class RobotContainer
   private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator, m_OI);
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
+  private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 

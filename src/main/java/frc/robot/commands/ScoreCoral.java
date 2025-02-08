@@ -14,6 +14,7 @@ public class ScoreCoral extends Command {
   public ScoreCoral(CoralEndeffector coralEndeffector) {
     endeffector = coralEndeffector;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(endeffector);
   }
 
   // Called when the command is initially scheduled.

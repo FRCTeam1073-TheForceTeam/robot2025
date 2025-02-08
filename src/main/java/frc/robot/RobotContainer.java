@@ -30,6 +30,7 @@ import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -52,6 +53,7 @@ public class RobotContainer
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
   private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
+  private final Lidar m_lidar = new Lidar();
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 

@@ -16,16 +16,16 @@ public class CoralElevatorTeleop extends Command {
   private double velocity;
 
   /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(OI Oi, CoralElevator Elevator){
+  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
     // Use addRequirements() here to declare subsystem dependencies.
-    oi = Oi;
-    elevator = Elevator;
+    this.elevator = elevator;
+    this.oi = oi;
     addRequirements(elevator);
   }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.setBrakeMode(false);
+    //elevator.setBrakeMode(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

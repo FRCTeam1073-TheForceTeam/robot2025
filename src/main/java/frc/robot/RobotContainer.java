@@ -67,7 +67,7 @@ public class RobotContainer
   public RobotContainer() 
   {
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
-    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_zeroClaw);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
 
     SmartDashboard.putData(m_drivetrain);

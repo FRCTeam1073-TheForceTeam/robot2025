@@ -86,6 +86,7 @@ public class ClimberClaw extends SubsystemBase {
     SmartDashboard.putNumber("ClimberClaw/commanded velocity", commandedVelocity);
     SmartDashboard.putNumber("ClimberClaw/velocity", velocity);
     SmartDashboard.putNumber("ClimberClaw/load", load);
+    SmartDashboard.putNumber("ClimberClaw/position", getPosition());
 
   }
 

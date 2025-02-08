@@ -347,9 +347,9 @@ public class Drivetrain extends DiagnosticsSubsystem
 
       // Set angles for locked parking position:
       states[0].angle = Rotation2d.fromRadians(Math.PI/4.0);
-      states[1].angle = Rotation2d.fromDegrees(-Math.PI/4.0);
-      states[2].angle = Rotation2d.fromDegrees(-Math.PI/4.0);
-      states[3].angle = Rotation2d.fromDegrees(Math.PI/4.0);
+      states[1].angle = Rotation2d.fromRadians(-Math.PI/4.0);
+      states[2].angle = Rotation2d.fromRadians(-Math.PI/4.0);
+      states[3].angle = Rotation2d.fromRadians(Math.PI/4.0);
 
 
       // Run the optimizer for the states:

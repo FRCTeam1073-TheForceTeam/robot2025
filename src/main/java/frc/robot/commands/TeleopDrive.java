@@ -99,6 +99,7 @@ public class TeleopDrive extends Command
     {
       parked = !parked;
     }
+    // TODO: get parking brake to work - right now only wheel in swerve mod 0 works
     lastParkingBreakButton = m_OI.getDriverLeftBumper();
     if(parked && !drivetrain.getParkingBrake())
     {

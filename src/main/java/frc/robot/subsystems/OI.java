@@ -255,6 +255,10 @@ public class OI extends DiagnosticsSubsystem
     return (operatorController.getPOV() == 90);
   }
 
+  public boolean getOperatorLeftJoystickPress(){
+    return getOperatorRawButton(9);
+  }
+
   @Override
   public void initSendable(SendableBuilder builder){
     builder.setSmartDashboardType("OI");

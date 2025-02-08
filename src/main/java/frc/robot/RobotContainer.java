@@ -123,7 +123,7 @@ public class RobotContainer
       raiseLift.onTrue(m_raiseLift);
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
       engageClaw.onTrue(m_engageClaw);
-    Trigger zeroElevator = new Trigger (m_OI :: getOperatorXButton);
+    Trigger zeroElevator = new Trigger (m_OI :: getOperatorLeftJoystickPress);
         zeroElevator.onTrue(m_zeroElevator);
     Trigger loadCoral = new Trigger (m_OI :: getOperatorXButton);
       loadCoral.onTrue(m_loadCoral);

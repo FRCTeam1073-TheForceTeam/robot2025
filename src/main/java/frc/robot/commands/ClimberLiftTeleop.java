@@ -32,7 +32,7 @@ public class ClimberLiftTeleop extends Command {
   @Override
   public void execute() {
     //make the minimum velocity -5, maximum 5, when joystick moves down, lift moves down
-    velocity = oi.getOperatorRightY() * 5;
+    velocity = oi.getOperatorRightY() * 9;
     lift.setVelocity(velocity);
   }
   // Called once the command ends or is interrupted.

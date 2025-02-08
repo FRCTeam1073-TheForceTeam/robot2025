@@ -5,52 +5,40 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.ClimberClaw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClimberClawTeleop extends Command {
-
+public class EngageClaw extends Command {
+  /** Creates a new EngageClaw. */
   ClimberClaw claw;
-  OI oi;
-  private double velocity;
-
-  public ClimberClawTeleop(ClimberClaw Claw, OI Oi) {
+  double maxLoad = 100;
+  public EngageClaw(ClimberClaw claw) {
+    this.claw = claw;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.claw = Claw;
-    this.oi = Oi;
     addRequirements(claw);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw.setBrakeMode(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(oi.getOperatorLeftBumper()){
-      velocity = 9;
-    }
-    else if(oi.getOperatorRightBumper()){
-      velocity = -9;
-    }
-    else{
-      velocity = 0;
-    }
-    claw.setVelocity(velocity);
+    claw.setVelocity(5);
   }
 
   // Called once the command ends or is interrupted.
-
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    claw.setVelocity(0);
+    claw.setBrakeMode(true);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return claw.getLoad() >= maxLoad;
   }
 }

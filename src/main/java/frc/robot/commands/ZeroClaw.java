@@ -13,34 +13,37 @@ public class ZeroClaw extends Command {
 
   ClimberClaw claw;
   OI oi;
-  private double velocity;  
-  private double load = claw.getLoad();
 
   /** Creates a new ZeroClaw. */
-  public ZeroClaw() {
+  public ZeroClaw(ClimberClaw claw, OI oi) {
+    this.claw = claw;
+    this.oi = oi;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(claw);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    claw.setVelocity(-9);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    while(load < 100){
-      claw.setVelocity(0.25);
-    }
-    claw.setVelocity(0);
   }
+  
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    claw.setVelocity(0);
+    claw.setZero();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw.getIsAtZero();
+    return claw.getLoad() > 50;
   }
 }

@@ -36,6 +36,7 @@ public class ClimberLift extends SubsystemBase {
   private double topLoad = 0.0;
   private double velocity = 0.0;
   private double position = 0.0;
+  private double maxPosition = 67.0;
   private boolean brakeMode = false;
   private boolean isAtZero = false;
   private double commandedVelocity = 0.0;
@@ -84,7 +85,6 @@ public class ClimberLift extends SubsystemBase {
     }
 
     topLiftMotor.setControl(topLiftMotorVelocityVoltage.withVelocity(commandedVelocity));
-    bottomLiftMotor.setControl(new DutyCycleOut(0.0));
 
     SmartDashboard.putBoolean("ClimberLift/isAtZero", isAtZero);
     SmartDashboard.putBoolean("ClimberLift/BrakeMode", brakeMode);
@@ -158,8 +158,8 @@ public class ClimberLift extends SubsystemBase {
     
 
     // TODO: Set in brake mode normally. For testing... coast.
-    topLiftMotor.setNeutralMode(NeutralModeValue.Coast);
-    bottomLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+    topLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    bottomLiftMotor.setNeutralMode(NeutralModeValue.Brake);
 
     CurrentLimitsConfigs topLiftCurrentLimitsConfigs = new CurrentLimitsConfigs();
     topLiftCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
@@ -170,7 +170,7 @@ public class ClimberLift extends SubsystemBase {
     bottomLiftMotor.getConfigurator().apply(topLiftCurrentLimitsConfigs);
 
     //TODO: make sure to test ungeared setup before gearing
-    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), true));
+    bottomLiftMotor.setControl(new Follower(topLiftMotor.getDeviceID(), false));
 
     topLiftMotor.setPosition(0);
     bottomLiftMotor.setPosition(0);

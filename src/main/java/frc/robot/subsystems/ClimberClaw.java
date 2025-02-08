@@ -38,7 +38,7 @@ public class ClimberClaw extends SubsystemBase {
 
   private double velocity = 0.0;
   private double load = 0.0;
-  private boolean brakeMode = false;
+  private boolean brakeMode = true;
   private double position;
   private boolean cageDetected = false;
   private DigitalInput cageDetectorSensor;
@@ -53,7 +53,7 @@ public class ClimberClaw extends SubsystemBase {
 
   public ClimberClaw() {
     velocity = 0;
-    brakeMode = false;
+    brakeMode = true;
     cageDetected = false;
     cageDetectorSensor = new DigitalInput(1);
     leftClawMotor = new TalonFX(17, kCANbus);
@@ -76,7 +76,7 @@ public class ClimberClaw extends SubsystemBase {
     double rightLoad = Math.abs(rightClawMotor.getTorqueCurrent().getValueAsDouble());
     load = leftLoad + rightLoad;
 
-    cageDetected = inductionSensorDebouncer.calculate(!cageDetectorSensor.get());
+    cageDetected = inductionSensorDebouncer.calculate(cageDetectorSensor.get());
 
     // TODO: test these measurements
     leftClawMotor.setControl(leftClawMotorVelocityVoltage.withVelocity(commandedVelocity/leftMetersPerRotation));
@@ -86,6 +86,7 @@ public class ClimberClaw extends SubsystemBase {
     SmartDashboard.putNumber("ClimberClaw/commanded velocity", commandedVelocity);
     SmartDashboard.putNumber("ClimberClaw/velocity", velocity);
     SmartDashboard.putNumber("ClimberClaw/load", load);
+    SmartDashboard.putNumber("ClimberClaw/position", getPosition());
 
   }
 
@@ -111,7 +112,15 @@ public class ClimberClaw extends SubsystemBase {
     return velocity;
   }
 
-  public void setZero(double zero){
+  public void setPosition(double position){
+    this.position = position;
+  }
+
+  public double getPosition(){
+    return leftClawMotor.getPosition().refresh().getValueAsDouble() * leftMetersPerRotation;
+  }
+
+  public void setZero(){
     leftClawMotor.setPosition(0.0);
     rightClawMotor.setPosition(0.0);
   }
@@ -143,14 +152,6 @@ public class ClimberClaw extends SubsystemBase {
 
   public boolean getCageDetected(){
     return cageDetected;
-  }
-
-  public void setIsAtZero(boolean zero){
-    position = 0;
-  }
-
-  public boolean getIsAtZero(){
-    return position == 0;
   }
 
   public void configureHardware(){

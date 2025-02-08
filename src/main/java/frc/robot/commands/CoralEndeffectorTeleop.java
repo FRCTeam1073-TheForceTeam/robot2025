@@ -13,7 +13,7 @@ public class CoralEndeffectorTeleop extends Command {
 
   CoralEndeffector endeffector;
   OI oi;
-  private double velocity;
+  private double velocity = 0.5;
 
   /** Creates a new CoralEndeffectorTeleop. */
   public CoralEndeffectorTeleop(CoralEndeffector Endeffector, OI Oi){
@@ -26,6 +26,9 @@ public class CoralEndeffectorTeleop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(oi.getOperatorLeftTrigger()){
+      endeffector.setVelocity(velocity);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

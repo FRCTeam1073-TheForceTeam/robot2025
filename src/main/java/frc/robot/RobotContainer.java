@@ -19,6 +19,7 @@ import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.EngageClaw;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClaw;
+import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
@@ -28,6 +29,7 @@ import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
+import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
@@ -52,6 +54,9 @@ public class RobotContainer
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
   private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
+
+  private final CoralElevator m_coralElevator = new CoralElevator();
+  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator, m_OI);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -109,6 +114,8 @@ public class RobotContainer
       raiseLift.onTrue(m_raiseLift);
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
       engageClaw.onTrue(m_engageClaw);
+    Trigger zeroElevator = new Trigger (m_OI :: getOperatorXButton);
+        zeroElevator.onTrue(m_zeroElevator);
   }
 
   public void autonomousInit()

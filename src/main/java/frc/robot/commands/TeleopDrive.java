@@ -112,9 +112,18 @@ public class TeleopDrive extends Command
         
 
         //sets deadzones on the controller to extend to .05:
-        if(Math.abs(leftY) < .15) {leftY = 0;}
-        if(Math.abs(leftX) < .15) {leftX = 0;}
-        if(Math.abs(rightX) < .15) {rightX = 0;}
+        if(Math.abs(leftY) < .15) 
+        {
+          leftY = 0;
+        }
+        if(Math.abs(leftX) < .15) 
+        {
+          leftX = 0;
+        }
+        if(Math.abs(rightX) < .15) 
+        {
+          rightX = 0;
+        }
 
         vx = MathUtil.clamp((-leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         vy = MathUtil.clamp((-leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);

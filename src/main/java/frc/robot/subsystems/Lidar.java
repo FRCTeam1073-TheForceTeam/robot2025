@@ -14,10 +14,36 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Lidar extends DiagnosticsSubsystem {
     SerialPort serialPort;
     private final int bytesPerScan = 5;
     //private final double elevationFactor = 0.94293; //0.97237; //compensating for the fact that it's not level: cos(angle of rangeFinder)
+    public class Point{
+        double x;
+        double y;
+        public Point(double x, double y){
+            this.x = x;
+            this.y = y;
+        }
+
+        public double getX(){
+            return x;
+        }
+
+        public double getY(){
+            return y;
+        }
+
+        public void setX(double x){
+            this.x = x;
+        }
+        
+        public void setY(double y){
+            this.y = y;
+        }
+    }
+    
     ArrayList <Scan> one = new ArrayList<Scan>();
     ArrayList <Scan> two = new ArrayList<Scan>();
     ArrayList <Scan> data = new ArrayList<Scan>();
@@ -77,8 +103,8 @@ public class Lidar extends DiagnosticsSubsystem {
     int rand2;
     Transform2d robotToLidar = new Transform2d(new Translation2d(0.27, 0), new Rotation2d()); // Translation needs x and y, rotation needs 
     Matrix<N3,N3> T;
-    Point start;
-    Point end;
+    Point start = new Point(0, 0);
+    Point end = new Point(0, 0);
     Random randy = new Random();
     Scan point1;
     Scan point2;
@@ -100,6 +126,7 @@ public class Lidar extends DiagnosticsSubsystem {
             Handshake();
         }
     }
+
 
     public void Handshake () {
         System.out.println("Beginning of handshake method for Lidar sensor");
@@ -136,6 +163,7 @@ public class Lidar extends DiagnosticsSubsystem {
     * Fit a mathematical model (line, curve, 3d shape, ...)
     * Compute a cost by checking how many points fit the model
     * Repeat until you found the model with the lowest cost */
+
     public ArrayList<Scan> lidarRANSAC(){
         ransac = new ArrayList<Scan>(getLidarArray());
         bestInliers.clear();
@@ -144,8 +172,8 @@ public class Lidar extends DiagnosticsSubsystem {
 
             inliers.clear();
 
-            rand1 = randy.nextInt(ransac.size());
-            rand2 = randy.nextInt(ransac.size());
+            rand1 = Math.abs(randy.nextInt(ransac.size()));
+            rand2 = Math.abs(randy.nextInt(ransac.size()));
             point1 = ransac.get(rand1);
             point2 = ransac.get(rand2);
             while(point1 == point2){
@@ -233,12 +261,12 @@ public class Lidar extends DiagnosticsSubsystem {
             }
             if(pointsOnLine >= 10 && indexOfEnd < points.size()){
                 //TODO: implement point class to return array of start and end point, not index
-                // startAndEnd[0] = start;
-                // startAndEnd[1] = end;
-                // SmartDashboard.putNumber("Start Point X", startAndEnd[0].getX());
-                // SmartDashboard.putNumber("Start Point Y", startAndEnd[0].getY());
-                // SmartDashboard.putNumber("End Point X", startAndEnd[1].getX());
-                // SmartDashboard.putNumber("End Point Y", startAndEnd[1].getY());
+                startAndEnd[0] = start;
+                startAndEnd[1] = end;
+                SmartDashboard.putNumber("Start Point X", startAndEnd[0].getX());
+                SmartDashboard.putNumber("Start Point Y", startAndEnd[0].getY());
+                SmartDashboard.putNumber("End Point X", startAndEnd[1].getX());
+                SmartDashboard.putNumber("End Point Y", startAndEnd[1].getY());
                 SmartDashboard.putBoolean("Found Line", true);
 
                 return startAndEnd;

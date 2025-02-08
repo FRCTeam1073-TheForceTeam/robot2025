@@ -111,7 +111,15 @@ public class ClimberClaw extends SubsystemBase {
     return velocity;
   }
 
-  public void setZero(double zero){
+  public void setPosition(double position){
+    this.position = position;
+  }
+
+  public double getPosition(){
+    return leftClawMotor.getPosition().refresh().getValueAsDouble() * leftMetersPerRotation;
+  }
+
+  public void setZero(){
     leftClawMotor.setPosition(0.0);
     rightClawMotor.setPosition(0.0);
   }
@@ -143,14 +151,6 @@ public class ClimberClaw extends SubsystemBase {
 
   public boolean getCageDetected(){
     return cageDetected;
-  }
-
-  public void setIsAtZero(boolean zero){
-    position = 0;
-  }
-
-  public boolean getIsAtZero(){
-    return position == 0;
   }
 
   public void configureHardware(){

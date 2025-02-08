@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroClaw;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
@@ -41,6 +43,7 @@ public class RobotContainer
   private final ClimberLift m_climberLift = new ClimberLift();
   private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
   private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
+  private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -64,7 +67,7 @@ public class RobotContainer
   public RobotContainer() 
   {
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
-    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_zeroClaw);
     CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
 
     SmartDashboard.putData(m_drivetrain);
@@ -92,9 +95,7 @@ public class RobotContainer
   }
 
   private void configureBindings() 
-  { 
-    
-  }
+  {}
 
   public void autonomousInit()
   {

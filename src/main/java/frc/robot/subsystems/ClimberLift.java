@@ -158,8 +158,8 @@ public class ClimberLift extends SubsystemBase {
     
 
     // TODO: Set in brake mode normally. For testing... coast.
-    topLiftMotor.setNeutralMode(NeutralModeValue.Coast);
-    bottomLiftMotor.setNeutralMode(NeutralModeValue.Coast);
+    topLiftMotor.setNeutralMode(NeutralModeValue.Brake);
+    bottomLiftMotor.setNeutralMode(NeutralModeValue.Brake);
 
     CurrentLimitsConfigs topLiftCurrentLimitsConfigs = new CurrentLimitsConfigs();
     topLiftCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)

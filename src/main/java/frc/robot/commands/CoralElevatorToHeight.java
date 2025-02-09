@@ -32,13 +32,7 @@ public class CoralElevatorToHeight extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO switch values for elevator
-    if(elevator.getPosition() < targetHeight){
-      velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    }
-    else{
-      velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    }
+    velocity = (targetHeight - elevator.getPosition()) * 0.6;
     velocity = MathUtil.clamp(velocity, 3, 12);
     elevator.setVelocity(velocity);
   }
@@ -50,6 +44,6 @@ public class CoralElevatorToHeight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getPosition() - targetHeight) <= 0.05 * targetHeight;
+    return false;
   }
 }

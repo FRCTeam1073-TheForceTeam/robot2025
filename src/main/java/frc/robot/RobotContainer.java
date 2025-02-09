@@ -31,6 +31,7 @@ import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
+import frc.robot.subsystems.LidarAlign;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -53,9 +54,10 @@ public class RobotContainer
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
   private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
-  private final Lidar m_lidar = new Lidar();
+  private final Lidar m_lidar = new Lidar(m_drivetrain);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
+  private final LidarAlign m_lidarAlign = new LidarAlign(m_lidar);
 
   private boolean isRed;
   private int level;
@@ -111,6 +113,8 @@ public class RobotContainer
       raiseLift.onTrue(m_raiseLift);
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
       engageClaw.onTrue(m_engageClaw);
+    Trigger lidarAlign = new Trigger(m_OI::getDriverDPadDown);
+      lidarAlign.onTrue(m_lidarAlign);
   }
 
   public void autonomousInit()

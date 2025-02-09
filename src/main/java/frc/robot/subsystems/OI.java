@@ -163,6 +163,10 @@ public class OI extends DiagnosticsSubsystem
     return yDriverButtonDebouncer.calculate(driverController.getRawButton(4));
   }
 
+  public boolean getDriverDPadDown(){
+    return driverController.getPOV() == 180;
+  }
+
   public void zeroOperatorController() {
     //Sets all the offsets to zero, then uses whatever value it returns as the new offset.
     LEFT_X_ZERO = 0;

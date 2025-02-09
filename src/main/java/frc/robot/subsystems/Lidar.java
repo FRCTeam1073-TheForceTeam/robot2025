@@ -2,13 +2,16 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.random.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -63,6 +66,7 @@ public class Lidar extends DiagnosticsSubsystem {
     boolean searchingForStart = true;
     boolean searchingForEnd = false;
     boolean foundLine = false;
+    Drivetrain drivetrain;
     double arrayOneTimestamp;
     double arrayTwoTimestamp;
     double filtered_range = 0.0;
@@ -73,6 +77,10 @@ public class Lidar extends DiagnosticsSubsystem {
     double a; // a value for standard form of a line
     double b; // b value for standard form of a line
     double c; // c value for standard form of a line
+    double lidarSlope;
+    double robotSlope;
+    double angleToRotate;
+    double thetaVelocity;
     double[] bestLine = new double[3]; // a, b, and c value of the best line
     final double distanceThreshold = 0.05; // maximum distance a point can be from the line to be considered an inlier
     double distance;
@@ -105,12 +113,19 @@ public class Lidar extends DiagnosticsSubsystem {
     Matrix<N3,N3> T;
     Point start = new Point(0, 0);
     Point end = new Point(0, 0);
+    Pose2d targetRotationPose;
+    Pose2d currentPose;
+    PIDController thetaController;
     Random randy = new Random();
     Scan point1;
     Scan point2;
 
-    public Lidar () {
+    public Lidar (Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
         T = robotToLidar.toMatrix();
+
+        thetaController = new PIDController(1.2, 0.0, 0.01);
+
         try{
             serialPort = new SerialPort(460800, SerialPort.Port.kUSB1, 8, SerialPort.Parity.kNone, SerialPort.StopBits.kOne);
         }
@@ -177,7 +192,8 @@ public class Lidar extends DiagnosticsSubsystem {
             point1 = ransac.get(rand1);
             point2 = ransac.get(rand2);
             while(point1 == point2){
-                point2 = ransac.get(randy.nextInt(ransac.size()));
+                rand2 = Math.abs(randy.nextInt(ransac.size()));
+                point2 = ransac.get(rand2);
             }
 
             a = point2.getY() - point1.getY();
@@ -213,6 +229,10 @@ public class Lidar extends DiagnosticsSubsystem {
     // searching for beginning or searching for the end
     // index of beginning and end
     // outputs endpoint
+    public double[] getLine(){
+        return bestLine;
+    }
+
     public Point[] findLineSegment(ArrayList<Scan> arr){
             points.clear();
             points = new ArrayList<Scan>(arr);
@@ -274,6 +294,17 @@ public class Lidar extends DiagnosticsSubsystem {
             return null;
         }
         return null;
+    }
+
+    public void moveToLine(double[] line){
+        /*1. calculate slope of line detected by lidar */
+        lidarSlope = -line[0]/line[1];
+        /* 2. Find arctan of the difference between their slopes - angle the robot needs to move */
+        angleToRotate = Math.atan(lidarSlope);
+        /* 3. rotate the robot that to that set angle*/
+        thetaVelocity = MathUtil.clamp(thetaController.calculate(drivetrain.getWrappedHeadingRadians(), drivetrain.getWrappedHeadingRadians() + angleToRotate), -2.0, 2.0);
+        drivetrain.setTargetChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, thetaVelocity, new Rotation2d(drivetrain.getWrappedHeadingRadians())));
+        // pass in current x/y and pose
     }
 
     public ArrayList<Scan> getLidarArray(){

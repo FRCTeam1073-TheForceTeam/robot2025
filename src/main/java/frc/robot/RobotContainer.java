@@ -15,13 +15,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToTag;
+import frc.robot.commands.ClimberClawTeleop;
+import frc.robot.commands.ClimberLiftTeleop;
+import frc.robot.commands.EngageClaw;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroClaw;
+import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.commands.Autos.RaiseLift;
+import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.ClimberClaw;
+import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -36,6 +46,16 @@ public class RobotContainer
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
+  private final ClimberClaw m_climberClaw = new ClimberClaw();
+  private final ClimberLift m_climberLift = new ClimberLift();
+  private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
+  private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
+  private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
+  private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift, m_OI);
+  private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
+  private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
+  private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
+  private final Lidar m_lidar = new Lidar();
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
   private boolean isRed;
@@ -57,20 +77,26 @@ public class RobotContainer
   private static final String level2 = "Level 2";
   private static final String level3 = "Level 3";
   private static final String level4 = "Level 4";
+  private static final String zeroClawAndLift = "Zero Claw And Lift";
 
   public RobotContainer() 
   {
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData(m_localizer);
 
+
     m_positionChooser.setDefaultOption("No Position", noPosition);
     m_positionChooser.addOption("Right Position", rightPos);
     m_positionChooser.addOption("Left Position", leftPos);
     m_positionChooser.addOption("Center Position", centerPos);
+    m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
+
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
 
@@ -88,19 +114,15 @@ public class RobotContainer
     configureBindings();
   }
 
+
   private void configureBindings() 
   { 
-    // Trigger alignToTagCenter = new Trigger(m_OI::getDriverDPadUp);
-    // alignToTagCenter.whileTrue(m_alignToTag.alignToTag(1));
-
-    // Trigger alignToTagLeft = new Trigger(m_OI::getDriverDPadLeft);
-    // alignToTagLeft.whileTrue(m_alignToTag.alignToTag(0));
-
-    // Trigger alignToTagRight = new Trigger(m_OI::getDriverDPadRight);
-    // alignToTagRight.whileTrue(m_alignToTag.alignToTag(2));
-
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
     alignToTag.whileTrue(m_alignToTag);
+    Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
+      raiseLift.onTrue(m_raiseLift);
+    Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
+      engageClaw.onTrue(m_engageClaw);
   }
 
   public void autonomousInit()
@@ -144,6 +166,10 @@ public class RobotContainer
     switch(m_positionChooser.getSelected())
     {
       case noPosition:
+	return null;
+      case zeroClawAndLift:
+        return ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI);
+      case noPositionAuto:
         return null;
       case leftPos:
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer);

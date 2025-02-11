@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralElevator extends SubsystemBase {
   private final String kCANbus = "rio";
-  private final double backKP = 0.15;
-  private final double backKD = 0.02;
-  private final double backKI = 0.0;
-  private final double backKV = 0.12; // Kraken kV value.
+  private final double frontKP = 0.15;
+  private final double frontKD = 0.02;
+  private final double frontKI = 0.0;
+  private final double frontKV = 0.12; // Kraken kV value.
 
   private final double maxLoad = 40.0; // TODO: Tune max load.
   private final double maxPosition = 5.0; // TODO: Set to maximum position.
@@ -79,7 +79,7 @@ public class CoralElevator extends SubsystemBase {
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
 
-    frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(velocity));
+    frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
 
     SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
@@ -142,10 +142,10 @@ public class CoralElevator extends SubsystemBase {
 
 
     var frontElevatorMotorClosedLoopConfig = new SlotConfigs();
-    frontElevatorMotorClosedLoopConfig.withKP(backKP);
-    frontElevatorMotorClosedLoopConfig.withKI(backKI);
-    frontElevatorMotorClosedLoopConfig.withKD(backKD);
-    frontElevatorMotorClosedLoopConfig.withKV(backKV);
+    frontElevatorMotorClosedLoopConfig.withKP(frontKP);
+    frontElevatorMotorClosedLoopConfig.withKI(frontKI);
+    frontElevatorMotorClosedLoopConfig.withKD(frontKD);
+    frontElevatorMotorClosedLoopConfig.withKV(frontKV);
 
     var error = frontElevatorMotor.getConfigurator().apply(frontElevatorMotorClosedLoopConfig, 0.5);
     // TODO hardware error checking.

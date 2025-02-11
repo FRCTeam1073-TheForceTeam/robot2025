@@ -166,11 +166,9 @@ public class RobotContainer
     switch(m_positionChooser.getSelected())
     {
       case noPosition:
-	return null;
+	      return null;
       case zeroClawAndLift:
         return ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI);
-      case noPositionAuto:
-        return null;
       case leftPos:
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer);
       case rightPos:
@@ -210,10 +208,8 @@ public class RobotContainer
 
   public boolean findStartPos() 
   {
-      //create a bool for pose is set
       int allianceSign = 1;
-      String selectedAuto = m_positionChooser.getSelected();
-      
+      String selectedPosition = m_positionChooser.getSelected();
       double startLineOffset = 12.227 -8.774 - 2.24; //id 10 x value - center x value - offset from reef to startline
       Pose2d startPos = new Pose2d();
       centerY = 4.026;

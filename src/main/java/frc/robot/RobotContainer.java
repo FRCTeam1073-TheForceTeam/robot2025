@@ -133,6 +133,8 @@ public class RobotContainer
       loadCoral.onTrue(m_loadCoral);
     Trigger scoreCoral = new Trigger (m_OI::getOperatorYButton);
       scoreCoral.onTrue(m_scoreCoral);
+    Trigger zeroClawandLift = new Trigger(m_OI :: getOperatorRightJoystickPress);
+      zeroClawandLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI));
 
   }
 

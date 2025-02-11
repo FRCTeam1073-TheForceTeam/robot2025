@@ -31,3 +31,27 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | LaserCAN              |  22    |   Rio         |
 | PDH                   |  36    |   Rio         |
 
+## Operator Controller
+
+|  Button/Joystick | Function/Command         |
+|------------------|--------------------------|
+|A                 |Raise Lift to max height  |
+|B                 |Zero Claw                 |
+|X                 |Load Coral                |
+|Y                 |Score Coral               |
+|LeftJoystickY     |Raise Elevator            |
+|RightJoystickY    |Raise Lift                |
+|LeftJoystickX     |                          |
+|RightJoystickX    |                          |
+|PressLeftJoystick |Zero Elevator             |
+|PressRightJoystick|Zero Claw & Lift          |
+|DPadUp            |                          |
+|DPadDown          |                          |
+|DPadLeft          |                          |
+|DPadRight         |                          |
+|LeftBumper        |                          |
+|RightBumper       |                          |
+|LeftTrigger       |                          |
+|RightTrigger      |                          |
+|View Button       |                          |
+|Menu Button       |                          |

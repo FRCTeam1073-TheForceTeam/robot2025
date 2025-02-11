@@ -74,28 +74,6 @@ public class SwerveModule extends SubsystemBase implements Sendable
         configureHardware();
     }
 
-    // @Override
-    // public boolean updateDiagnostics() {
-    //     // Check the CANCoder.
-    //     StatusCode error = steerEncoder.clearStickyFaults(1);
-    //     if (!error.isOK()) 
-    //     {
-    //        return setDiagnosticsFeedback(String.format(" Module %d, steerEncoder %d, error.", cfg.moduleNumber, idcfg.steerEncoderID), false);
-    //     }
-
-    //     MotorFault steerFault = new MotorFault(steerMotor,idcfg.steerMotorID);
-    //     if (steerFault.hasFaults()) {
-    //         return setDiagnosticsFeedback(steerFault.getFaults(), false);
-    //     }
-
-    //     MotorFault driveFault = new MotorFault(driveMotor, idcfg.driveMotorID);
-    //     if (driveFault.hasFaults()) {
-    //         return setDiagnosticsFeedback(driveFault.getFaults(), false);
-    //     }
-
-    //     return setDiagnosticsFeedback("OK", true);
-    // }
-
     // Sample a SwerveModulePosition object from the state of this module.
     public void samplePosition(SwerveModulePosition position)
     {

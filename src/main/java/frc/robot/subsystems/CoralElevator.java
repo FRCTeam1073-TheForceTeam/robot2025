@@ -135,19 +135,19 @@ public class CoralElevator extends SubsystemBase {
 
   public void configureHardware() {
 
-    var backElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
-    backElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig);
-    frontElevatorMotor.getConfigurator().apply(backElevatorMotorConfig); // Same config as other motor to start.
+    var frontElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
+    frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    backElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
+    frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig); // Same config as other motor to start.
 
 
-    var backElevatorMotorClosedLoopConfig = new SlotConfigs();
-    backElevatorMotorClosedLoopConfig.withKP(backKP);
-    backElevatorMotorClosedLoopConfig.withKI(backKI);
-    backElevatorMotorClosedLoopConfig.withKD(backKD);
-    backElevatorMotorClosedLoopConfig.withKV(backKV);
+    var frontElevatorMotorClosedLoopConfig = new SlotConfigs();
+    frontElevatorMotorClosedLoopConfig.withKP(backKP);
+    frontElevatorMotorClosedLoopConfig.withKI(backKI);
+    frontElevatorMotorClosedLoopConfig.withKD(backKD);
+    frontElevatorMotorClosedLoopConfig.withKV(backKV);
 
-    var error = backElevatorMotor.getConfigurator().apply(backElevatorMotorClosedLoopConfig, 0.5);
+    var error = frontElevatorMotor.getConfigurator().apply(frontElevatorMotorClosedLoopConfig, 0.5);
     // TODO hardware error checking.
 
     //TODO consider changing brakemode (also test ungeared setup before gearing)
@@ -157,7 +157,7 @@ public class CoralElevator extends SubsystemBase {
     backElevatorMotor.setPosition(0);
     frontElevatorMotor.setPosition(0);
 
-    frontElevatorMotor.setControl(new Follower(backElevatorMotor.getDeviceID(), true));
+    backElevatorMotor.setControl(new Follower(frontElevatorMotor.getDeviceID(), true));
 
 
     System.out.println("Coral Elevator configured");

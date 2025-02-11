@@ -51,8 +51,8 @@ public class CoralElevator extends SubsystemBase {
 
     backElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    leftZeroSensor = new DigitalInput(2); // TODO: Change channel.
-    rightZeroSensor = new DigitalInput(3);// TODO: Change channel.
+    leftZeroSensor = new DigitalInput(4); // TODO: Change channel.
+    rightZeroSensor = new DigitalInput(4);// TODO: Change channel.
 
     configureHardware();
   }

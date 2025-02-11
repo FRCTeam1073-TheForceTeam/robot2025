@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralElevator extends SubsystemBase {
   private final String kCANbus = "rio";
-  private final double leftKP = 0.15;
-  private final double leftKD = 0.02;
-  private final double leftKI = 0.0;
-  private final double leftKV = 0.12; // Kraken kV value.
+  private final double backKP = 0.15;
+  private final double backKD = 0.02;
+  private final double backKI = 0.0;
+  private final double backKV = 0.12; // Kraken kV value.
 
   private final double maxLoad = 40.0; // TODO: Tune max load.
   private final double maxPosition = 5.0; // TODO: Set to maximum position.
@@ -30,15 +30,15 @@ public class CoralElevator extends SubsystemBase {
 
   private double position;
   private double velocity;
-  private double leftLoad;
-  private double rightLoad;
+  private double backLoad;
+  private double frontLoad;
   private double load;
   private double commandedVelocity;
   private boolean brakemode;
   private boolean isAtZero;
 
-  private TalonFX leftElevatorMotor, rightElevatorMotor;
-  private VelocityVoltage leftElevatorMotorVelocityVoltage;
+  private TalonFX backElevatorMotor, frontElevatorMotor;
+  private VelocityVoltage backElevatorMotorVelocityVoltage;
   private DigitalInput leftZeroSensor;
   private DigitalInput rightZeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
@@ -46,10 +46,10 @@ public class CoralElevator extends SubsystemBase {
 
   public CoralElevator() {
     brakemode = false;
-    leftElevatorMotor = new TalonFX(19, kCANbus);
-    rightElevatorMotor = new TalonFX(20, kCANbus);
+    backElevatorMotor = new TalonFX(19, kCANbus);
+    frontElevatorMotor = new TalonFX(20, kCANbus);
 
-    leftElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    backElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
     leftZeroSensor = new DigitalInput(2); // TODO: Change channel.
     rightZeroSensor = new DigitalInput(3);// TODO: Change channel.
@@ -62,13 +62,13 @@ public class CoralElevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // TODO: Need to use scale factors from ratio, etc. units need to be meters.
-    velocity = leftElevatorMotor.getVelocity().refresh().getValueAsDouble();
-    position = leftElevatorMotor.getPosition().refresh().getValueAsDouble();
+    velocity = backElevatorMotor.getVelocity().refresh().getValueAsDouble();
+    position = backElevatorMotor.getPosition().refresh().getValueAsDouble();
 
-    leftLoad = leftElevatorMotor.getTorqueCurrent().getValueAsDouble();
-    rightLoad = rightElevatorMotor.getTorqueCurrent().getValueAsDouble();
+    backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
+    frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
 
-    load = Math.max(leftLoad, rightLoad);
+    load = Math.max(backLoad, frontLoad);
     boolean hitHardStop = (velocity < 0.0) && (load > maxLoad); // MOving down, peak load => reset.
     isAtZero = zeroDebouncer.calculate(leftZeroSensor.get() | rightZeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
@@ -80,7 +80,7 @@ public class CoralElevator extends SubsystemBase {
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
 
-    leftElevatorMotor.setControl(leftElevatorMotorVelocityVoltage.withVelocity(velocity));
+    backElevatorMotor.setControl(backElevatorMotorVelocityVoltage.withVelocity(velocity));
 
     SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
@@ -95,8 +95,8 @@ public class CoralElevator extends SubsystemBase {
 
   public void setZero(){
     position = 0.0;
-    leftElevatorMotor.setPosition(0);
-    rightElevatorMotor.setPosition(0);
+    backElevatorMotor.setPosition(0);
+    frontElevatorMotor.setPosition(0);
   }
 
   public void setVelocity(double velocity) {
@@ -123,41 +123,41 @@ public class CoralElevator extends SubsystemBase {
 
   public void setBrakeMode(boolean mode){
     if (mode){
-      leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-      rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+      backElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+      frontElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else{
-      leftElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
-      rightElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+      backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+      frontElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
     }
     brakemode = mode;
   }
 
   public void configureHardware() {
 
-    var leftElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
-    leftElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftElevatorMotor.getConfigurator().apply(leftElevatorMotorConfig);
-    rightElevatorMotor.getConfigurator().apply(leftElevatorMotorConfig); // Same config as other motor to start.
+    var backElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
+    backElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig);
+    frontElevatorMotor.getConfigurator().apply(backElevatorMotorConfig); // Same config as other motor to start.
 
 
-    var leftElevatorMotorClosedLoopConfig = new SlotConfigs();
-    leftElevatorMotorClosedLoopConfig.withKP(leftKP);
-    leftElevatorMotorClosedLoopConfig.withKI(leftKI);
-    leftElevatorMotorClosedLoopConfig.withKD(leftKD);
-    leftElevatorMotorClosedLoopConfig.withKV(leftKV);
+    var backElevatorMotorClosedLoopConfig = new SlotConfigs();
+    backElevatorMotorClosedLoopConfig.withKP(backKP);
+    backElevatorMotorClosedLoopConfig.withKI(backKI);
+    backElevatorMotorClosedLoopConfig.withKD(backKD);
+    backElevatorMotorClosedLoopConfig.withKV(backKV);
 
-    var error = leftElevatorMotor.getConfigurator().apply(leftElevatorMotorClosedLoopConfig, 0.5);
+    var error = backElevatorMotor.getConfigurator().apply(backElevatorMotorClosedLoopConfig, 0.5);
     // TODO hardware error checking.
 
     //TODO consider changing brakemode (also test ungeared setup before gearing)
-    leftElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
-    rightElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    frontElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    leftElevatorMotor.setPosition(0);
-    rightElevatorMotor.setPosition(0);
+    backElevatorMotor.setPosition(0);
+    frontElevatorMotor.setPosition(0);
 
-    rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
+    frontElevatorMotor.setControl(new Follower(backElevatorMotor.getDeviceID(), true));
 
 
     System.out.println("Coral Elevator configured");

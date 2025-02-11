@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -38,7 +39,7 @@ public class CoralElevator extends SubsystemBase {
   private boolean isAtZero;
 
   private TalonFX backElevatorMotor, frontElevatorMotor;
-  private VelocityVoltage backElevatorMotorVelocityVoltage;
+  private VelocityVoltage frontElevatorMotorVelocityVoltage;
   private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
@@ -48,7 +49,7 @@ public class CoralElevator extends SubsystemBase {
     backElevatorMotor = new TalonFX(19, kCANbus);
     frontElevatorMotor = new TalonFX(20, kCANbus);
 
-    backElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    frontElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
     zeroSensor = new DigitalInput(4);// TODO: Change channel.
 
@@ -78,7 +79,7 @@ public class CoralElevator extends SubsystemBase {
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
 
-    backElevatorMotor.setControl(backElevatorMotorVelocityVoltage.withVelocity(velocity));
+    frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(velocity));
 
     SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
@@ -135,8 +136,9 @@ public class CoralElevator extends SubsystemBase {
 
     var frontElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
     backElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
-    frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig); // Same config as other motor to start.
+     // Same config as other motor to start.
 
 
     var frontElevatorMotorClosedLoopConfig = new SlotConfigs();
@@ -152,11 +154,18 @@ public class CoralElevator extends SubsystemBase {
     backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
     frontElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    backElevatorMotor.setPosition(0);
-    frontElevatorMotor.setPosition(0);
+    CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+                            .withSupplyCurrentLimit(15)
+                            .withSupplyCurrentLowerTime(0.25);
+
+    frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
+    backElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
 
     backElevatorMotor.setControl(new Follower(frontElevatorMotor.getDeviceID(), true));
 
+    backElevatorMotor.setPosition(0);
+    frontElevatorMotor.setPosition(0);
 
     System.out.println("Coral Elevator configured");
   }

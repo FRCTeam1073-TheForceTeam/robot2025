@@ -95,7 +95,7 @@ public class CoralEndeffector extends SubsystemBase {
 
     public void setVelocity(double velocity){
         // TODO: Scale factors.
-        this.commandedVelocity = velocity;
+        this.commandedVelocity = -velocity;
     }
 
     public double getVelocity() {

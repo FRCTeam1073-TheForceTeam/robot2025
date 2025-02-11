@@ -39,8 +39,7 @@ public class CoralElevator extends SubsystemBase {
 
   private TalonFX backElevatorMotor, frontElevatorMotor;
   private VelocityVoltage backElevatorMotorVelocityVoltage;
-  private DigitalInput leftZeroSensor;
-  private DigitalInput rightZeroSensor;
+  private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
 
@@ -51,8 +50,7 @@ public class CoralElevator extends SubsystemBase {
 
     backElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    leftZeroSensor = new DigitalInput(4); // TODO: Change channel.
-    rightZeroSensor = new DigitalInput(4);// TODO: Change channel.
+    zeroSensor = new DigitalInput(4);// TODO: Change channel.
 
     configureHardware();
   }
@@ -70,7 +68,7 @@ public class CoralElevator extends SubsystemBase {
 
     load = Math.max(backLoad, frontLoad);
     boolean hitHardStop = (velocity < 0.0) && (load > maxLoad); // MOving down, peak load => reset.
-    isAtZero = zeroDebouncer.calculate(leftZeroSensor.get() | rightZeroSensor.get() | hitHardStop); // Compute debounced logical or.
+    isAtZero = zeroDebouncer.calculate(zeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
     if (isAtZero){
       setZero();

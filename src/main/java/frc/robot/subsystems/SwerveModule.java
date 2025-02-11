@@ -49,9 +49,8 @@ public class SwerveModule extends SubsystemBase implements Sendable
     private double targetSteerRotations = 0.0;
     private double targetDriveVelocity = 0.0;
     private double targetDriveVelocityRotations = 0.0;
-    private final String kCANbus = "CANivore";
-
-
+    
+    
     /** Constructs a swerve module class. Initializes drive and steer motors
      * 
      * @param cfg swerve module configuration values for this module
@@ -65,36 +64,14 @@ public class SwerveModule extends SubsystemBase implements Sendable
 
         setName(String.format("SwerveModule[%d]", cfg.moduleNumber));
 
-        steerMotor = new TalonFX(ids.steerMotorID, kCANbus);
-        driveMotor = new TalonFX(ids.driveMotorID, kCANbus);
-        steerEncoder = new CANcoder(ids.steerEncoderID, kCANbus);
+        steerMotor = new TalonFX(ids.steerMotorID);
+        driveMotor = new TalonFX(ids.driveMotorID);
+        steerEncoder = new CANcoder(ids.steerEncoderID);
     
         driveVelocityVoltage = new VelocityVoltage(0).withSlot(0);
         steerPositionVoltage = new PositionVoltage(0).withSlot(0);
         configureHardware();
     }
-
-    // @Override
-    // public boolean updateDiagnostics() {
-    //     // Check the CANCoder.
-    //     StatusCode error = steerEncoder.clearStickyFaults(1);
-    //     if (!error.isOK()) 
-    //     {
-    //        return setDiagnosticsFeedback(String.format(" Module %d, steerEncoder %d, error.", cfg.moduleNumber, idcfg.steerEncoderID), false);
-    //     }
-
-    //     MotorFault steerFault = new MotorFault(steerMotor,idcfg.steerMotorID);
-    //     if (steerFault.hasFaults()) {
-    //         return setDiagnosticsFeedback(steerFault.getFaults(), false);
-    //     }
-
-    //     MotorFault driveFault = new MotorFault(driveMotor, idcfg.driveMotorID);
-    //     if (driveFault.hasFaults()) {
-    //         return setDiagnosticsFeedback(driveFault.getFaults(), false);
-    //     }
-
-    //     return setDiagnosticsFeedback("OK", true);
-    // }
 
     // Sample a SwerveModulePosition object from the state of this module.
     public void samplePosition(SwerveModulePosition position)

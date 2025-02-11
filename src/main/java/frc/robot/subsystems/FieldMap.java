@@ -6,45 +6,82 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class FieldMap
 {
-    public static final AprilTagFieldLayout fieldMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape); 
+    public static final AprilTagFieldLayout fieldMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-    public static AprilTag getBestAprilTag(Pose2d robot2DPose, List<AprilTag> aprilTags)
+    public int getBestAprilTagID(Pose2d robotPose) 
     {
-        double shortestDistance = 100;
-        AprilTag aprilTag = null;
+        double shortestDistance = 998;
 
-        for(AprilTag tag : aprilTags) {
-            if (findDistance(robot2DPose, tag.ID) < shortestDistance)
-                aprilTag = tag;
+        List<AprilTag> aprilTags = fieldMap.getTags();
+        int bestID = -1;
+
+        for(AprilTag tag : aprilTags) 
+        {
+            if (findDistance(robotPose, tag.ID) < shortestDistance && tag.ID != 4 && tag.ID != 5 && tag.ID != 14 && tag.ID != 15) 
+            {
+                shortestDistance = findDistance(robotPose, bestID);
+                bestID = tag.ID;
+            }
         }
-
-        return aprilTag;
+        return bestID;
     }
 
-    public static double findDistance(Pose2d robot2DPose, int tagID)
+    public Pose2d getBestTagPose(int tagID, int slot, double offset)
     {
-        Optional<Pose3d> tag3dPose = fieldMap.getTagPose(tagID);
+        Pose2d tagPose = fieldMap.getTagPose(tagID).get().toPose2d();
+        double rotation = Math.PI;
+        double xCoord = 0.5;
+        double yCoord = 0;
 
-        if (!tag3dPose.isPresent())
+        if(slot == 1) //center
         {
+            yCoord = 0;
+        }
+        else if(slot == 0) //left
+        {
+            yCoord = -offset;
+        }
+        else if(slot == 2) //right
+        {
+            yCoord = offset;
+        }
+
+        Transform2d robotToReef = new Transform2d(xCoord, yCoord, new Rotation2d(rotation));
+
+        SmartDashboard.putNumber("FieldMap/TargetTagID", tagID);
+        SmartDashboard.putNumber("FieldMap/Transform X", xCoord);
+        SmartDashboard.putNumber("FieldMap/Transform Y", yCoord);
+        SmartDashboard.putNumber("FieldMao/TargetTagRotation", rotation);
+
+        return tagPose.plus(robotToReef);
+    }
+
+    public double findDistance(Pose2d robot2DPose, int tagID) {
+
+        Optional<Pose3d> tag3dPose = FieldMap.fieldMap.getTagPose(tagID);
+
+        if(!tag3dPose.isPresent()) {
             //we don't have a value to work with, bail
-            return -1.0;
+            return 999;
         }
 
         double tagX = tag3dPose.get().getX();
         double tagY = tag3dPose.get().getY();
-
         double distance = Math.sqrt(Math.pow((tagX - robot2DPose.getX()), 2) + Math.pow((tagY - robot2DPose.getY()), 2));
         return distance;
     }
-
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlignToTag;
 import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.EngageClaw;
@@ -44,6 +45,7 @@ public class RobotContainer
   private final FieldMap m_fieldMap = new FieldMap();
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
+  private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
   private final ClimberClaw m_climberClaw = new ClimberClaw();
   private final ClimberLift m_climberLift = new ClimberLift();
   private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
@@ -54,21 +56,23 @@ public class RobotContainer
   private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
   private final Lidar m_lidar = new Lidar();
-
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
   private boolean isRed;
   private int level;
+  private double centerY = 4.026;
+  private double centerX = 8.774;
 
   private final SendableChooser<String> m_positionChooser = new SendableChooser<>();
-  private static final String noPositionAuto = "No Position";
-  private static final String rightAuto = "Right Auto";
-  private static final String leftAuto = "Left Auto";
-  private static final String centerAuto = "Center Auto";
+  private static final String noPosition = "No Position";
+  private static final String rightPos = "Right Position";
+  private static final String leftPos = "Left Position";
+  private static final String centerPos = "Center Position";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
   private static final String noLevelAuto = "No Level";
+  private static final String level0 = "Level 0";
   private static final String level1 = "Level 1";
   private static final String level2 = "Level 2";
   private static final String level3 = "Level 3";
@@ -86,14 +90,18 @@ public class RobotContainer
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData(m_localizer);
 
-    m_positionChooser.setDefaultOption("No Position", noPositionAuto);
-    m_positionChooser.addOption("Right Auto", rightAuto);
-    m_positionChooser.addOption("Left Auto", leftAuto);
-    m_positionChooser.addOption("Center Auto", centerAuto);
+
+    m_positionChooser.setDefaultOption("No Position", noPosition);
+    m_positionChooser.addOption("Right Position", rightPos);
+    m_positionChooser.addOption("Left Position", leftPos);
+    m_positionChooser.addOption("Center Position", centerPos);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
+
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
+
     m_levelChooser.addOption("Test Auto", testLevel);
+    m_levelChooser.addOption("Level 0", level0);
     m_levelChooser.addOption("Level 1", level1);
     m_levelChooser.addOption("Level 2", level2);
     m_levelChooser.addOption("Level 3", level3);
@@ -106,7 +114,11 @@ public class RobotContainer
     configureBindings();
   }
 
-  private void configureBindings() {
+
+  private void configureBindings() 
+  { 
+    Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
+    alignToTag.whileTrue(m_alignToTag);
     Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
       raiseLift.onTrue(m_raiseLift);
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
@@ -126,6 +138,9 @@ public class RobotContainer
     {
       case noLevelAuto:
         level = -1;
+        break;
+      case level0:
+        level = 0;
         break;
       case level1:
         level = 1;
@@ -150,15 +165,15 @@ public class RobotContainer
 
     switch(m_positionChooser.getSelected())
     {
+      case noPosition:
+	      return null;
       case zeroClawAndLift:
         return ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI);
-      case noPositionAuto:
-        return null;
-      case leftAuto:
+      case leftPos:
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer);
-      case rightAuto:
+      case rightPos:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer);
-      case centerAuto:
+      case centerPos:
         return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer);
       default:
         return null;
@@ -193,26 +208,26 @@ public class RobotContainer
 
   public boolean findStartPos() 
   {
-      //create a bool for pose is set
-      double centerY = 4.026;
       int allianceSign = 1;
-      String selectedAuto = m_positionChooser.getSelected();
-      
-      double centerX = 8.774;
+      String selectedPosition = m_positionChooser.getSelected();
       double startLineOffset = 12.227 -8.774 - 2.24; //id 10 x value - center x value - offset from reef to startline
       Pose2d startPos = new Pose2d();
+      centerY = 4.026;
+      centerX = 8.774;
       SmartDashboard.putString("Alliance", "None");
   
-      if(DriverStation.getAlliance().isPresent())
+      if(DriverStation.getAlliance().isPresent() && !selectedPosition.equals(noPosition))
       {
         DriverStation.Alliance alliance = DriverStation.getAlliance().get();
         if(alliance == Alliance.Blue) {
           allianceSign = -1;
         }
-        if (selectedAuto.equals(leftAuto)) {
+
+        if (selectedPosition.equals(leftPos)) {
           centerY -= allianceSign * 2.013;
         }
-        else if(selectedAuto.equals(rightAuto)) {
+        else if(selectedPosition.equals(rightPos)) {
+
           centerY += allianceSign * 2.013;
         }
   
@@ -220,7 +235,7 @@ public class RobotContainer
         {
           isRed = false;
           SmartDashboard.putString("Alliance", "Blue");
-          startPos = new Pose2d(centerX-startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
         }
         else if (alliance == Alliance.Red)
         {

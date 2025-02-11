@@ -258,6 +258,10 @@ public class OI extends DiagnosticsSubsystem
   public boolean getOperatorLeftJoystickPress(){
     return getOperatorRawButton(9);
   }
+  
+  public boolean getOperatorRightJoystickPress(){
+    return getOperatorRawButton(10);
+  }
 
   @Override
   public void initSendable(SendableBuilder builder){

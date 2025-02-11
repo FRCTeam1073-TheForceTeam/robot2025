@@ -51,7 +51,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |DPadRight         |                          |
 |LeftBumper        |                          |
 |RightBumper       |                          |
-|LeftTrigger       |                          |
+|LeftTrigger       |Coral Endeffector Teleop  |
 |RightTrigger      |                          |
 |View Button       |                          |
 |Menu Button       |                          |

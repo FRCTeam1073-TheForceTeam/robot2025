@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase
 {
-  private final String kCANbus = "CAN";
+  private final String kCANbus = "CANivore";
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
   private SwerveModule[] modules;
@@ -48,7 +48,7 @@ public class Drivetrain extends SubsystemBase
   {
     super.setSubsystem("Drivetrain");
 
-    pigeon2 = new Pigeon2(13);
+    pigeon2 = new Pigeon2(13, kCANbus);
     var error = pigeon2.getConfigurator().apply(new Pigeon2Configuration());
     if (!error.isOK()) 
     {
@@ -348,9 +348,9 @@ public class Drivetrain extends SubsystemBase
 
       // Set angles for locked parking position:
       states[0].angle = Rotation2d.fromRadians(Math.PI/4.0);
-      states[1].angle = Rotation2d.fromDegrees(-Math.PI/4.0);
-      states[2].angle = Rotation2d.fromDegrees(-Math.PI/4.0);
-      states[3].angle = Rotation2d.fromDegrees(Math.PI/4.0);
+      states[1].angle = Rotation2d.fromRadians(-Math.PI/4.0);
+      states[2].angle = Rotation2d.fromRadians(-Math.PI/4.0);
+      states[3].angle = Rotation2d.fromRadians(Math.PI/4.0);
 
 
       // Run the optimizer for the states:

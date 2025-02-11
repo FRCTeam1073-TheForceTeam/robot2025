@@ -32,7 +32,7 @@ public class TeleopDrive extends Command
   double last_error = 0; //for snap-to-positions derivative
   double last_time = 0; //for snap-to-positions derivative
   boolean lastParkingBreakButton = false;
-  boolean lastRobotCentricButton = false;
+  boolean lastFieldCentricButton = true;
   boolean pointAtTarget;
   AprilTagFinder aprilTagFinder;
   Localizer localizer;
@@ -90,10 +90,16 @@ public class TeleopDrive extends Command
 
     SmartDashboard.putBoolean("Parking Brake", parked);
 
+    if(m_OI.getDriverRightBumper() && lastFieldCentricButton == false){
+      fieldCentric = !fieldCentric;
+    }
+    lastFieldCentricButton = m_OI.getDriverRightBumper();
+
     if(m_OI.getDriverLeftBumper() && lastParkingBreakButton == false)
     {
       parked = !parked;
     }
+    // TODO: get parking brake to work - right now only wheel in swerve mod 0 works
     lastParkingBreakButton = m_OI.getDriverLeftBumper();
     if(parked && !drivetrain.getParkingBrake())
     {

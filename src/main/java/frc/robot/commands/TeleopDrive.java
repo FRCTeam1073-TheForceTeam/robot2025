@@ -118,30 +118,39 @@ public class TeleopDrive extends Command
         
 
         //sets deadzones on the controller to extend to .05:
-        if(Math.abs(leftY) < .15) {leftY = 0;}
-        if(Math.abs(leftX) < .15) {leftX = 0;}
-        if(Math.abs(rightX) < .15) {rightX = 0;}
+        if(Math.abs(leftY) < .15) 
+        {
+          leftY = 0;
+        }
+        if(Math.abs(leftX) < .15) 
+        {
+          leftX = 0;
+        }
+        if(Math.abs(rightX) < .15) 
+        {
+          rightX = 0;
+        }
 
         vx = MathUtil.clamp((-leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         vy = MathUtil.clamp((-leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         w = MathUtil.clamp(-(rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
-        if(fieldCentric){
+
+        if (fieldCentric)
+        {
           drivetrain.setTargetChassisSpeeds(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                vx, 
-                vy,
-                w,  
-                //Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
-                Rotation2d.fromDegrees(drivetrain.getHeadingDegrees())
+              vx, 
+              vy,
+              w, 
+              Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
             )
           );
         }
-        else {
-          //william and Arjun (the short one) waz here
-          ChassisSpeeds robot = new ChassisSpeeds(vx, vy, w);
-          drivetrain.setTargetChassisSpeeds(robot);
+        else 
+        {
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
         }
         
     }
@@ -149,7 +158,7 @@ public class TeleopDrive extends Command
     // Allow driver to zero the drive subsystem heading for field-centric control.
     if(m_OI.getDriverMenuButton())
     {
-      drivetrain.zeroHeading();
+      fieldCentric = !fieldCentric;
     }
 
     if(m_OI.getDriverAButton()){

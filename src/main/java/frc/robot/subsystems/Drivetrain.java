@@ -27,8 +27,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Drivetrain extends DiagnosticsSubsystem 
+public class Drivetrain extends SubsystemBase
 {
   private final String kCANbus = "CANivore";
   private SwerveDriveKinematics kinematics;
@@ -157,24 +158,24 @@ public class Drivetrain extends DiagnosticsSubsystem
     builder.addDoubleProperty("Roll", this::getRoll, null);
   }
 
-  @Override
-  public boolean updateDiagnostics() {
-    String result = new String();
-    boolean isOK = true;
+  // @Override
+  // public boolean updateDiagnostics() {
+  //   String result = new String();
+  //   boolean isOK = true;
 
-    // Run the diagnostics for each ofthe modules and return value if something is wrong:
-    for (int mod = 0; mod < 4; ++mod) {
-      if (!modules[mod].updateDiagnostics())
-        return setDiagnosticsFeedback(modules[mod].getDiagnosticsDetails(), false);
-    }
+  //   // Run the diagnostics for each ofthe modules and return value if something is wrong:
+  //   for (int mod = 0; mod < 4; ++mod) {
+  //     if (!modules[mod].updateDiagnostics())
+  //       return setDiagnosticsFeedback(modules[mod].getDiagnosticsDetails(), false);
+  //   }
 
-    StatusCode error = pigeon2.clearStickyFaults(0.5);
-    if (error != StatusCode.OK) {
-       return setDiagnosticsFeedback("Pigeon 2 Diagnostics Error", false);
-    }
+  //   StatusCode error = pigeon2.clearStickyFaults(0.5);
+  //   if (error != StatusCode.OK) {
+  //      return setDiagnosticsFeedback("Pigeon 2 Diagnostics Error", false);
+  //   }
 
-    return setDiagnosticsFeedback(result, isOK);
-  }
+  //   return setDiagnosticsFeedback(result, isOK);
+  // }
 
   public void setDebugMode(boolean debug) 
   {

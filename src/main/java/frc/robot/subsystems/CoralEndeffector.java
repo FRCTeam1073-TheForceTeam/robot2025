@@ -51,7 +51,7 @@ public class CoralEndeffector extends SubsystemBase {
         motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
         // Sensor setup:
-        laserCAN = new LaserCan(21);
+        laserCAN = new LaserCan(22);
 
 
         configureHardware();

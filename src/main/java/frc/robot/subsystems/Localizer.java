@@ -29,8 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.AprilTagFinder.VisionMeasurement;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
-public class Localizer extends SubsystemBase
-{
+public class Localizer extends SubsystemBase {
     private Drivetrain driveTrain;
     private SwerveDrivePoseEstimator estimator;
     private FieldMap fieldMap;

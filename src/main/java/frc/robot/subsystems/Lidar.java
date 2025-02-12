@@ -14,8 +14,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Lidar extends DiagnosticsSubsystem {
+public class Lidar extends SubsystemBase {
     SerialPort serialPort;
     private final int bytesPerScan = 5;
     //private final double elevationFactor = 0.94293; //0.97237; //compensating for the fact that it's not level: cos(angle of rangeFinder)
@@ -443,19 +444,5 @@ public class Lidar extends DiagnosticsSubsystem {
     
     public double getYVal(){
         return getLidarArray().get(0).getY();
-    }
-
-    @Override
-    public boolean updateDiagnostics() {
-        double now = Timer.getFPGATimestamp();
-        boolean OK = true;
-        if (now - timestamp > 2.0) {
-            OK = false;
-        }
-
-        else {
-            OK = false;
-        }
-        return setDiagnosticsFeedback("", OK);
     }
 }

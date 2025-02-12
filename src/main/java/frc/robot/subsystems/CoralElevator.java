@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -40,18 +41,20 @@ public class CoralElevator extends SubsystemBase {
 
   private TalonFX backElevatorMotor, frontElevatorMotor;
   private VelocityVoltage frontElevatorMotorVelocityVoltage;
+  private PositionVoltage frontElevatorMotorPositionVoltage;
   private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
 
   public CoralElevator() {
-    brakemode = false;
-    backElevatorMotor = new TalonFX(19, kCANbus);
     frontElevatorMotor = new TalonFX(20, kCANbus);
+    backElevatorMotor = new TalonFX(19, kCANbus);
+    brakemode = false;
 
     commandedVelocity = 0.0;
 
     frontElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    frontElevatorMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     zeroSensor = new DigitalInput(4);
 
@@ -66,10 +69,10 @@ public class CoralElevator extends SubsystemBase {
     velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
     position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
 
-    backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
     frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
-
+    backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
     load = Math.max(backLoad, frontLoad);
+
     boolean hitHardStop = (velocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
     isAtZero = zeroDebouncer.calculate(!zeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
@@ -87,7 +90,7 @@ public class CoralElevator extends SubsystemBase {
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
     SmartDashboard.putNumber("[CORAL ELEVATOR] position", position);
     SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] command", commandedVelocity);
+    SmartDashboard.putNumber("[CORAL ELEVATOR] commanded velocity", commandedVelocity);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
   }
 
@@ -97,13 +100,13 @@ public class CoralElevator extends SubsystemBase {
 
   public void setZero(){
     position = 0.0;
-    backElevatorMotor.setPosition(0);
     frontElevatorMotor.setPosition(0);
+    backElevatorMotor.setPosition(0);
   }
 
   public void setVelocity(double velocity) {
     // TODO: Convert command internall from meters/second to internal commandedVelocity value using ratio, etc.
-    this.commandedVelocity = velocity;
+    commandedVelocity = velocity;
   }
 
   public boolean isCoralElevatorAtBottom(){
@@ -155,8 +158,8 @@ public class CoralElevator extends SubsystemBase {
     // TODO hardware error checking.
 
     //TODO consider changing brakemode (also test ungeared setup before gearing)
-    backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
     frontElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
 
     CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
     frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)

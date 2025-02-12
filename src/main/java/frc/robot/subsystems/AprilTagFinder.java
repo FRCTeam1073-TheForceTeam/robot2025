@@ -42,11 +42,13 @@ public class AprilTagFinder extends SubsystemBase
   public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
   public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
   //Camera height: 0.2159m, x and y: 0.264m
+
   public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));  // front left has the new mount
   public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
   public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(9.06203), 0)); // TODO: get numbas
   public final Transform3d bLCamTransform3d = new Transform3d(new Translation3d(-0.2925, -0.2925, 0.216), new Rotation3d(0, 0, 3*(Math.PI) / 4));
   public final Transform3d bRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -3*(Math.PI) / 4));
+  
   List<PhotonTrackedTarget> responseFL;
   List<PhotonTrackedTarget> responseFR;
   List<PhotonTrackedTarget> responseFC;

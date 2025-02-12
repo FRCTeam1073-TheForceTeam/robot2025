@@ -200,7 +200,7 @@ public class OI extends SubsystemBase
   }
 
   public double getOperatorLeftY() {
-    return MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
+    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getOperatorRightX() {
@@ -271,6 +271,14 @@ public class OI extends SubsystemBase
 
   public boolean getOperatorDPadRight(){
     return (operatorController.getPOV() == 90);
+  }
+
+  public boolean getOperatorLeftJoystickPress(){
+    return getOperatorRawButton(9);
+  }
+  
+  public boolean getOperatorRightJoystickPress(){
+    return getOperatorRawButton(10);
   }
 
   @Override

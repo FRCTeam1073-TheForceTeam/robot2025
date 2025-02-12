@@ -4,43 +4,50 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClimberClaw;
+import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.CoralElevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralElevatorTeleop extends Command {
-
+public class RaiseLift extends Command {
+  ClimberLift lift;
   OI oi;
-  CoralElevator elevator;
-  private double velocity;
-
-  /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
+  // TODO: make this 67
+  double targetPosition = 66.5;
+  /** Creates a new RaiseLift. */
+  public RaiseLift(ClimberLift lift, OI oi) {
+    this.lift = lift;
     this.oi = oi;
-    addRequirements(elevator);
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(lift);
   }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //elevator.setBrakeMode(false);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorLeftY() * 10.0;//TODO change controls
-    elevator.setVelocity(velocity);
+    if(lift.getPosition() < targetPosition){
+      double velocity = (targetPosition - lift.getPosition()) * 0.6;
+      velocity = MathUtil.clamp(velocity, 3, 12);
+      lift.setVelocity(velocity);
+    }
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    lift.setVelocity(0);
+    lift.setBrakeMode(true);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return lift.getPosition() >= targetPosition;
   }
 }

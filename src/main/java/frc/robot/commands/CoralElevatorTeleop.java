@@ -31,7 +31,7 @@ public class CoralElevatorTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorLeftY();//TODO change controls
+    velocity = oi.getOperatorLeftY() * 10.0;//TODO change controls
     elevator.setVelocity(velocity);
   }
   // Called once the command ends or is interrupted.

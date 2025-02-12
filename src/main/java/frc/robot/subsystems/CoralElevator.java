@@ -23,11 +23,11 @@ public class CoralElevator extends SubsystemBase {
   private final String kCANbus = "rio";
   private final double frontKP = 0.2;
   private final double frontKD = 0.01;
-  private final double frontKI = 0.0;
+  private final double frontKI = 0.005;
   private final double frontKV = 0.12; // Kraken kV value.
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  //private final double maxPosition = 5.0; // TODO: Set to maximum position.
+  private final double maxPosition = 42.0; // TODO: Set to maximum position.
 
 
   private double position;
@@ -49,7 +49,7 @@ public class CoralElevator extends SubsystemBase {
   public CoralElevator() {
     frontElevatorMotor = new TalonFX(20, kCANbus);
     backElevatorMotor = new TalonFX(19, kCANbus);
-    brakemode = false;
+    brakemode = true;
 
     commandedVelocity = 0.0;
 
@@ -81,7 +81,7 @@ public class CoralElevator extends SubsystemBase {
       if (commandedVelocity < 0.0) commandedVelocity = 0.0; // Velocity hard-limit at bottom of travel can only go up from here.
     }
 
-    //if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
+    if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
 
     frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
@@ -92,6 +92,7 @@ public class CoralElevator extends SubsystemBase {
     SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
     SmartDashboard.putNumber("[CORAL ELEVATOR] commanded velocity", commandedVelocity);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
+    SmartDashboard.putNumber("[CORAL ELEVATOR] load", load);
   }
 
   public double getPosition(){// where motor is
@@ -158,8 +159,8 @@ public class CoralElevator extends SubsystemBase {
     // TODO hardware error checking.
 
     //TODO consider changing brakemode (also test ungeared setup before gearing)
-    frontElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
-    backElevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    frontElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+    backElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
 
     CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
     frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)

@@ -76,7 +76,7 @@ public class AprilTagFinder extends SubsystemBase
     return responseFR;
   }
 
-  public List<PhotonTrackedTarget> getFCurrentTagData()
+  public List<PhotonTrackedTarget> getFCCurrentTagData()
   {
     return responseFC;
   }
@@ -236,7 +236,7 @@ public class AprilTagFinder extends SubsystemBase
     {
       SmartDashboard.putNumber("FC ID", -1);
     }
-    SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size());
+    SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size() + responseFC.size());
     if(getMeasurements().size() > 0) 
     {
       //SmartDashboard.putNumber("FL Measurement X", getMeasurements().get(0).pose.getX());

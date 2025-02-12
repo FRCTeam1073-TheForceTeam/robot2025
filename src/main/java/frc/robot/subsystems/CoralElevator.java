@@ -20,13 +20,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralElevator extends SubsystemBase {
   private final String kCANbus = "rio";
-  private final double frontKP = 0.15;
-  private final double frontKD = 0.02;
+  private final double frontKP = 0.2;
+  private final double frontKD = 0.01;
   private final double frontKI = 0.0;
   private final double frontKV = 0.12; // Kraken kV value.
 
-  private final double maxLoad = 40.0; // TODO: Tune max load.
-  private final double maxPosition = 5.0; // TODO: Set to maximum position.
+  private final double maxLoad = 60.0; // TODO: Tune max load.
+  //private final double maxPosition = 5.0; // TODO: Set to maximum position.
 
 
   private double position;
@@ -49,9 +49,11 @@ public class CoralElevator extends SubsystemBase {
     backElevatorMotor = new TalonFX(19, kCANbus);
     frontElevatorMotor = new TalonFX(20, kCANbus);
 
+    commandedVelocity = 0.0;
+
     frontElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
-    zeroSensor = new DigitalInput(4);// TODO: Change channel.
+    zeroSensor = new DigitalInput(4);
 
     configureHardware();
   }
@@ -61,22 +63,22 @@ public class CoralElevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // TODO: Need to use scale factors from ratio, etc. units need to be meters.
-    velocity = backElevatorMotor.getVelocity().refresh().getValueAsDouble();
-    position = backElevatorMotor.getPosition().refresh().getValueAsDouble();
+    velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
+    position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
 
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
     frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
 
     load = Math.max(backLoad, frontLoad);
-    boolean hitHardStop = (velocity < 0.0) && (load > maxLoad); // MOving down, peak load => reset.
-    isAtZero = zeroDebouncer.calculate(zeroSensor.get() | hitHardStop); // Compute debounced logical or.
+    boolean hitHardStop = (velocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
+    isAtZero = zeroDebouncer.calculate(!zeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
     if (isAtZero){
       setZero();
       if (commandedVelocity < 0.0) commandedVelocity = 0.0; // Velocity hard-limit at bottom of travel can only go up from here.
     }
 
-    if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
+    //if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
 
     frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
@@ -86,6 +88,7 @@ public class CoralElevator extends SubsystemBase {
     SmartDashboard.putNumber("[CORAL ELEVATOR] position", position);
     SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
     SmartDashboard.putNumber("[CORAL ELEVATOR] command", commandedVelocity);
+    SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
   }
 
   public double getPosition(){// where motor is
@@ -137,7 +140,8 @@ public class CoralElevator extends SubsystemBase {
     var frontElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
-    backElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
+    var backElevatorMotorConfig = new TalonFXConfiguration();
+    backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig);
      // Same config as other motor to start.
 
 
@@ -156,7 +160,7 @@ public class CoralElevator extends SubsystemBase {
 
     CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
     frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                            .withSupplyCurrentLimit(15)
+                            .withSupplyCurrentLimit(25)
                             .withSupplyCurrentLowerTime(0.25);
 
     frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);

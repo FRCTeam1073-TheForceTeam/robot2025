@@ -182,7 +182,7 @@ public class OI extends DiagnosticsSubsystem
   }
 
   public double getOperatorLeftY() {
-    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
+    return -3.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getOperatorRightX() {

@@ -28,7 +28,7 @@ public class ScoreCoral extends Command {
   public void execute() {
     if(endeffector.getHasCoral()){
       // TODO: test and change to desired velocity
-      endeffector.setVelocity(3);
+      endeffector.setVelocity(10);
     }
   }
 

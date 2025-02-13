@@ -26,7 +26,7 @@ public class LoadCoral extends Command {
   public void execute() {
     // TODO: change velocity to actual velocity
     if(!endeffector.getHasCoral()){
-      endeffector.setVelocity(3);
+      endeffector.setVelocity(10);
     }
   }
 

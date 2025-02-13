@@ -70,7 +70,7 @@ public class RobotContainer
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
   private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
   private final ScoreCoral m_scoreCoral = new ScoreCoral(m_coralEndeffector);
-  private final Lidar m_lidar = new Lidar();
+  //private final Lidar m_lidar = new Lidar();
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 

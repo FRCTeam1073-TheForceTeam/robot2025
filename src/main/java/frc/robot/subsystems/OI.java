@@ -196,18 +196,30 @@ public class OI extends SubsystemBase
   /** The following methods return quality-controlled values from the operator controller */
   public double getOperatorLeftX() {
     // "Clamping" the value makes sure that it's still between 1 and -1 even if we have added an offset to it
+    if(Math.abs(operatorController.getRawAxis(0)) < 0.1){
+      return 0.0;
+    }
     return MathUtil.clamp(operatorController.getRawAxis(0) - LEFT_X_ZERO, -1, 1);
   }
 
   public double getOperatorLeftY() {
+    if(Math.abs(operatorController.getRawAxis(1)) < 0.1){
+      return 0.0;
+    }
     return -1.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getOperatorRightX() {
+    if(Math.abs(operatorController.getRawAxis(4)) < 0.1){
+      return 0.0;
+    }
     return MathUtil.clamp(operatorController.getRawAxis(4) - RIGHT_X_ZERO, -1, 1);
   }
 
   public double getOperatorRightY() {
+    if(Math.abs(operatorController.getRawAxis(5)) < 0.1){
+      return 0.0;
+    }
     return -1.0 * MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
   }
 

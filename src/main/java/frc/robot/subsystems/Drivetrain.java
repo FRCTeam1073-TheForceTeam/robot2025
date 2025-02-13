@@ -60,7 +60,7 @@ public class Drivetrain extends SubsystemBase
     modulePositions = new SwerveModulePosition[4];
 
     //front left
-    SwerveModuleIDConfig moduleIDConfig = new SwerveModuleIDConfig(9, 5, 1);
+    SwerveModuleIDConfig moduleIDConfig = new SwerveModuleIDConfig(5, 6, 1);
 
     SwerveModuleConfig moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 0;
@@ -70,7 +70,7 @@ public class Drivetrain extends SubsystemBase
     modulePositions[0] = new SwerveModulePosition();
 
     //front right
-    moduleIDConfig = new SwerveModuleIDConfig(10, 6, 2);
+    moduleIDConfig = new SwerveModuleIDConfig(7, 8, 2);
 
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 1;
@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase
     modulePositions[1] = new SwerveModulePosition();
 
     //back left
-    moduleIDConfig = new SwerveModuleIDConfig(11, 7, 3);
+    moduleIDConfig = new SwerveModuleIDConfig(9, 10, 3);
 
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 2;
@@ -90,7 +90,7 @@ public class Drivetrain extends SubsystemBase
     modulePositions[2] = new SwerveModulePosition();
 
     //back right
-    moduleIDConfig = new SwerveModuleIDConfig(12, 8, 4);
+    moduleIDConfig = new SwerveModuleIDConfig(11, 12, 4);
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 3;
     moduleConfig.position = new Translation2d(-0.264, -0.264);

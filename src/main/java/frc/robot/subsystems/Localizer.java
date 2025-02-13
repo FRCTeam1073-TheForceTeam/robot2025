@@ -4,9 +4,11 @@ package frc.robot.subsystems;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -27,8 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.AprilTagFinder.VisionMeasurement;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
-public class Localizer extends SubsystemBase
-{
+public class Localizer extends SubsystemBase {
     private Drivetrain driveTrain;
     private SwerveDrivePoseEstimator estimator;
     private FieldMap fieldMap;
@@ -44,6 +45,9 @@ public class Localizer extends SubsystemBase
     private double timeGap = 0.5;
     private double linearSpeedThreshold = 2.5; // TODO: get actual numbers here
     private double angularSpeedThreshold = 1.5; // TODO: get actual numbers here
+    private Pose2d robot2DPose;   
+    private List<AprilTag> aprilTags = FieldMap.fieldMap.getTags();
+    private PhotonTrackedTarget aprilTag;
 
     //added a set transform from sensor to center of the robot to the sensor and can have multiple as needed
     private final Transform3d sensorTransform = new Transform3d();
@@ -137,8 +141,6 @@ public class Localizer extends SubsystemBase
     {
         angularSpeedThreshold = angularSpeed;
     }
-
-    
     
     @Override
     public void periodic()

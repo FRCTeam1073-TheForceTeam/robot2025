@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
 
@@ -109,31 +110,50 @@ public class AprilTagFinder extends SubsystemBase
   public ArrayList<VisionMeasurement> getMeasurements()
   {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
+    //return measurements;
     double range = 0;
+    PhotonTrackedTarget targetFL = null;
+    PhotonTrackedTarget targetFR = null;
+    PhotonTrackedTarget targetFC = null;
 
     // front left camera
-    // PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();
-    // if (targetFL != null && FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).isPresent())
-    // {
-    //   Pose3d robotPoseFL = PhotonUtils.estimateFieldToRobotAprilTag(targetFL.getBestCameraToTarget(),
-    //                                                                   FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).get(), 
-    //                                                                   fLCamTransform3d.inverse());
-    //   range = targetFL.bestCameraToTarget.getTranslation().getNorm();
-    //   measurements.add(new VisionMeasurement(robotPoseFL.toPose2d(), responseFLTimestamp, targetFL.getFiducialId(), range));
-    // }
+    //PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();  // if you don't do hasTargets() first it throws a fit
+    PhotonPipelineResult latestResultFL = frontLeftCam.getLatestResult();
+    if (latestResultFL.hasTargets()) {
+      targetFL = latestResultFL.getBestTarget();
+    }
     
-    // // front right cameras
-    // PhotonTrackedTarget targetFR = frontRightCam.getLatestResult().getBestTarget();
-    // if (targetFR != null && FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).isPresent())
-    // {
-    //   Pose3d robotPoseFR = PhotonUtils.estimateFieldToRobotAprilTag(targetFR.getBestCameraToTarget(),
-    //                                                                   FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).get(), 
-    //                                                                   fRCamTransform3d.inverse());
-    //   range = targetFR.bestCameraToTarget.getTranslation().getNorm();
-    //   measurements.add(new VisionMeasurement(robotPoseFR.toPose2d(), responseFRTimestamp, targetFR.getFiducialId(), range));
-    // }
+    if (targetFL != null && FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).isPresent())
+    {
+      Pose3d robotPoseFL = PhotonUtils.estimateFieldToRobotAprilTag(targetFL.getBestCameraToTarget(),
+                                                                      FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).get(), 
+                                                                      fLCamTransform3d.inverse());
+      range = targetFL.bestCameraToTarget.getTranslation().getNorm();
+      measurements.add(new VisionMeasurement(robotPoseFL.toPose2d(), responseFLTimestamp, targetFL.getFiducialId(), range));
+    }
+    
+    // front right cameras
+    //PhotonTrackedTarget targetFR = frontRightCam.getLatestResult()
+    PhotonPipelineResult latestResultFR = frontRightCam.getLatestResult();
+    if (latestResultFR.hasTargets()) {
+      targetFR = latestResultFR.getBestTarget();
+    }
 
-    PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
+    if (targetFR != null && FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).isPresent())
+    {
+      Pose3d robotPoseFR = PhotonUtils.estimateFieldToRobotAprilTag(targetFR.getBestCameraToTarget(),
+                                                                      FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).get(), 
+                                                                      fRCamTransform3d.inverse());
+      range = targetFR.bestCameraToTarget.getTranslation().getNorm();
+      measurements.add(new VisionMeasurement(robotPoseFR.toPose2d(), responseFRTimestamp, targetFR.getFiducialId(), range));
+    }
+
+    //PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
+    PhotonPipelineResult latestResultFC = frontCenterCam.getLatestResult();
+    if (latestResultFC.hasTargets()) {
+      targetFC = latestResultFC.getBestTarget();
+    }
+
     if (targetFC != null && FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetFC.getBestCameraToTarget(),
@@ -209,31 +229,38 @@ public class AprilTagFinder extends SubsystemBase
 
   @Override
   public void periodic() 
-  {
-    return; // TODO: fix whatever is wrong here 
-    // readTagData();  
+  { 
+    readTagData();  
 
-    // if(responseFL.size() > 0) 
-    // {
-    //   SmartDashboard.putNumber("FL ID", responseFL.get(0).getFiducialId());
-    // }
-    // else 
-    // {
-    //   SmartDashboard.putNumber("FL ID", -1);
-    // }
-    // if(responseFR.size() > 0) 
-    // {
-    //   SmartDashboard.putNumber("FR ID", responseFR.get(0).getFiducialId());
-    // }
-    // else 
-    // {
-    //   SmartDashboard.putNumber("FR ID", -1);
-    // }
-    // SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size());
-    // if(getMeasurements().size() > 0) 
-    // {
-    //   //SmartDashboard.putNumber("FL Measurement X", getMeasurements().get(0).pose.getX());
-    //   //SmartDashboard.putNumber("FL Measurement Y", getMeasurements().get(0).pose.getY());
-    // }
+    if(responseFL.size() > 0) 
+    {
+      SmartDashboard.putNumber("FL ID", responseFL.get(0).getFiducialId());
+    }
+    else 
+    {
+      SmartDashboard.putNumber("FL ID", -1);
+    }
+    if(responseFR.size() > 0) 
+    {
+      SmartDashboard.putNumber("FR ID", responseFR.get(0).getFiducialId());
+    }
+    else 
+    {
+      SmartDashboard.putNumber("FR ID", -1);
+    }
+    if(responseFC.size() > 0) 
+    {
+      SmartDashboard.putNumber("FC ID", responseFC.get(0).getFiducialId());
+    }
+    else 
+    {
+      SmartDashboard.putNumber("FC ID", -1);
+    }
+    SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size());
+    if(getMeasurements().size() > 0) 
+    {
+      //SmartDashboard.putNumber("FL Measurement X", getMeasurements().get(0).pose.getX());
+      //SmartDashboard.putNumber("FL Measurement Y", getMeasurements().get(0).pose.getY());
+    }
   }
 }

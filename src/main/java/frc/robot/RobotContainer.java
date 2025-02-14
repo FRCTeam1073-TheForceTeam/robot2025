@@ -16,9 +16,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
+import frc.robot.commands.CoralElevatorTeleop;
+import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.EngageClaw;
+import frc.robot.commands.LoadCoral;
+import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClaw;
+import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
@@ -28,6 +33,8 @@ import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
+import frc.robot.subsystems.CoralElevator;
+import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
@@ -47,6 +54,13 @@ public class RobotContainer
   private final ClimberLift m_climberLift = new ClimberLift();
   private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
   private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
+  private final CoralElevator m_coralElevator = new CoralElevator();
+  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
+  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator, m_OI);
+  private final CoralElevatorTeleop m_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
+  private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
+  private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
+  private final ScoreCoral m_scoreCoral = new ScoreCoral(m_coralEndeffector);
   private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
   private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift, m_OI);
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
@@ -78,6 +92,8 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
     CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, m_coralElevatorTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, m_coralEndeffectorTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -109,6 +125,14 @@ public class RobotContainer
       raiseLift.onTrue(m_raiseLift);
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
       engageClaw.onTrue(m_engageClaw);
+    Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
+      zeroElevator.onTrue(m_zeroElevator);
+    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
+      loadCoral.onTrue(m_loadCoral);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
+      scoreCoral.onTrue(m_scoreCoral);
+    Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
+      zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI));
   }
 
   public void autonomousInit()

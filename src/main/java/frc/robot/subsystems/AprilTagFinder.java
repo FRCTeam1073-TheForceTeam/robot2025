@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -44,18 +45,23 @@ public class AprilTagFinder extends SubsystemBase
 
   public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");
   public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
+  public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
+
   //Camera height: 0.2159m, x and y: 0.264m
-  public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.264,0.264, 0.2159), new Rotation3d(0, 0, (Math.PI) / 4));  // front left has the new mount
-  public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.264, -0.264, 0.2159), new Rotation3d(0, 0, -(Math.PI) / 12));
-  public final Transform3d bLCamTransform3d = new Transform3d(new Translation3d(-0264, -0.264, 0.2159), new Rotation3d(0, 0, 3*(Math.PI) / 4));
-  public final Transform3d bRCamTransform3d = new Transform3d(new Translation3d(0.264, -0.264, 0.2159), new Rotation3d(0, 0, -3*(Math.PI) / 4));
+  public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));
+  public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
+  public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(9.06203), 0));
+  public final Transform3d bLCamTransform3d = new Transform3d(new Translation3d(-0.2925, -0.2925, 0.216), new Rotation3d(0, 0, 3*(Math.PI) / 4));
+  public final Transform3d bRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -3*(Math.PI) / 4));
   List<PhotonTrackedTarget> responseFL;
   List<PhotonTrackedTarget> responseFR;
+  List<PhotonTrackedTarget> responseFC;
   List<PhotonTrackedTarget> responseBL;
   List<PhotonTrackedTarget> responseBR;
 
   double responseFLTimestamp;
   double responseFRTimestamp;
+  double responseFCTimestamp;
   double responseBLTimestamp;
   double responseBRTimestamp;
 
@@ -74,6 +80,11 @@ public class AprilTagFinder extends SubsystemBase
     return responseFR;
   }
 
+  public List<PhotonTrackedTarget> getFCCurrentTagData()
+  {
+    return responseFC;
+  }
+
   public List<PhotonTrackedTarget> getBLCurrentTagData() 
   {
     return responseBL;
@@ -89,10 +100,12 @@ public class AprilTagFinder extends SubsystemBase
     // TODO: use new method instead of getLatestResult()
     responseFL = frontLeftCam.getLatestResult().getTargets();
     responseFR = frontRightCam.getLatestResult().getTargets();
+    responseFC = frontCenterCam.getLatestResult().getTargets();
     //responseBL = backLeftCam.getLatestResult().getTargets();
     //responseBR = backRightCam.getLatestResult().getTargets();
     responseFLTimestamp = Timer.getFPGATimestamp() - frontLeftCam.getLatestResult().metadata.getLatencyMillis() / 1000.0;
     responseFRTimestamp = Timer.getFPGATimestamp() - frontRightCam.getLatestResult().metadata.getLatencyMillis() / 1000.0;
+    responseFCTimestamp = Timer.getFPGATimestamp() - frontCenterCam.getLatestResult().metadata.getLatencyMillis() / 1000.0;
     //responseBLTimestamp = Timer.getFPGATimestamp() - backLeftCam.getLatestResult().metadata.getLatencyMillis() / 1000.0;
     //responseBRTimestamp = Timer.getFPGATimestamp() - backRightCam.getLatestResult().metadata.getLatencyMillis() / 1000.0;
   }
@@ -100,10 +113,19 @@ public class AprilTagFinder extends SubsystemBase
   public ArrayList<VisionMeasurement> getMeasurements()
   {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
+    //return measurements;
     double range = 0;
+    PhotonTrackedTarget targetFL = null;
+    PhotonTrackedTarget targetFR = null;
+    PhotonTrackedTarget targetFC = null;
 
     // front left camera
-    PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();
+    //PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();  // if you don't do hasTargets() first it throws a fit
+    PhotonPipelineResult latestResultFL = frontLeftCam.getLatestResult();
+    if (latestResultFL.hasTargets()) {
+      targetFL = latestResultFL.getBestTarget();
+    }
+    
     if (targetFL != null && FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFL = PhotonUtils.estimateFieldToRobotAprilTag(targetFL.getBestCameraToTarget(),
@@ -114,7 +136,12 @@ public class AprilTagFinder extends SubsystemBase
     }
     
     // front right cameras
-    PhotonTrackedTarget targetFR = frontRightCam.getLatestResult().getBestTarget();
+    //PhotonTrackedTarget targetFR = frontRightCam.getLatestResult()
+    PhotonPipelineResult latestResultFR = frontRightCam.getLatestResult();
+    if (latestResultFR.hasTargets()) {
+      targetFR = latestResultFR.getBestTarget();
+    }
+
     if (targetFR != null && FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFR = PhotonUtils.estimateFieldToRobotAprilTag(targetFR.getBestCameraToTarget(),
@@ -124,10 +151,24 @@ public class AprilTagFinder extends SubsystemBase
       measurements.add(new VisionMeasurement(robotPoseFR.toPose2d(), responseFRTimestamp, targetFR.getFiducialId(), range));
     }
 
+    //PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
+    PhotonPipelineResult latestResultFC = frontCenterCam.getLatestResult();
+    if (latestResultFC.hasTargets()) {
+      targetFC = latestResultFC.getBestTarget();
+    }
+
+    if (targetFC != null && FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).isPresent())
+    {
+      Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetFC.getBestCameraToTarget(),
+                                                                      FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).get(), 
+                                                                      fCCamTransform3d.inverse());
+      range = targetFC.bestCameraToTarget.getTranslation().getNorm();
+      measurements.add(new VisionMeasurement(robotPoseFC.toPose2d(), responseFCTimestamp, targetFC.getFiducialId(), range));
+    }
+
     return measurements;
   }
 
-  
   public ArrayList<VisionMeasurement> getAllGoodMeasurements() // TODO: untested
   {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
@@ -165,6 +206,22 @@ public class AprilTagFinder extends SubsystemBase
                                                             fRCamTransform3d.inverse());
         range = targetsFR.get(i).bestCameraToTarget.getTranslation().getNorm();
         measurements.add(new VisionMeasurement(robotPoseFR.toPose2d(), responseFRTimestamp, targetsFR.get(i).getFiducialId(), range));
+      }
+    }
+
+    ArrayList<PhotonTrackedTarget> targetsFC = new ArrayList<>(frontCenterCam.getLatestResult().getTargets());
+    for (int i = 0; i < targetsFC.size(); i++)
+    {
+      if (targetsFC.get(i) != null && 
+          FieldMap.fieldMap.getTagPose(targetsFC.get(i).getFiducialId()).isPresent() &&
+          targetsFC.get(i).getPoseAmbiguity() < ambiguityThreshold && 
+          targetsFC.get(i).getPoseAmbiguity() != -1) 
+      {
+        Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetsFC.get(i).getBestCameraToTarget(),
+                                                            FieldMap.fieldMap.getTagPose(targetsFC.get(i).getFiducialId()).get(), 
+                                                            fCCamTransform3d.inverse());
+        range = targetsFC.get(i).bestCameraToTarget.getTranslation().getNorm();
+        measurements.add(new VisionMeasurement(robotPoseFC.toPose2d(), responseFCTimestamp, targetsFC.get(i).getFiducialId(), range));
       }
     }
 

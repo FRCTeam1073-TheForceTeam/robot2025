@@ -8,10 +8,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class OI extends DiagnosticsSubsystem
+public class OI extends SubsystemBase
 {
   // Declares our controller variable
   public static Joystick driverController;
@@ -40,12 +39,6 @@ public class OI extends DiagnosticsSubsystem
     operatorController = new Joystick(1);
     zeroDriverController();
     zeroOperatorController();
-  }
-
-  @Override
-  public boolean updateDiagnostics() { 
-    // TODO: Add proper diagnostics.
-    return false;
   }
 
   /** This method will be called once per scheduler run */

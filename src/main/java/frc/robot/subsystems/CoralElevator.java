@@ -35,7 +35,6 @@ public class CoralElevator extends SubsystemBase {
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 47.0; // TODO: Set to maximum position.
 
-
   private double position;
   private double velocity;
   private double backLoad;
@@ -88,7 +87,6 @@ public class CoralElevator extends SubsystemBase {
     }
 
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
-
 
     frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
 

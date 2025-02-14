@@ -21,12 +21,15 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Swerve #3 Drive Motor |  11    |   CANivore    |
 | Swerve #3 Steer Motor |  12    |   CANivore    |
 | Pigeon 2              |  13    |   CANivore    |
-| Lift Motor bottom     |  15    |   CANivore    |
-| Lift Motor top        |  16    |   CANivore    |
-| Claw Motor left       |  17    |   CANivore    |
-| Claw Motor right      |  18    |   CANivore    |
-| PDH                   |  36    |   CANivore    |
-
+| Lift Motor bottom     |  15    |   Rio         |
+| Lift Motor top        |  16    |   Rio         |
+| Claw Motor left       |  17    |   Rio         |
+| Claw Motor right      |  18    |   Rio         |
+| Elevator Motor left   |  19    |   Rio         |
+| Elevator Motor right  |  20    |   Rio         |
+| Endeffector Motor     |  21    |   Rio         |
+| LaserCAN              |  22    |   Rio         |
+| PDH                   |  36    |   Rio         |
 | Collector Motor       |   ?    | CANivore |
 | Lift Motor            |   ?    | CANivore |
 | Extend Motor          |   ?    | CANivore |

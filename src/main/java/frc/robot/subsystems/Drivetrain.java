@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.networktables.IntegerArraySubscriber;
 import edu.wpi.first.networktables.IntegerArrayTopic;
 import edu.wpi.first.networktables.PubSubOption;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -27,8 +26,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Drivetrain extends DiagnosticsSubsystem 
+public class Drivetrain extends SubsystemBase 
 {
   private final String kCANbus = "CANivore";
   private SwerveDriveKinematics kinematics;
@@ -60,40 +60,40 @@ public class Drivetrain extends DiagnosticsSubsystem
     modulePositions = new SwerveModulePosition[4];
 
     //front left
-    SwerveModuleIDConfig moduleIDConfig = new SwerveModuleIDConfig(5, 6, 1);
+    SwerveModuleIDConfig moduleIDConfig = new SwerveModuleIDConfig(9, 5, 1);
 
     SwerveModuleConfig moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 0;
-    moduleConfig.position = new Translation2d(0.289, 0.289);
+    moduleConfig.position = new Translation2d(0.264, 0.264);
 
     modules[0] = new SwerveModule(moduleConfig, moduleIDConfig);
     modulePositions[0] = new SwerveModulePosition();
 
     //front right
-    moduleIDConfig = new SwerveModuleIDConfig(7, 8, 2);
+    moduleIDConfig = new SwerveModuleIDConfig(10, 6, 2);
 
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 1;
-    moduleConfig.position = new Translation2d(0.289, -0.289);
+    moduleConfig.position = new Translation2d(0.264, -0.264);
 
     modules[1] = new SwerveModule(moduleConfig, moduleIDConfig);
     modulePositions[1] = new SwerveModulePosition();
 
     //back left
-    moduleIDConfig = new SwerveModuleIDConfig(9, 10, 3);
+    moduleIDConfig = new SwerveModuleIDConfig(11, 7, 3);
 
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 2;
-    moduleConfig.position = new Translation2d(-0.289, 0.289);
+    moduleConfig.position = new Translation2d(-0.264, 0.264);
 
     modules[2] = new SwerveModule(moduleConfig, moduleIDConfig);
     modulePositions[2] = new SwerveModulePosition();
 
     //back right
-    moduleIDConfig = new SwerveModuleIDConfig(11, 12, 4);
+    moduleIDConfig = new SwerveModuleIDConfig(12, 8, 4);
     moduleConfig = new SwerveModuleConfig(); // Gets preferences and defaults for fields.
     moduleConfig.moduleNumber = 3;
-    moduleConfig.position = new Translation2d(-0.289, -0.289);
+    moduleConfig.position = new Translation2d(-0.264, -0.264);
 
     modules[3] = new SwerveModule(moduleConfig, moduleIDConfig);
     modulePositions[3] = new SwerveModulePosition();
@@ -155,25 +155,6 @@ public class Drivetrain extends DiagnosticsSubsystem
     builder.addDoubleProperty("Target Omega", this::getTargetOmega, null);
     builder.addDoubleProperty("Pitch", this::getPitch, null);
     builder.addDoubleProperty("Roll", this::getRoll, null);
-  }
-
-  @Override
-  public boolean updateDiagnostics() {
-    String result = new String();
-    boolean isOK = true;
-
-    // Run the diagnostics for each ofthe modules and return value if something is wrong:
-    for (int mod = 0; mod < 4; ++mod) {
-      if (!modules[mod].updateDiagnostics())
-        return setDiagnosticsFeedback(modules[mod].getDiagnosticsDetails(), false);
-    }
-
-    StatusCode error = pigeon2.clearStickyFaults(0.5);
-    if (error != StatusCode.OK) {
-       return setDiagnosticsFeedback("Pigeon 2 Diagnostics Error", false);
-    }
-
-    return setDiagnosticsFeedback(result, isOK);
   }
 
   public void setDebugMode(boolean debug) 

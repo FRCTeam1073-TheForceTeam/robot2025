@@ -24,12 +24,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /** Add your docs here. */
 public class CoralEndeffector extends SubsystemBase {
     private final String kCANbus = "rio";
-    private final double leftKP = 0.15;
-    private final double leftKD = 0.02;
+    private final double leftKP = 0.2;
+    private final double leftKD = 0.0;
     private final double leftKI = 0.0;
     private final double leftKV = 0.12; // Kraken.
 
-    private final double minCoralDistance = 0.01;
+    private final double minCoralDistance = 0.03;
 
     private double velocity;
     private double position;
@@ -51,7 +51,7 @@ public class CoralEndeffector extends SubsystemBase {
         motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
         // Sensor setup:
-        laserCAN = new LaserCan(21);
+        laserCAN = new LaserCan(22);
 
 
         configureHardware();
@@ -95,7 +95,7 @@ public class CoralEndeffector extends SubsystemBase {
 
     public void setVelocity(double velocity){
         // TODO: Scale factors.
-        this.commandedVelocity = velocity;
+        this.commandedVelocity = -velocity;
     }
 
     public double getVelocity() {

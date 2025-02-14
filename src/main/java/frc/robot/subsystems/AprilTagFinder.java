@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
@@ -41,14 +42,14 @@ public class AprilTagFinder extends SubsystemBase
   public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");
   public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
   public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
-  //Camera height: 0.2159m, x and y: 0.264m
 
-  public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));  // front left has the new mount
+  //Camera height: 0.2159m, x and y: 0.264m
+  public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));
   public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
-  public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(9.06203), 0)); // TODO: get numbas
+  public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(9.06203), 0));
   public final Transform3d bLCamTransform3d = new Transform3d(new Translation3d(-0.2925, -0.2925, 0.216), new Rotation3d(0, 0, 3*(Math.PI) / 4));
   public final Transform3d bRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -3*(Math.PI) / 4));
-  
+
   List<PhotonTrackedTarget> responseFL;
   List<PhotonTrackedTarget> responseFR;
   List<PhotonTrackedTarget> responseFC;
@@ -109,10 +110,19 @@ public class AprilTagFinder extends SubsystemBase
   public ArrayList<VisionMeasurement> getMeasurements()
   {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
+    //return measurements;
     double range = 0;
+    PhotonTrackedTarget targetFL = null;
+    PhotonTrackedTarget targetFR = null;
+    PhotonTrackedTarget targetFC = null;
 
     // front left camera
-    PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();
+    //PhotonTrackedTarget targetFL = frontLeftCam.getLatestResult().getBestTarget();  // if you don't do hasTargets() first it throws a fit
+    PhotonPipelineResult latestResultFL = frontLeftCam.getLatestResult();
+    if (latestResultFL.hasTargets()) {
+      targetFL = latestResultFL.getBestTarget();
+    }
+    
     if (targetFL != null && FieldMap.fieldMap.getTagPose(targetFL.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFL = PhotonUtils.estimateFieldToRobotAprilTag(targetFL.getBestCameraToTarget(),
@@ -123,7 +133,12 @@ public class AprilTagFinder extends SubsystemBase
     }
     
     // front right cameras
-    PhotonTrackedTarget targetFR = frontRightCam.getLatestResult().getBestTarget();
+    //PhotonTrackedTarget targetFR = frontRightCam.getLatestResult()
+    PhotonPipelineResult latestResultFR = frontRightCam.getLatestResult();
+    if (latestResultFR.hasTargets()) {
+      targetFR = latestResultFR.getBestTarget();
+    }
+
     if (targetFR != null && FieldMap.fieldMap.getTagPose(targetFR.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFR = PhotonUtils.estimateFieldToRobotAprilTag(targetFR.getBestCameraToTarget(),
@@ -131,6 +146,12 @@ public class AprilTagFinder extends SubsystemBase
                                                                       fRCamTransform3d.inverse());
       range = targetFR.bestCameraToTarget.getTranslation().getNorm();
       measurements.add(new VisionMeasurement(robotPoseFR.toPose2d(), responseFRTimestamp, targetFR.getFiducialId(), range));
+    }
+
+    //PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
+    PhotonPipelineResult latestResultFC = frontCenterCam.getLatestResult();
+    if (latestResultFC.hasTargets()) {
+      targetFC = latestResultFC.getBestTarget();
     }
 
     PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
@@ -146,7 +167,6 @@ public class AprilTagFinder extends SubsystemBase
     return measurements;
   }
 
-  
   public ArrayList<VisionMeasurement> getAllGoodMeasurements() // TODO: untested
   {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();

@@ -30,4 +30,62 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Endeffector Motor     |  21    |   Rio         |
 | LaserCAN              |  22    |   Rio         |
 | PDH                   |  36    |   Rio         |
+| Collector Motor       |   ?    | CANivore |
+| Lift Motor            |   ?    | CANivore |
+| Extend Motor          |   ?    | CANivore |
+| Top Shooter Motor     |   ?    | CANivore |
+| Bottom Shooter Motor  |   ?    | CANivore |
+| Leader Feeder Motor   |   ?    | CANivore |
+| Follower Feeder Motor |   ?    | CANivore |
+| Pivot Motor           |   ?    | CANivore |
 
+## Driver Controller
+
+|  Button/Joystick | Function/Command               |
+|------------------|--------------------------------|
+|A                 |Reset odometry                  |
+|B                 |                                |
+|X                 |                                |
+|Y                 |                                |
+|LeftJoystick      |Translation                     |
+|RightJoystick     |Rotation                        |
+|LeftJoystickX     |                                |
+|RightJoystickX    |                                |
+|PressLeftJoystick |                                |
+|PressRightJoystick|                                |
+|DPadUp            |Centered on Apriltag            |
+|DPadDown          |                                |
+|DPadLeft          |Apriltag offset for left branch |
+|DPadRight         |Apriltag offset for right branch|
+|LeftBumper        |Parking break                   |
+|RightBumper       |Field-centric/robot-centric     |
+|LeftTrigger       |Increase speed                  |
+|RightTrigger      |Increase speed                  |
+|View Button       |Zero heading                    |
+|Menu Button       |                                |
+
+
+## Operator Controller
+
+|  Button/Joystick | Function/Command         |
+|------------------|--------------------------|
+|A                 |Raise Lift to max height  |
+|B                 |Zero Claw                 |
+|X                 |Load Coral                |
+|Y                 |Score Coral               |
+|LeftJoystickY     |Raise Elevator            |
+|RightJoystickY    |Raise Lift                |
+|LeftJoystickX     |                          |
+|RightJoystickX    |                          |
+|PressLeftJoystick |Zero Elevator             |
+|PressRightJoystick|Zero Claw & Lift          |
+|DPadUp            |                          |
+|DPadDown          |Elevator Branch Level 3   |
+|DPadLeft          |                          |
+|DPadRight         |Elevator Branch Level 2   |
+|LeftBumper        |                          |
+|RightBumper       |                          |
+|LeftTrigger       |Coral Endeffector Teleop  |
+|RightTrigger      |                          |
+|View Button       |                          |
+|Menu Button       |                          |

@@ -146,6 +146,10 @@ public class OI extends SubsystemBase
     return aDriverButtonDebouncer.calculate(driverController.getRawButton(1));
   }
 
+  public boolean getDriverViewButton(){
+    return aDriverButtonDebouncer.calculate(driverController.getRawButton(7));
+  }
+
   public boolean getDriverBButton(){
     return bDriverButtonDebouncer.calculate(driverController.getRawButton(2));
   }
@@ -195,19 +199,31 @@ public class OI extends SubsystemBase
 
   /** The following methods return quality-controlled values from the operator controller */
   public double getOperatorLeftX() {
+    if(Math.abs(operatorController.getRawAxis(0)) < 0.1){
+      return 0.0;
+    }
     // "Clamping" the value makes sure that it's still between 1 and -1 even if we have added an offset to it
     return MathUtil.clamp(operatorController.getRawAxis(0) - LEFT_X_ZERO, -1, 1);
   }
 
   public double getOperatorLeftY() {
-    return MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
+    if(Math.abs(operatorController.getRawAxis(1)) < 0.1){
+      return 0.0;
+    }
+    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getOperatorRightX() {
+    if(Math.abs(operatorController.getRawAxis(4)) < 0.1){
+      return 0.0;
+    }
     return MathUtil.clamp(operatorController.getRawAxis(4) - RIGHT_X_ZERO, -1, 1);
   }
 
   public double getOperatorRightY() {
+    if(Math.abs(operatorController.getRawAxis(5)) < 0.1){
+      return 0.0;
+    }
     return -1.0 * MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
   }
 
@@ -271,6 +287,14 @@ public class OI extends SubsystemBase
 
   public boolean getOperatorDPadRight(){
     return (operatorController.getPOV() == 90);
+  }
+
+  public boolean getOperatorLeftJoystickPress(){
+    return getOperatorRawButton(9);
+  }
+
+  public boolean getOperatorRightJoystickPress(){
+    return getOperatorRawButton(10);
   }
 
   @Override

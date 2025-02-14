@@ -4,36 +4,51 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.CoralElevator;
+import frc.robot.subsystems.OI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralElevatorTeleop extends Command {
-
-  OI oi;
+public class CoralElevatorToHeight extends Command {
   CoralElevator elevator;
-  private double velocity;
-
-  /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
-    // Use addRequirements() here to declare subsystem dependencies.
+  OI oi;
+  int branchLevel;
+  double velocity;
+  double targetHeight = 0.0;
+  /** Creates a new CoralElevatorToHeight. */
+  public CoralElevatorToHeight(CoralElevator elevator, OI oi, int branchLevel) {
     this.elevator = elevator;
     this.oi = oi;
+    this.branchLevel = branchLevel;
+    
+    if(branchLevel == 2){
+      targetHeight = 17.3;
+    }
+    else if (branchLevel == 3){
+      targetHeight = 28.2;
+    }
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //elevator.setBrakeMode(false);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorLeftY() * 12.0;//TODO change controls
+    velocity = (targetHeight - elevator.getPosition()) * 0.6;
+    if(targetHeight > elevator.getPosition()){
+      velocity = MathUtil.clamp(velocity, 3, 12);
+    }
+    else{
+      velocity = MathUtil.clamp(velocity, -12, -3);  
+    }
     elevator.setVelocity(velocity);
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
@@ -41,6 +56,6 @@ public class CoralElevatorTeleop extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
   }
 }

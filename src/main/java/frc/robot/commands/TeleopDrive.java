@@ -149,7 +149,7 @@ public class TeleopDrive extends Command
     
     
     // Allow driver to zero the drive subsystem heading for field-centric control.
-    if(m_OI.getDriverMenuButton())
+    if(m_OI.getDriverViewButton())
     {
       drivetrain.zeroHeading();
     }

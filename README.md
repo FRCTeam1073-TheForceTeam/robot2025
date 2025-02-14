@@ -36,6 +36,32 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Follower Feeder Motor |   ?    | CANivore |
 | Pivot Motor           |   ?    | CANivore |
 
+## Driver Controller
+
+|  Button/Joystick | Function/Command               |
+|------------------|--------------------------------|
+|A                 |Reset odometry                  |
+|B                 |                                |
+|X                 |                                |
+|Y                 |                                |
+|LeftJoystick      |Translation                     |
+|RightJoystick     |Rotation                        |
+|LeftJoystickX     |                                |
+|RightJoystickX    |                                |
+|PressLeftJoystick |                                |
+|PressRightJoystick|                                |
+|DPadUp            |Centered on Apriltag            |
+|DPadDown          |                                |
+|DPadLeft          |Apriltag offset for left branch |
+|DPadRight         |Apriltag offset for right branch|
+|LeftBumper        |Parking break                   |
+|RightBumper       |Field-centric/robot-centric     |
+|LeftTrigger       |Increase speed                  |
+|RightTrigger      |Increase speed                  |
+|View Button       |Zero heading                    |
+|Menu Button       |                                |
+
+
 ## Operator Controller
 
 |  Button/Joystick | Function/Command         |

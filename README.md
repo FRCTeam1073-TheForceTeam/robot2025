@@ -35,3 +35,28 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Leader Feeder Motor   |   ?    | CANivore |
 | Follower Feeder Motor |   ?    | CANivore |
 | Pivot Motor           |   ?    | CANivore |
+
+## Operator Controller
+
+|  Button/Joystick | Function/Command         |
+|------------------|--------------------------|
+|A                 |Raise Lift to max height  |
+|B                 |Zero Claw                 |
+|X                 |Load Coral                |
+|Y                 |Score Coral               |
+|LeftJoystickY     |Raise Elevator            |
+|RightJoystickY    |Raise Lift                |
+|LeftJoystickX     |                          |
+|RightJoystickX    |                          |
+|PressLeftJoystick |Zero Elevator             |
+|PressRightJoystick|Zero Claw & Lift          |
+|DPadUp            |                          |
+|DPadDown          |Elevator Branch Level 3   |
+|DPadLeft          |                          |
+|DPadRight         |Elevator Branch Level 2   |
+|LeftBumper        |                          |
+|RightBumper       |                          |
+|LeftTrigger       |Coral Endeffector Teleop  |
+|RightTrigger      |                          |
+|View Button       |                          |
+|Menu Button       |                          |

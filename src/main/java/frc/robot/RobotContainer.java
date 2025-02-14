@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.CancelLoadCoral;
 import frc.robot.commands.ClimberClawTeleop;
 import frc.robot.commands.ClimberLiftTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
@@ -23,6 +24,7 @@ import frc.robot.commands.EngageClaw;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.TroughScoreCoral;
 import frc.robot.commands.ZeroClaw;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.ZeroLift;
@@ -69,6 +71,8 @@ public class RobotContainer
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
   private final CoralElevatorToHeight m_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
   private final CoralElevatorToHeight m_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
+  private final TroughScoreCoral m_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
+  private final CancelLoadCoral m_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -140,6 +144,10 @@ public class RobotContainer
       elevatorL2.onTrue(m_coralElevatorToL2);
     Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
       elevatorL3.onTrue(m_coralElevatorToL3);
+    Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
+      troughScore.onTrue(m_troughScoreCoral);
+    Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
+      cancelLoadCoral.onTrue(m_cancelLoadCoral);
   }
 
   public void autonomousInit()

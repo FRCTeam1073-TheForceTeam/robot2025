@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FieldMap
 {
-    public static final AprilTagFieldLayout fieldMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    // TODO: AprilTagFields has two flavors of reefscape map: andymark and welded. which one do you need? who knows!
+    // apparently for the 2/15 event it's welded. after that all bets are off.
+    public static final AprilTagFieldLayout fieldMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     public int getBestAprilTagID(Pose2d robotPose) 
     {

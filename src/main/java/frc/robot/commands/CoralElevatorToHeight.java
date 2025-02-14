@@ -13,14 +13,21 @@ import frc.robot.subsystems.OI;
 public class CoralElevatorToHeight extends Command {
   CoralElevator elevator;
   OI oi;
-  double targetHeight;
+  int branchLevel;
   double velocity;
+  double targetHeight = 0.0;
   /** Creates a new CoralElevatorToHeight. */
-  public CoralElevatorToHeight(CoralElevator elevator, OI oi, double targetHeight) {
+  public CoralElevatorToHeight(CoralElevator elevator, OI oi, int branchLevel) {
     this.elevator = elevator;
     this.oi = oi;
-    this.targetHeight = targetHeight;
-  
+    this.branchLevel = branchLevel;
+    
+    if(branchLevel == 2){
+      targetHeight = 17.3;
+    }
+    else if (branchLevel == 3){
+      targetHeight = 28.2;
+    }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
@@ -33,7 +40,12 @@ public class CoralElevatorToHeight extends Command {
   @Override
   public void execute() {
     velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    velocity = MathUtil.clamp(velocity, 3, 12);
+    if(targetHeight > elevator.getPosition()){
+      velocity = MathUtil.clamp(velocity, 3, 12);
+    }
+    else{
+      velocity = MathUtil.clamp(velocity, -12, -3);  
+    }
     elevator.setVelocity(velocity);
   }
 
@@ -44,6 +56,6 @@ public class CoralElevatorToHeight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
   }
 }

@@ -15,10 +15,10 @@ import frc.robot.subsystems.OI;
 /** Add your docs here. */
 public class ZeroClawAndLift {
     
-    public static Command create(ClimberClaw claw, ClimberLift lift, OI oi){
+    public static Command create(ClimberClaw claw, ClimberLift lift){
         return new ParallelCommandGroup(
-            new ZeroClaw(claw, oi),
-            new ZeroLift(lift, oi)
+            new ZeroClaw(claw),
+            new ZeroLift(lift)
             );
     }
 }

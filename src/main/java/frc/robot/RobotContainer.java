@@ -143,9 +143,9 @@ public class RobotContainer
     Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
       zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI));
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
-      elevatorL2.onTrue(m_coralElevatorToL2);
+      elevatorL2.whileTrue(m_coralElevatorToL2);
     Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
-      elevatorL3.onTrue(m_coralElevatorToL3);
+      elevatorL3.whileTrue(m_coralElevatorToL3);
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.onTrue(m_troughScoreCoral);
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);

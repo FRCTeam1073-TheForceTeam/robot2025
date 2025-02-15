@@ -9,9 +9,13 @@ import java.util.List;
 
 import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -49,7 +53,6 @@ public class AprilTagFinder extends SubsystemBase
   public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(9.06203), 0));
   public final Transform3d bLCamTransform3d = new Transform3d(new Translation3d(-0.2925, -0.2925, 0.216), new Rotation3d(0, 0, 3*(Math.PI) / 4));
   public final Transform3d bRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -3*(Math.PI) / 4));
-
   List<PhotonTrackedTarget> responseFL;
   List<PhotonTrackedTarget> responseFR;
   List<PhotonTrackedTarget> responseFC;
@@ -77,7 +80,7 @@ public class AprilTagFinder extends SubsystemBase
     return responseFR;
   }
 
-  public List<PhotonTrackedTarget> getFCurrentTagData()
+  public List<PhotonTrackedTarget> getFCCurrentTagData()
   {
     return responseFC;
   }
@@ -154,7 +157,6 @@ public class AprilTagFinder extends SubsystemBase
       targetFC = latestResultFC.getBestTarget();
     }
 
-    PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
     if (targetFC != null && FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).isPresent())
     {
       Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetFC.getBestCameraToTarget(),
@@ -226,7 +228,6 @@ public class AprilTagFinder extends SubsystemBase
     return measurements;
   }
 
-
   @Override
   public void periodic() 
   { 
@@ -247,14 +248,6 @@ public class AprilTagFinder extends SubsystemBase
     else 
     {
       SmartDashboard.putNumber("FR ID", -1);
-    }
-    if(responseFC.size() > 0) 
-    {
-      SmartDashboard.putNumber("FC ID", responseFC.get(0).getFiducialId());
-    }
-    else 
-    {
-      SmartDashboard.putNumber("FC ID", -1);
     }
     SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size());
     if(getMeasurements().size() > 0) 

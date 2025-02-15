@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
@@ -34,8 +36,10 @@ public class TeleopDrive extends Command
   boolean lastParkingBreakButton = false;
   boolean lastFieldCentricButton = true;
   boolean pointAtTarget;
+  boolean isRed;
   AprilTagFinder aprilTagFinder;
   Localizer localizer;
+  int allianceSign = 1;
 
   PIDController snapPidProfile;
 
@@ -53,11 +57,12 @@ public class TeleopDrive extends Command
 
 
   /** Creates a new Teleop. */
-  public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer) 
+  public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer, boolean isRed) 
   {
   
     this.drivetrain = drivetrain;
     this.localizer = localizer;
+    
     m_OI = oi;
     fieldCentric = true;
     startAngle = drivetrain.getHeadingDegrees();
@@ -84,6 +89,22 @@ public class TeleopDrive extends Command
   @Override
   public void execute()
   {
+    try{
+      isRed = DriverStation.getAlliance().get() == Alliance.Red; 
+    }
+    catch(Exception e) {
+      isRed = false;
+    }
+    
+
+    if (isRed)
+    {
+      allianceSign = 1;
+    }
+    else
+    {
+      allianceSign = -1;
+    }
     leftY = m_OI.getDriverTranslateY();
     leftX = m_OI.getDriverTranslateX();
     rightX = m_OI.getDriverRotate();
@@ -122,9 +143,9 @@ public class TeleopDrive extends Command
         if(Math.abs(leftX) < .15) {leftX = 0;}
         if(Math.abs(rightX) < .15) {rightX = 0;}
 
-        vx = MathUtil.clamp((-leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        vy = MathUtil.clamp((-leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        w = MathUtil.clamp(-(rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
+        vx = MathUtil.clamp((allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
+        vy = MathUtil.clamp((allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
+        w = MathUtil.clamp((allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
         if(fieldCentric){

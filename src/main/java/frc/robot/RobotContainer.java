@@ -32,6 +32,7 @@ import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.commands.Autos.GenericL0;
 import frc.robot.commands.Autos.RaiseLift;
 import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
@@ -65,8 +66,8 @@ public class RobotContainer
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
   private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
   private final ScoreCoral m_scoreCoral = new ScoreCoral(m_coralEndeffector);
-  private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw, m_OI);
-  private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift, m_OI);
+  private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw);
+  private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift);
   private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
   private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
@@ -90,6 +91,7 @@ public class RobotContainer
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
   private static final String noLevelAuto = "No Level";
+  private static final String level0 = "Level 0";
   private static final String level1 = "Level 1";
   private static final String level2 = "Level 2";
   private static final String level3 = "Level 3";
@@ -117,6 +119,7 @@ public class RobotContainer
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
     m_levelChooser.addOption("Test Auto", testLevel);
+    m_levelChooser.addOption("Level 0", level0);
     m_levelChooser.addOption("Level 1", level1);
     m_levelChooser.addOption("Level 2", level2);
     m_levelChooser.addOption("Level 3", level3);
@@ -141,7 +144,7 @@ public class RobotContainer
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(m_scoreCoral);
     Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
-      zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI));
+      zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
       elevatorL2.whileTrue(m_coralElevatorToL2);
     Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
@@ -168,6 +171,9 @@ public class RobotContainer
       case noLevelAuto:
         level = -1;
         break;
+      case level0:
+        level = 0;
+        break;
       case level1:
         level = 1;
         break;
@@ -192,15 +198,15 @@ public class RobotContainer
     switch(m_positionChooser.getSelected())
     {
       case zeroClawAndLift:
-        return ZeroClawAndLift.create(m_climberClaw, m_climberLift, m_OI);
+        return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
       case noPositionAuto:
         return null;
       case leftAuto:
-        return AutoLeftStart.create(level, isRed, m_drivetrain);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
       case rightAuto:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
       case centerAuto:
-        return AutoCenterStart.create(level, isRed, m_drivetrain);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
       default:
         return null;
     }

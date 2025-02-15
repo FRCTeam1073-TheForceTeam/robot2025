@@ -12,12 +12,10 @@ import frc.robot.subsystems.ClimberClaw;
 public class ZeroClaw extends Command {
 
   ClimberClaw claw;
-  OI oi;
 
   /** Creates a new ZeroClaw. */
-  public ZeroClaw(ClimberClaw claw, OI oi) {
+  public ZeroClaw(ClimberClaw claw) {
     this.claw = claw;
-    this.oi = oi;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(claw);
   }

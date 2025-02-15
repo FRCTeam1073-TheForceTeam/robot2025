@@ -11,12 +11,10 @@ import frc.robot.subsystems.OI;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ZeroLift extends Command {
   ClimberLift lift;
-  OI oi;
   /** Creates a new ZeroLift. */
-  public ZeroLift(ClimberLift lift, OI oi) {
+  public ZeroLift(ClimberLift lift) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.lift = lift;
-    this.oi = oi;
     addRequirements(lift);
   }
 

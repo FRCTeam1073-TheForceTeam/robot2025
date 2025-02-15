@@ -174,10 +174,10 @@ public class DrivePath extends Command
   public void end(boolean interrupted) 
   {
     // Set our schema output to full stop.
-    for (int i = 0; i < 999; i++)
-    {
-      System.out.println("AAAAAAAAAAAAAA");
-    }
+    // for (int i = 0; i < 999; i++)
+    // {
+    //   System.out.println("AAAAAAAAAAAAAA");
+    // }
     drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(0, 0, 0));
   }
 

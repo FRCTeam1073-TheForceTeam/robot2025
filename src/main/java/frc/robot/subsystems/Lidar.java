@@ -296,16 +296,16 @@ public class Lidar extends DiagnosticsSubsystem {
         return null;
     }
 
-    public void moveToLine(double[] line){
-        /*1. calculate slope of line detected by lidar */
-        lidarSlope = -line[0]/line[1];
-        /* 2. Find arctan of the difference between their slopes - angle the robot needs to move */
-        angleToRotate = Math.atan(lidarSlope);
-        /* 3. rotate the robot that to that set angle*/
-        thetaVelocity = MathUtil.clamp(thetaController.calculate(drivetrain.getWrappedHeadingRadians(), drivetrain.getWrappedHeadingRadians() + angleToRotate), -2.0, 2.0);
-        drivetrain.setTargetChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, thetaVelocity, new Rotation2d(drivetrain.getWrappedHeadingRadians())));
-        // pass in current x/y and pose
-    }
+    // public void moveToLine(double[] line){
+    //     /*1. calculate slope of line detected by lidar */
+    //     lidarSlope = -line[0]/line[1];
+    //     /* 2. Find arctan of the difference between their slopes - angle the robot needs to move */
+    //     angleToRotate = Math.atan(lidarSlope);
+    //     /* 3. rotate the robot that to that set angle*/
+    //     thetaVelocity = MathUtil.clamp(thetaController.calculate(drivetrain.getWrappedHeadingRadians(), drivetrain.getWrappedHeadingRadians() + angleToRotate), -2.0, 2.0);
+    //     drivetrain.setTargetChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, thetaVelocity, new Rotation2d(drivetrain.getWrappedHeadingRadians())));
+    //     // pass in current x/y and pose
+    // }
 
     public ArrayList<Scan> getLidarArray(){
         if(writeToOne){

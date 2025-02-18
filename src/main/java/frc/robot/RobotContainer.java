@@ -57,7 +57,7 @@ public class RobotContainer
   private final Lidar m_lidar = new Lidar(m_drivetrain);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
-  private final LidarAlign m_lidarAlign = new LidarAlign(m_lidar);
+  private final LidarAlign m_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private boolean isRed;
   private int level;

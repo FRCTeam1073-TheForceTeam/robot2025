@@ -73,6 +73,7 @@ public class RobotContainer
   private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
   private final CoralElevatorToHeight m_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
   private final CoralElevatorToHeight m_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
+  private final CoralElevatorToHeight m_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, m_OI, 4);
   private final TroughScoreCoral m_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
   private final CancelLoadCoral m_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
@@ -149,6 +150,8 @@ public class RobotContainer
       elevatorL2.whileTrue(m_coralElevatorToL2);
     Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
       elevatorL3.whileTrue(m_coralElevatorToL3);
+    Trigger elevatorL4 = new Trigger(m_OI :: getOperatorDPadLeft);
+      elevatorL4.whileTrue(m_coralElevatorToL4);
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.onTrue(m_troughScoreCoral);
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);

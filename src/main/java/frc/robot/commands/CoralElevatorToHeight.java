@@ -21,8 +21,11 @@ public class CoralElevatorToHeight extends Command {
     this.elevator = elevator;
     this.oi = oi;
     this.branchLevel = branchLevel;
-    
-    if(branchLevel == 2){
+
+    if (branchLevel == 4){
+      targetHeight = 45.2;
+    }
+    else if (branchLevel == 2){
       targetHeight = 17.3;
     }
     else if (branchLevel == 3){
@@ -39,12 +42,12 @@ public class CoralElevatorToHeight extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = (targetHeight - elevator.getPosition()) * 0.6;
+    velocity = (targetHeight - elevator.getPosition()) * 0.8;
     if(targetHeight > elevator.getPosition()){
-      velocity = MathUtil.clamp(velocity, 3, 12);
+      velocity = MathUtil.clamp(velocity, 5, 12);
     }
     else{
-      velocity = MathUtil.clamp(velocity, -12, -3);  
+      velocity = MathUtil.clamp(velocity, -12, -5);  
     }
     elevator.setVelocity(velocity);
   }
@@ -56,6 +59,6 @@ public class CoralElevatorToHeight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
+    return Math.abs(elevator.getPosition() - targetHeight) < (0.0075 * targetHeight);
   }
 }

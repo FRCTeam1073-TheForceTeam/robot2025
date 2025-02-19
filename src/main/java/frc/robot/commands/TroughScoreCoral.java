@@ -15,7 +15,7 @@ public class TroughScoreCoral extends Command {
   CoralEndeffector endeffector;
   CoralElevator elevator;
   double velocity;
-  double targetHeight = 12.8;
+  double targetHeight = 10.98;
   // height 12.8
   public TroughScoreCoral(CoralEndeffector coralEndeffector, CoralElevator coralElevator) {
     endeffector = coralEndeffector;
@@ -31,12 +31,12 @@ public class TroughScoreCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = (targetHeight - elevator.getPosition()) * 0.6;
+    velocity = (targetHeight - elevator.getPosition()) * 0.8;
     if(targetHeight > elevator.getPosition()){
-      velocity = MathUtil.clamp(velocity, 3, 12);
+      velocity = MathUtil.clamp(velocity, 5, 12);
     }
     else{
-      velocity = MathUtil.clamp(velocity, -12, -3);  
+      velocity = MathUtil.clamp(velocity, -12, -5);  
     }
     elevator.setVelocity(velocity);
 

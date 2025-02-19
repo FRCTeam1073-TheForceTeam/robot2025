@@ -42,7 +42,7 @@ public class CoralElevatorToHeight extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = (targetHeight - elevator.getPosition()) * 0.8;
+    velocity = (targetHeight - elevator.getPosition()) * 0.9;
     if(targetHeight > elevator.getPosition()){
       velocity = MathUtil.clamp(velocity, 5, 12);
     }

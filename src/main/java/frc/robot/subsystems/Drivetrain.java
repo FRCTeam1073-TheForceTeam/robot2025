@@ -111,7 +111,7 @@ public class Drivetrain extends DiagnosticsSubsystem
     modules[1].samplePosition(modulePositions[1]);
     modules[2].samplePosition(modulePositions[2]);
     modules[3].samplePosition(modulePositions[3]);
-    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getHeadingDegrees()), modulePositions, new Pose2d(0,0,new Rotation2d(Math.PI)));
+    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getGyroHeadingDegrees()), modulePositions, new Pose2d(0,0,new Rotation2d(0)));
 
     // Configure maximum linear speed for limiting:
     maximumLinearSpeed = 3.5;
@@ -148,8 +148,9 @@ public class Drivetrain extends DiagnosticsSubsystem
     builder.addBooleanProperty("ParkingBrake", this::getParkingBrake, null);
     builder.addDoubleProperty("Odo X", this::getOdometryX, null);
     builder.addDoubleProperty("Odo Y", this::getOdometryY, null);
-    builder.addDoubleProperty("Odo Heading(DEG)", this::getHeadingDegrees, null);
-    builder.addDoubleProperty("Odo Wrapped Heading", this::getWrappedHeadingDegrees, null);
+    builder.addDoubleProperty("Odo Theta(RAD)", this::getOdometryThetaRadians, null);
+    builder.addDoubleProperty("Odo Gyro Heading(DEG)", this::getGyroHeadingDegrees, null);
+    builder.addDoubleProperty("Odo Gyro Wrapped Heading", this::getWrappedGyroHeadingDegrees, null);
     builder.addDoubleProperty("Target Vx", this::getTargetVx, null);
     builder.addDoubleProperty("Target Vy", this::getTargetVy, null);
     builder.addDoubleProperty("Target Omega", this::getTargetOmega, null);
@@ -182,25 +183,25 @@ public class Drivetrain extends DiagnosticsSubsystem
   }
 
   //Returns IMU heading in degrees
-  public double getHeadingDegrees() 
+  public double getGyroHeadingDegrees() 
   {
     return pigeon2.getYaw().refresh().getValueAsDouble();
   }
 
-  public double getHeadingRadians()
+  public double getGyroHeadingRadians()
   {
-    return getHeadingDegrees() * Math.PI / 180.0;
+    return getGyroHeadingDegrees() * Math.PI / 180.0;
   }
 
   // Wraps the heading in degrees:
-  public double getWrappedHeadingDegrees()
+  public double getWrappedGyroHeadingDegrees()
   {
-    return MathUtils.wrapAngleDegrees(getHeadingDegrees());
+    return MathUtils.wrapAngleDegrees(getGyroHeadingDegrees());
   }
 
-  public double getWrappedHeadingRadians()
+  public double getWrappedGyroHeadingRadians()
   {
-    return MathUtils.wrapAngleRadians(getHeadingDegrees() * Math.PI / 180);
+    return MathUtils.wrapAngleRadians(getGyroHeadingDegrees() * Math.PI / 180);
   }
 
   public double getPitch()
@@ -270,7 +271,7 @@ public class Drivetrain extends DiagnosticsSubsystem
     modules[2].samplePosition(modulePositions[2]);
     modules[3].samplePosition(modulePositions[3]);
     
-    odometry.update(Rotation2d.fromDegrees(getHeadingDegrees()), modulePositions);
+    odometry.update(Rotation2d.fromDegrees(getGyroHeadingDegrees()), modulePositions);
   }
 
   public SwerveModulePosition[] getSwerveModulePositions()
@@ -280,12 +281,12 @@ public class Drivetrain extends DiagnosticsSubsystem
 
   public void resetOdometry(Pose2d where)
   {
-    odometry.resetPosition(Rotation2d.fromDegrees(getHeadingDegrees()), modulePositions, where);
+    odometry.resetPosition(Rotation2d.fromDegrees(getGyroHeadingDegrees()), modulePositions, where);
   }
 
   public Pose2d getOdometry()
   {
-    return new Pose2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromDegrees(MathUtils.wrapAngleDegrees(getHeadingDegrees())));
+    return new Pose2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromRadians(MathUtils.wrapAngleRadians(getOdometryThetaRadians())));
   }
 
   public double getOdometryX(){
@@ -296,12 +297,17 @@ public class Drivetrain extends DiagnosticsSubsystem
     return odometry.getPoseMeters().getY();
   }
 
+  public double getOdometryThetaRadians()
+  {
+    return odometry.getPoseMeters().getRotation().getRadians();
+  }
+
   public Pose3d get3dOdometry()
   {
     // return odometry position as a pose 3d
     Pose2d odo = getOdometry();
     // TODO: use internal roll and pitch methods later
-    return new Pose3d(odo.getX(), odo.getY(), 0.0, new Rotation3d(getRoll(), getPitch(), getHeadingDegrees()));
+    return new Pose3d(odo.getX(), odo.getY(), 0.0, new Rotation3d(getRoll(), getPitch(), getOdometryThetaRadians()));
   }
   
   @Override
@@ -326,12 +332,6 @@ public class Drivetrain extends DiagnosticsSubsystem
     }
    
     updateOdometry();
-
-    // Removed this is already in sendable:
-    // SmartDashboard.putNumber("Odometry X", getOdometry().getX());
-    // SmartDashboard.putNumber("Odometry Y", getOdometry().getY());
-    // SmartDashboard.putNumber("Wrapped Heading Degrees", getWrappedHeadingDegrees());
-    // SmartDashboard.putNumber("Wrapped Heading Radians", getWrappedHeadingRadians());
   }
 
   // rotates all the wheels to be facing inwards and stops the motors to hold position

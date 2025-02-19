@@ -20,14 +20,17 @@ public class GenericL0
     public static Command create(boolean isRed, Drivetrain drivetrain, Localizer localizer, ClimberClaw claw, ClimberLift lift)
     {
         int allianceSign;
+        double allianceOrientation;
 
         if (isRed)
         {
             allianceSign = 1;
+            allianceOrientation = 0;
         }
         else 
         {
             allianceSign = -1;
+            allianceOrientation = Math.PI;
         }
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
@@ -35,9 +38,9 @@ public class GenericL0
 
         ArrayList<Segment> segments = new ArrayList<Segment>();
 
-        segments.add(new Segment(start, end, 0, 1));
+        segments.add(new Segment(start, end, allianceOrientation, 1));
 
-        Path path = new Path(segments, 0);
+        Path path = new Path(segments, allianceOrientation);
 
         return new ParallelCommandGroup(
             new DrivePath(drivetrain, path, localizer),

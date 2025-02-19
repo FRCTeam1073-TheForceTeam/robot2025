@@ -245,7 +245,7 @@ public class RobotContainer
       int allianceSign = 1;
       String selectedAuto = m_positionChooser.getSelected();
       
-      double centerX = 8.774;
+      double centerX = 8.774; // this is the default 
       double startLineOffset = 12.227 -8.774 - 2.24; //id 10 x value - center x value - offset from reef to startline
       Pose2d startPos = new Pose2d();
       SmartDashboard.putString("Alliance", "None");
@@ -266,23 +266,26 @@ public class RobotContainer
         if (alliance == Alliance.Blue)
         {
           isRed = false;
-          SmartDashboard.putString("Alliance", "Blue");
-          startPos = new Pose2d(centerX-startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
         }
         else if (alliance == Alliance.Red)
         {
-          SmartDashboard.putString("Alliance", "Red");
           isRed = true;
           startPos = new Pose2d(centerX + startLineOffset, centerY, new Rotation2d(0)); //startline
         }
         else
         {
-          SmartDashboard.putString("Alliance", "Null");
-          isRed = false;
-          startPos = new Pose2d(0, 0, new Rotation2d(0));
+          return false;
+          // SmartDashboard.putString("Alliance", "Null");
+          // isRed = false;
+          // startPos = new Pose2d(0, 0, new Rotation2d(0));
         }
         m_drivetrain.resetOdometry(startPos);
         m_localizer.resetPose(startPos);
+        SmartDashboard.putNumber("RobotContainer/Start Pose X", startPos.getX());
+        SmartDashboard.putNumber("RobotContainer/Start Pose Y", startPos.getY());
+        SmartDashboard.putNumber("RobotContainer/Start Pose Rotation", startPos.getRotation().getRadians());
+        SmartDashboard.putBoolean("isRed", isRed);
         return true;
       }
       return false;

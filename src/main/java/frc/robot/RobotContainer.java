@@ -285,7 +285,7 @@ public class RobotContainer
         SmartDashboard.putNumber("RobotContainer/Start Pose X", startPos.getX());
         SmartDashboard.putNumber("RobotContainer/Start Pose Y", startPos.getY());
         SmartDashboard.putNumber("RobotContainer/Start Pose Rotation", startPos.getRotation().getRadians());
-        SmartDashboard.putBoolean("isRed", isRed);
+        SmartDashboard.putBoolean("Alliance", isRed); //True = Red, False = Blue ***NEED TO EDIT ON ELASTIC
         return true;
       }
       return false;

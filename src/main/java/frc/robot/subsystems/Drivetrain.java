@@ -286,7 +286,7 @@ public class Drivetrain extends DiagnosticsSubsystem
 
   public Pose2d getOdometry()
   {
-    return new Pose2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromRadians(MathUtils.wrapAngleRadians(getOdometryThetaRadians())));
+    return new Pose2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromRadians(getOdometryThetaRadians()));
   }
 
   public double getOdometryX(){

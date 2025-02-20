@@ -83,10 +83,10 @@ public class RobotContainer
   private int level;
 
   private final SendableChooser<String> m_positionChooser = new SendableChooser<>();
-  private static final String noPositionAuto = "No Position";
-  private static final String rightAuto = "Right Auto";
-  private static final String leftAuto = "Left Auto";
-  private static final String centerAuto = "Center Auto";
+  private static final String noPosition = "No Position";
+  private static final String rightPosition = "Right Auto";
+  private static final String leftPosition = "Left Auto";
+  private static final String centerPosition = "Center Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
@@ -111,10 +111,10 @@ public class RobotContainer
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData(m_localizer);
 
-    m_positionChooser.setDefaultOption("No Position", noPositionAuto);
-    m_positionChooser.addOption("Right Auto", rightAuto);
-    m_positionChooser.addOption("Left Auto", leftAuto);
-    m_positionChooser.addOption("Center Auto", centerAuto);
+    m_positionChooser.setDefaultOption("No Position", noPosition);
+    m_positionChooser.addOption("Right Position", rightPosition);
+    m_positionChooser.addOption("Left Position", leftPosition);
+    m_positionChooser.addOption("Center Position", centerPosition);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -199,13 +199,13 @@ public class RobotContainer
     {
       case zeroClawAndLift:
         return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
-      case noPositionAuto:
+      case noPosition:
         return null;
-      case leftAuto:
+      case leftPosition:
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
-      case rightAuto:
+      case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
-      case centerAuto:
+      case centerPosition:
         return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
       default:
         return null;
@@ -240,10 +240,14 @@ public class RobotContainer
 
   public boolean findStartPos() 
   {
+      if(!DriverStation.getAlliance().isPresent() || m_positionChooser.getSelected().equals("No Position")) {
+        return false;
+      }
+
       //create a bool for pose is set
       double centerY = 4.026;
       int allianceSign = 1;
-      String selectedAuto = m_positionChooser.getSelected();
+      String initPosition = m_positionChooser.getSelected();
       
       double centerX = 8.774; // this is the default 
       double startLineOffset = 12.227 -8.774 - 2.24; //id 10 x value - center x value - offset from reef to startline
@@ -256,20 +260,21 @@ public class RobotContainer
         if(alliance == Alliance.Blue) {
           allianceSign = -1;
         }
-        if (selectedAuto.equals(leftAuto)) {
+        if (initPosition.equals(leftPosition)) {
           centerY -= allianceSign * 2.013;
         }
-        else if(selectedAuto.equals(rightAuto)) {
+        else if(initPosition.equals(rightPosition)) {
           centerY += allianceSign * 2.013;
         }
   
         if (alliance == Alliance.Blue)
         {
           isRed = false;
-          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
+          // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d((Math.PI) / 2)); //startline the 2 causes the startup to be correct but we don't know why
         }
         else if (alliance == Alliance.Red)
-        {
+        { 
           isRed = true;
           startPos = new Pose2d(centerX + startLineOffset, centerY, new Rotation2d(0)); //startline
         }

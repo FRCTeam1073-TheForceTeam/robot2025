@@ -50,8 +50,7 @@ public class TeleopDrive extends Command
   private double vx;
   private double vy;
   private double w;
-  private double allianceSign = 0; // red is 1, blue is -1, set to 0 in case alliance does not initialize properly
-
+  private double allianceSign = -1; // this is handled by setting the odometry orientation for each alliance
 
 
   /** Creates a new Teleop. */
@@ -75,16 +74,6 @@ public class TeleopDrive extends Command
   @Override
   public void initialize()
   {
-     
-    if(DriverStation.getAlliance().isPresent())
-    {
-      allianceSign = 1; // red
-      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
-      if(alliance == Alliance.Blue) 
-      {
-        allianceSign = -1; // blue
-      }
-    }
     System.out.println("TeleopDrive: Init");
     super.initialize();
   }

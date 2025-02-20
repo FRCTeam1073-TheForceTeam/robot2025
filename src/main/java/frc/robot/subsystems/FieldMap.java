@@ -67,7 +67,7 @@ public class FieldMap
         SmartDashboard.putNumber("FieldMap/TargetTagID", tagID);
         SmartDashboard.putNumber("FieldMap/Transform X", xCoord);
         SmartDashboard.putNumber("FieldMap/Transform Y", yCoord);
-        SmartDashboard.putNumber("FieldMao/TargetTagRotation", rotation);
+        SmartDashboard.putNumber("FieldMap/TargetTagRotation", rotation);
 
         return tagPose.plus(robotToReef);
     }

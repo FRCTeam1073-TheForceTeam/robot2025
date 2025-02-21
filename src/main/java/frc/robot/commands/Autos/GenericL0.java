@@ -8,16 +8,12 @@ import frc.robot.commands.DrivePath;
 import frc.robot.commands.Path;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
-import frc.robot.commands.ZeroClaw;
-import frc.robot.commands.ZeroLift;
-import frc.robot.subsystems.ClimberClaw;
-import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 
 public class GenericL0 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, Localizer localizer, ClimberClaw claw, ClimberLift lift)
+    public static Command create(boolean isRed, Drivetrain drivetrain, Localizer localizer)
     {
         int allianceSign;
         double allianceOrientation;
@@ -43,9 +39,7 @@ public class GenericL0
         Path path = new Path(segments, allianceOrientation);
 
         return new ParallelCommandGroup(
-            new DrivePath(drivetrain, path, localizer),
-            new ZeroClaw(claw),
-            new ZeroLift(lift)
+            new DrivePath(drivetrain, path, localizer)
         );
     }    
 }

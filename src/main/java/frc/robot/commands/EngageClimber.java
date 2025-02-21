@@ -1,19 +1,20 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.OI;
 
-public class ClimberTeleop extends Command
+
+public class EngageClimber extends Command 
 {
-    Climber climber;
-    OI oi;
-    private double velocity;
+  Climber climber;
 
-  public ClimberTeleop(Climber climber, OI oi) 
+  public EngageClimber(Climber climber) 
   {
     this.climber = climber;
-    this.oi = oi;
     addRequirements(climber);
   }
 
@@ -26,8 +27,7 @@ public class ClimberTeleop extends Command
   @Override
   public void execute() 
   {
-    velocity = oi.getOperatorRightY();
-    climber.setCommandedVelocity(velocity);
+    climber.setCommandedVelocity(0);
   }
 
   @Override

@@ -6,19 +6,20 @@ package frc.robot.commands.Autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
 public class AutoRightStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer) 
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, Climber climber) 
     {
         switch(level) 
         {
             
             case 0: 
-               return GenericL0.create(isRed, drivetrain, localizer);
+               return GenericL0.create(isRed, drivetrain, localizer, climber);
             case 1: 
                 return RightL1.create(isRed, drivetrain);
             case 2:

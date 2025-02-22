@@ -65,7 +65,7 @@ public class RobotContainer
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
   private final Climber m_climber = new Climber();
   private final ClimberTeleop m_climberTeleop = new ClimberTeleop(m_climber, m_OI);
-  private final ZeroClimber m_zeroClimber = new ZeroClimber(m_climber, m_OI);
+  private final ZeroClimber m_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber m_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber m_disengageClimber = new DisengageClimber(m_climber);
 

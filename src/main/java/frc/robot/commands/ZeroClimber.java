@@ -14,16 +14,15 @@ public class ZeroClimber extends Command {
 
   private double velocity;
   private Climber climber;
-  private OI oi;
 
   /** Creates a new ZeroClimber. */
-  public ZeroClimber(Climber Climber, OI Oi) {
+  public ZeroClimber(Climber Climber) {
     climber = Climber;
-    oi = Oi;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climber);
   }
 
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}

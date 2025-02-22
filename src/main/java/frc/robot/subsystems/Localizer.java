@@ -1,21 +1,13 @@
 // LOCALIZER: accesses drivetrain for odometry and AprilTagFinder for vision measurements
 
 package frc.robot.subsystems;
-import java.lang.reflect.Member;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
@@ -25,7 +17,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.AprilTagFinder.VisionMeasurement;
-import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class Localizer extends SubsystemBase
 {
@@ -113,6 +104,7 @@ public class Localizer extends SubsystemBase
         StdDevX = newA;
     }
 
+    // creates an entirely new estimator so the rotation is reset for sure
     public void resetPose(Pose2d newPos) 
     {
         estimator = new SwerveDrivePoseEstimator(kinematics, driveTrain.getOdometry().getRotation(), swerveModulePositions, newPos);

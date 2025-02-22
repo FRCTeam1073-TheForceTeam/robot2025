@@ -49,7 +49,7 @@ import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
 
-public class RobotContainer implements Consumer<String>
+public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final OI m_OI = new OI();
@@ -139,7 +139,7 @@ public class RobotContainer implements Consumer<String>
 
     SmartDashboard.getNumber("Auto Delay", autoDelay);
 
-    m_positionChooser.onChange(this::accept);
+    m_positionChooser.onChange(this::accept); // this is so we can reset the start position
 
 
     configureBindings();

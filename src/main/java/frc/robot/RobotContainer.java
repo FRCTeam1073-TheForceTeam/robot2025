@@ -251,6 +251,7 @@ public class RobotContainer implements Consumer<String>
 
   public void disabledInit() 
   {
+    haveInitStartPos = false;
   }
 
   public boolean findStartPos() 
@@ -286,7 +287,7 @@ public class RobotContainer implements Consumer<String>
         {
           isRed = false;
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
-          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d((Math.PI) / 2)); //startline the 2 causes the startup to be correct but we don't know why
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline the 2 causes the startup to be correct but we don't know why
         }
         else if (alliance == Alliance.Red)
         { 

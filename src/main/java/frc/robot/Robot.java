@@ -28,7 +28,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.haveInitStartPos = false;
     m_robotContainer.disabledInit();
   }
 

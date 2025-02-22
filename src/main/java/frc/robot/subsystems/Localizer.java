@@ -115,7 +115,7 @@ public class Localizer extends SubsystemBase
 
     public void resetPose(Pose2d newPos) 
     {
-        estimator.resetPose(newPos);
+        estimator = new SwerveDrivePoseEstimator(kinematics, driveTrain.getOdometry().getRotation(), swerveModulePositions, newPos);
     }
 
     public double getLinearSpeed() 

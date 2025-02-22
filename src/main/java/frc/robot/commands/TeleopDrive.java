@@ -50,7 +50,7 @@ public class TeleopDrive extends Command
   private double vx;
   private double vy;
   private double w;
-  private double allianceSign = -1; // this is handled by setting the odometry orientation for each alliance
+  private double allianceSign = 1; // this is handled by setting the odometry orientation for each alliance
 
 
   /** Creates a new Teleop. */
@@ -120,9 +120,9 @@ public class TeleopDrive extends Command
         if(Math.abs(leftX) < .15) {leftX = 0;}
         if(Math.abs(rightX) < .15) {rightX = 0;}
 
-        vx = MathUtil.clamp((-allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        vy = MathUtil.clamp((-allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        w = MathUtil.clamp((-allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
+        vx = MathUtil.clamp((allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
+        vy = MathUtil.clamp((allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
+        w = MathUtil.clamp((allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
         if(fieldCentric){

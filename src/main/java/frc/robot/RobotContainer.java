@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.CancelLoadCoral;
+import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
@@ -29,6 +30,7 @@ import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.commands.Autos.GenericL0;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -58,6 +60,8 @@ public class RobotContainer
   private final TroughScoreCoral m_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
   private final CancelLoadCoral m_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
+  private final Climber m_climber = new Climber();
+  private final ClimberTeleop m_climberTeleop = new ClimberTeleop(m_climber, m_OI);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -85,6 +89,7 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
     CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, m_coralElevatorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, m_coralEndeffectorTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climber, m_climberTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);

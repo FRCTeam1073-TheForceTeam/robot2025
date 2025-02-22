@@ -11,9 +11,11 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase 
@@ -24,16 +26,20 @@ public class Climber extends SubsystemBase
   private PositionVoltage motorPositionVoltage;
   public Debouncer climberDebouncer = new Debouncer(0.05);
 
-  private final double motorKP = 0.1;
+  private final double motorKP = 0.15;
   private final double motorKI = 0;
   private final double motorKD = 0;
   private final double motorKV = 0.12;
 
   private double velocity = 0;
   private double position = 0;
+  private double absolutePosition = 0;
   private double load = 0;
   private double commandedVelocity = 0;
   private boolean brakeMode = true;
+
+  public final double minPosition = -.275;
+  public final double maxPosition = .4;
 
 
   /** Creates a new Climber. */
@@ -44,6 +50,8 @@ public class Climber extends SubsystemBase
 
     motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     motorPositionVoltage = new PositionVoltage(0).withSlot(0);
+
+    configureHardware();
   }
 
   @Override
@@ -51,9 +59,19 @@ public class Climber extends SubsystemBase
   {
     velocity = motor.getVelocity().refresh().getValueAsDouble(); 
     position = motor.getPosition().refresh().getValueAsDouble();
-    load = motor.getTorqueCurrent().getValueAsDouble();
-
+    load = motor.getTorqueCurrent().refresh().getValueAsDouble();
+    absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    if(absolutePosition > maxPosition && commandedVelocity > 0){
+      commandedVelocity = 0;
+    }
+    if(absolutePosition < minPosition && commandedVelocity < 0){
+      commandedVelocity = 0;
+    }
     motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
+
+    SmartDashboard.putNumber("[CLIMBER] commanded velocity",commandedVelocity);
+    SmartDashboard.putNumber("[CLIMBER] velocity",velocity);
+    SmartDashboard.putNumber("[CLIMBER] absolute position", absolutePosition);
   }
 
   public void setCommandedVelocity(double velocity)
@@ -78,7 +96,15 @@ public class Climber extends SubsystemBase
 
   public double getEncoderPosition()
   {
-    return encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    return absolutePosition;
+  }
+
+  public double getMinPosition(){
+    return minPosition;
+  }
+
+  public double getMaxPosition(){
+    return maxPosition;
   }
 
   public void setZero()
@@ -103,6 +129,7 @@ public class Climber extends SubsystemBase
   public void configureHardware()
   {
     var motorConfig = new TalonFXConfiguration();
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     motor.getConfigurator().apply(motorConfig);
 
     var motorClosedLoopConfig = new SlotConfigs();
@@ -110,6 +137,8 @@ public class Climber extends SubsystemBase
     motorClosedLoopConfig.withKI(motorKI);
     motorClosedLoopConfig.withKD(motorKD);
     motorClosedLoopConfig.withKV(motorKV);
+
+    motor.getConfigurator().apply(motorClosedLoopConfig, 0.5);
 
     motor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -119,7 +148,7 @@ public class Climber extends SubsystemBase
                             .withSupplyCurrentLowerTime(0.25);
 
     motor.getConfigurator().apply(motorCurrentLimitsConfigs);
-
+   
     motor.setPosition(0);
 
     System.out.println("Climber: Configured");

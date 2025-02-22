@@ -27,18 +27,23 @@ public class EngageClimber extends Command
   @Override
   public void execute() 
   {
-    climber.setCommandedVelocity(0);
+    climber.setCommandedVelocity(-10);
   }
 
   @Override
   public void end(boolean interrupted) 
   {
-
+    climber.setCommandedVelocity(0);
   }
 
   @Override
   public boolean isFinished() 
   {
-    return false;
+    if (climber.getEncoderPosition() <= climber.getMinPosition() + 0.01){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }

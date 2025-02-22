@@ -195,11 +195,11 @@ public class RobotContainer
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
       default:
         return null;
     }

@@ -20,10 +20,13 @@ import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
+import frc.robot.commands.DisengageClimber;
+import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.TroughScoreCoral;
+import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
@@ -62,6 +65,9 @@ public class RobotContainer
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
   private final Climber m_climber = new Climber();
   private final ClimberTeleop m_climberTeleop = new ClimberTeleop(m_climber, m_OI);
+  private final ZeroClimber m_zeroClimber = new ZeroClimber(m_climber, m_OI);
+  private final EngageClimber m_engageClimber = new EngageClimber(m_climber);
+  private final DisengageClimber m_disengageClimber = new DisengageClimber(m_climber);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -118,10 +124,12 @@ public class RobotContainer
   }
 
   private void configureBindings() {
-    // Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
-    //   raiseLift.onTrue(m_raiseLift);
-    // Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
-    //   engageClaw.onTrue(m_engageClaw);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+      disengageClimber.onTrue(m_disengageClimber);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
+      engageClimber.onTrue(m_engageClimber);
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
+      zeroClimber.onTrue(m_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(m_zeroElevator);
     Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);

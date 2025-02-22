@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.OI;
@@ -17,7 +18,8 @@ public class ZeroClimber extends Command {
 
   /** Creates a new ZeroClimber. */
   public ZeroClimber(Climber Climber, OI Oi) {
-
+    climber = Climber;
+    oi = Oi;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,7 +29,12 @@ public class ZeroClimber extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    velocity = -climber.getEncoderPosition() * 20;
+    MathUtil.clamp(velocity, -10, 10);
+    climber.setCommandedVelocity(velocity);
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -36,6 +43,6 @@ public class ZeroClimber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return climber.getEncoderPosition() > -.01 && climber.getEncoderPosition() < .01;
   }
 }

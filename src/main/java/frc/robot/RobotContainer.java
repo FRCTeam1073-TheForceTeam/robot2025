@@ -129,7 +129,7 @@ public class RobotContainer
     Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
       engageClimber.onTrue(m_engageClimber);
     Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
-      zeroClimber.onTrue(m_zeroClimber);
+      ;zeroClimber.onTrue(m_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(m_zeroElevator);
     Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
@@ -261,7 +261,7 @@ public class RobotContainer
         }
   
         if (alliance == Alliance.Blue)
-        {
+       {
           isRed = false;
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
           startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d((Math.PI) / 2)); //startline the 2 causes the startup to be correct but we don't know why

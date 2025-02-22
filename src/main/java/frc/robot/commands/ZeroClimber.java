@@ -21,6 +21,7 @@ public class ZeroClimber extends Command {
     climber = Climber;
     oi = Oi;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -30,8 +31,13 @@ public class ZeroClimber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = -climber.getEncoderPosition() * 20;
-    MathUtil.clamp(velocity, -10, 10);
+    if (climber.getEncoderPosition() > 0){
+      velocity = -10;
+    }
+    else{
+      velocity = 10;
+    }
+
     climber.setCommandedVelocity(velocity);
     
   }

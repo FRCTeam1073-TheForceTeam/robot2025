@@ -9,12 +9,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
 public class AutoRightStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, ClimberClaw claw, ClimberLift lift) 
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, ClimberClaw claw, ClimberLift lift) 
     {
         switch(level) 
         {
@@ -22,9 +23,9 @@ public class AutoRightStart
             case 0: 
                return GenericL0.create(isRed, drivetrain, localizer, claw, lift);
             case 1: 
-                return RightL1.create(isRed, drivetrain);
+                return RightL1.create(isRed, drivetrain, map, localizer);
             case 2:
-                return RightL2.create(isRed, drivetrain);
+                return RightL2.create(isRed, drivetrain, map, localizer);
             case 3:
                 return RightL3.create(isRed, drivetrain);
             case 4:

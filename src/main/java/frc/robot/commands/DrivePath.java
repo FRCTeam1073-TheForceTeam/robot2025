@@ -68,6 +68,7 @@ public class DrivePath extends Command
       0.0,
       0.01
     );
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
     SmartDashboard.putString("DrivePath/Status","Idle");
     addRequirements(ds);
   }

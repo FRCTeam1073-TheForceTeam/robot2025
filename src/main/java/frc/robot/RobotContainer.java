@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,7 +31,8 @@ import frc.robot.commands.TroughScoreCoral;
 import frc.robot.commands.ZeroClaw;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.ZeroLift;
-import frc.robot.commands.Autos.AutoCenterStart;
+import frc.robot.commands.Autos.AutoCenterLeftStart;
+import frc.robot.commands.Autos.AutoCenterRightStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.commands.Autos.GenericL0;
@@ -46,7 +49,7 @@ import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
 
-public class RobotContainer 
+public class RobotContainer implements Consumer<String>
 {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final OI m_OI = new OI();
@@ -82,11 +85,14 @@ public class RobotContainer
   private boolean isRed;
   private int level;
 
+  public boolean haveInitStartPos = false;
+
   private final SendableChooser<String> m_positionChooser = new SendableChooser<>();
   private static final String noPosition = "No Position";
   private static final String rightPosition = "Right Auto";
   private static final String leftPosition = "Left Auto";
-  private static final String centerPosition = "Center Auto";
+  private static final String centerLeftPosition = "Center Left Auto";
+  private static final String centerRightPosition = "Center Right Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
@@ -97,6 +103,8 @@ public class RobotContainer
   private static final String level3 = "Level 3";
   private static final String level4 = "Level 4";
   private static final String zeroClawAndLift = "Zero Claw And Lift";
+
+  private double autoDelay = 0;
 
   public RobotContainer() 
   {
@@ -114,7 +122,8 @@ public class RobotContainer
     m_positionChooser.setDefaultOption("No Position", noPosition);
     m_positionChooser.addOption("Right Position", rightPosition);
     m_positionChooser.addOption("Left Position", leftPosition);
-    m_positionChooser.addOption("Center Position", centerPosition);
+    m_positionChooser.addOption("Center Left Position", centerLeftPosition);
+    m_positionChooser.addOption("Center Right Position", centerRightPosition);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -127,6 +136,10 @@ public class RobotContainer
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
+
+    SmartDashboard.getNumber("Auto Delay", autoDelay);
+
+    m_positionChooser.onChange(this::accept);
 
 
     configureBindings();
@@ -202,11 +215,13 @@ public class RobotContainer
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
-      case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_climberClaw, m_climberLift);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift);
+      case centerLeftPosition:
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, autoDelay);
+      case centerRightPosition:
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, autoDelay);
       default:
         return null;
     }
@@ -299,5 +314,11 @@ public class RobotContainer
   public boolean disabledPeriodic() 
   {
     return findStartPos();
+  }
+
+  @Override
+  public void accept(String t) // gets called every time the selected position changes so the start position is reinitialized
+  {
+    haveInitStartPos = false;  
   }
 }

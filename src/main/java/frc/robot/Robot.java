@@ -15,8 +15,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private boolean haveInitStartPos = false;
-
   @Override
   public void robotInit() {
     CanBridge.runTCP();
@@ -30,16 +28,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    haveInitStartPos = false;
+    m_robotContainer.haveInitStartPos = false;
     m_robotContainer.disabledInit();
   }
 
   @Override
   public void disabledPeriodic() {
-    if(!haveInitStartPos) {
-      haveInitStartPos = m_robotContainer.disabledPeriodic();
+    if(!m_robotContainer.haveInitStartPos) {
+      m_robotContainer.haveInitStartPos = m_robotContainer.disabledPeriodic();
     }
-    SmartDashboard.putBoolean("Have Initialized Start Pos", haveInitStartPos);
+    SmartDashboard.putBoolean("Have Initialized Start Pos", m_robotContainer.haveInitStartPos);
   }
 
   @Override

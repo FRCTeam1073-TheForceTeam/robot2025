@@ -13,25 +13,24 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
-public class AutoLeftStart 
+public class AutoCenterLeftStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, ClimberClaw claw, ClimberLift lift)
+   public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, ClimberClaw claw, ClimberLift lift, double delay)
     {
         switch (level)
         {
-            
             case 0: 
                return GenericL0.create(isRed, drivetrain, localizer, claw, lift);
             case 1: 
-               return LeftL1.create(isRed, drivetrain, map, localizer);
+               return CenterL1.create(isRed, drivetrain, map, localizer);
             case 2:
-               return LeftL2.create(isRed, drivetrain, map, localizer);
+               return CenterLeftL2.create(isRed, drivetrain, map, localizer, delay);
             case 3:
-               return LeftL3.create(isRed, drivetrain);
+               return CenterLeftL3.create(isRed, drivetrain, delay);
             case 4:
-               return LeftL4.create(isRed, drivetrain);
+               return CenterLeftL4.create(isRed, drivetrain, delay);
             default:
-            return new WaitCommand(0);
+               return new WaitCommand(0);
         }
     }
 }

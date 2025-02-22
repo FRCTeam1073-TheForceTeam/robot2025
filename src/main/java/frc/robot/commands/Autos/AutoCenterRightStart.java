@@ -9,25 +9,26 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimberClaw;
 import frc.robot.subsystems.ClimberLift;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
-public class AutoCenterStart 
+public class AutoCenterRightStart 
 {
-   public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, ClimberClaw claw, ClimberLift lift)
+   public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, ClimberClaw claw, ClimberLift lift, double delay)
     {
         switch (level)
         {
             case 0: 
                return GenericL0.create(isRed, drivetrain, localizer, claw, lift);
             case 1: 
-               return CenterL1.create(isRed, drivetrain);
+               return CenterL1.create(isRed, drivetrain, map, localizer);
             case 2:
-               return CenterL2.create(isRed, drivetrain);
+               return CenterRightL2.create(isRed, drivetrain, map, localizer, delay);
             case 3:
-               return CenterL3.create(isRed, drivetrain);
+               return CenterRightL3.create(isRed, drivetrain, delay);
             case 4:
-               return CenterL4.create(isRed, drivetrain);
+               return CenterRightL4.create(isRed, drivetrain, delay);
             default:
                return new WaitCommand(0);
         }

@@ -64,7 +64,7 @@ public class RobotContainer implements Consumer<String>
   private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator, m_OI);
+  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop m_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
   private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
@@ -148,24 +148,34 @@ public class RobotContainer implements Consumer<String>
   private void configureBindings() {
     Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
       raiseLift.onTrue(m_raiseLift);
+    
     Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
       engageClaw.onTrue(m_engageClaw);
+
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(m_zeroElevator);
+
     Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
       loadCoral.onTrue(m_loadCoral);
+
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(m_scoreCoral);
+
     Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
       zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
-    Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
+
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorDPadRight);
       elevatorL2.whileTrue(m_coralElevatorToL2);
-    Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
+
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
       elevatorL3.whileTrue(m_coralElevatorToL3);
+
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.onTrue(m_troughScoreCoral);
+
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
       cancelLoadCoral.onTrue(m_cancelLoadCoral);
+
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
       alignToTag.whileTrue(m_alignToTag);
   }
@@ -215,13 +225,13 @@ public class RobotContainer implements Consumer<String>
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator);
       case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, autoDelay);
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator, autoDelay);
       case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, autoDelay);
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator, autoDelay);
       default:
         return null;
     }

@@ -14,9 +14,8 @@ public class ZeroElevator extends Command {
   CoralElevator elevator;
   OI oi;
   
-  public ZeroElevator(CoralElevator elevator, OI oi) {
+  public ZeroElevator(CoralElevator elevator) {
     this.elevator = elevator;
-    this.oi = oi;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }

@@ -21,7 +21,7 @@ public class TroughScoreCoral extends Command {
     endeffector = coralEndeffector;
     elevator = coralElevator;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(endeffector);
+    addRequirements(endeffector, elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -32,16 +32,16 @@ public class TroughScoreCoral extends Command {
   @Override
   public void execute() {
     velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    if(targetHeight > elevator.getPosition()){
+    if (targetHeight > elevator.getPosition()){
       velocity = MathUtil.clamp(velocity, 3, 12);
     }
-    else{
+    else {
       velocity = MathUtil.clamp(velocity, -12, -3);  
     }
     elevator.setVelocity(velocity);
 
     if(endeffector.getHasCoral() && finishedElevator()){
-      endeffector.setVelocity(15);
+      endeffector.setVelocity(22);
     }
   }
   public boolean finishedElevator() {

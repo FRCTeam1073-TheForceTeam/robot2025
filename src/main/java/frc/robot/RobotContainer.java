@@ -34,7 +34,6 @@ import frc.robot.commands.Autos.AutoCenterLeftStart;
 import frc.robot.commands.Autos.AutoCenterRightStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
-import frc.robot.commands.Autos.GenericL0;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralElevator;
@@ -56,23 +55,24 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator);
-  private final CoralElevatorTeleop m_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
-  private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
-  private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
-  private final ScoreCoral m_scoreCoral = new ScoreCoral(m_coralEndeffector);
-  private final CoralElevatorToHeight m_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
-  private final CoralElevatorToHeight m_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
-  private final TroughScoreCoral m_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
-  private final CancelLoadCoral m_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
   private final Climber m_climber = new Climber();
-  private final ClimberTeleop m_climberTeleop = new ClimberTeleop(m_climber, m_OI);
-  private final ZeroClimber m_zeroClimber = new ZeroClimber(m_climber);
-  private final EngageClimber m_engageClimber = new EngageClimber(m_climber);
-  private final DisengageClimber m_disengageClimber = new DisengageClimber(m_climber);
 
-  private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
+  private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
+  private final CoralElevatorTeleop cmd_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
+  private final CoralEndeffectorTeleop cmd_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
+  private final LoadCoral cmd_loadCoral = new LoadCoral(m_coralEndeffector);
+  private final ScoreCoral cmd_scoreCoral = new ScoreCoral(m_coralEndeffector);
+  private final CoralElevatorToHeight cmd_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
+  private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
+  private final TroughScoreCoral cmd_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
+  private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
+  private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
+  private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
+  private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
+  private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
+
+  private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
   private boolean isRed;
   private int level;
@@ -100,10 +100,10 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public RobotContainer() 
   {
-    CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
-    CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, m_coralElevatorTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, m_coralEndeffectorTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(m_climber, m_climberTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, cmd_teleopDrive);
+    CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, cmd_coralElevatorTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -138,36 +138,36 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   private void configureBindings() {
     Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
-      disengageClimber.onTrue(m_disengageClimber);
+      disengageClimber.onTrue(cmd_disengageClimber);
     Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
-      engageClimber.onTrue(m_engageClimber);
+      engageClimber.onTrue(cmd_engageClimber);
     Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
-      zeroClimber.onTrue(m_zeroClimber);
+      zeroClimber.onTrue(cmd_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
-      zeroElevator.onTrue(m_zeroElevator);
+      zeroElevator.onTrue(cmd_zeroElevator);
 
     Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
-      loadCoral.onTrue(m_loadCoral);
+      loadCoral.onTrue(cmd_loadCoral);
 
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
-      scoreCoral.onTrue(m_scoreCoral);
+      scoreCoral.onTrue(cmd_scoreCoral);
 
     // Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
     //   zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
-      elevatorL2.whileTrue(m_coralElevatorToL2);
+      elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
     Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
-      elevatorL3.whileTrue(m_coralElevatorToL3);
+      elevatorL3.whileTrue(cmd_coralElevatorToL3);
 
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
-      troughScore.onTrue(m_troughScoreCoral);
+      troughScore.onTrue(cmd_troughScoreCoral);
 
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
-      cancelLoadCoral.onTrue(m_cancelLoadCoral);
+      cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
 
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
-      alignToTag.whileTrue(m_alignToTag);
+      alignToTag.whileTrue(cmd_alignToTag);
   }
 
   public void autonomousInit()

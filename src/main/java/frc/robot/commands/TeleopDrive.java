@@ -122,24 +122,25 @@ public class TeleopDrive extends Command
 
         vx = MathUtil.clamp((allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         vy = MathUtil.clamp((allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        w = MathUtil.clamp((allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
+        w = MathUtil.clamp((-allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
-        if(fieldCentric){
+        if(fieldCentric)
+        {
           drivetrain.setTargetChassisSpeeds(
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 vx, 
                 vy,
                 w,  
-                //Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
-                Rotation2d.fromDegrees(drivetrain.getOdometryThetaRadians())
+                Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
+                // Rotation2d.fromDegrees(drivetrain.getOdometryThetaRadians())
             )
           );
         }
-        else {
+        else 
+        {
           //william and Arjun (the short one) waz here
-          ChassisSpeeds robot = new ChassisSpeeds(vx, vy, w);
-          drivetrain.setTargetChassisSpeeds(robot);
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
         }
         
     }

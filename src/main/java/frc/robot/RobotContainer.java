@@ -27,7 +27,7 @@ import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.TroughScoreCoral;
+import frc.robot.commands.TroughRaiseElevator;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterLeftStart;
@@ -64,8 +64,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ScoreCoral cmd_scoreCoral = new ScoreCoral(m_coralEndeffector);
   private final CoralElevatorToHeight cmd_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
   private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
+  private final TroughRaiseElevator cmd_troughRaiseElevator = new TroughRaiseElevator(m_coralElevator);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, m_OI, 4);
-  private final TroughScoreCoral cmd_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
@@ -165,7 +165,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
-      troughScore.onTrue(cmd_troughScoreCoral);
+      troughScore.whileTrue(cmd_troughRaiseElevator);
 
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);

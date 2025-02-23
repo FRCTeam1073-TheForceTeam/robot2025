@@ -79,7 +79,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |PressRightJoystick|                          |
 |DPadUp            |Elavtor Trough Level      |
 |DPadDown          |Elevator Branch Level 3   |
-|DPadLeft          |                          |
+|DPadLeft          |Elevaotr Branch Level 4   |
 |DPadRight         |Elevator Branch Level 2   |
 |LeftBumper        |Climber Up                |
 |RightBumper       |Climber Down              |

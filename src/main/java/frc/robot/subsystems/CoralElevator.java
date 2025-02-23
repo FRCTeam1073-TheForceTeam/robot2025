@@ -33,7 +33,7 @@ public class CoralElevator extends SubsystemBase {
   private final double frontKV = 0.12; // Kraken kV value.
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 44.0; // TODO: Set to maximum position.
+  private final double maxPosition = 44.0;
 
 
   private double position;

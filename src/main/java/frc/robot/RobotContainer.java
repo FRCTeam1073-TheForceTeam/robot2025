@@ -18,29 +18,25 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.CancelLoadCoral;
-import frc.robot.commands.ClimberClawTeleop;
-import frc.robot.commands.ClimberLiftTeleop;
+import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
-import frc.robot.commands.EngageClaw;
+import frc.robot.commands.DisengageClimber;
+import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.TroughScoreCoral;
-import frc.robot.commands.ZeroClaw;
+import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.commands.ZeroLift;
 import frc.robot.commands.Autos.AutoCenterLeftStart;
 import frc.robot.commands.Autos.AutoCenterRightStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.commands.Autos.GenericL0;
-import frc.robot.commands.Autos.RaiseLift;
-import frc.robot.commands.Autos.ZeroClawAndLift;
 import frc.robot.subsystems.AprilTagFinder;
-import frc.robot.subsystems.ClimberClaw;
-import frc.robot.subsystems.ClimberLift;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -58,10 +54,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final FieldMap m_fieldMap = new FieldMap();
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
-  private final ClimberClaw m_climberClaw = new ClimberClaw();
-  private final ClimberLift m_climberLift = new ClimberLift();
-  private final ClimberClawTeleop m_climberClawTeleop = new ClimberClawTeleop(m_climberClaw, m_OI);
-  private final ClimberLiftTeleop m_climberLiftTeleop = new ClimberLiftTeleop(m_climberLift, m_OI);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -69,16 +61,16 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
   private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
   private final ScoreCoral m_scoreCoral = new ScoreCoral(m_coralEndeffector);
-  private final ZeroClaw m_zeroClaw = new ZeroClaw(m_climberClaw);
-  private final ZeroLift m_zeroLift = new ZeroLift(m_climberLift);
-  private final ZeroClawAndLift m_zeroClawAndLift = new ZeroClawAndLift();
-  private final RaiseLift m_raiseLift = new RaiseLift(m_climberLift, m_OI);
-  private final EngageClaw m_engageClaw = new EngageClaw(m_climberClaw);
   private final CoralElevatorToHeight m_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
   private final CoralElevatorToHeight m_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
   private final TroughScoreCoral m_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
   private final CancelLoadCoral m_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag m_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
+  private final Climber m_climber = new Climber();
+  private final ClimberTeleop m_climberTeleop = new ClimberTeleop(m_climber, m_OI);
+  private final ZeroClimber m_zeroClimber = new ZeroClimber(m_climber);
+  private final EngageClimber m_engageClimber = new EngageClimber(m_climber);
+  private final DisengageClimber m_disengageClimber = new DisengageClimber(m_climber);
 
   private final TeleopDrive m_teleopCommand = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -109,10 +101,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   public RobotContainer() 
   {
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrain, m_teleopCommand);
-    CommandScheduler.getInstance().setDefaultCommand(m_climberClaw, m_climberClawTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(m_climberLift, m_climberLiftTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, m_coralElevatorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, m_coralEndeffectorTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_climber, m_climberTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -146,12 +137,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger raiseLift = new Trigger(m_OI::getOperatorAButton);
-      raiseLift.onTrue(m_raiseLift);
-    
-    Trigger engageClaw = new Trigger(m_OI::getOperatorBButton);
-      engageClaw.onTrue(m_engageClaw);
-
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+      disengageClimber.onTrue(m_disengageClimber);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
+      engageClimber.onTrue(m_engageClimber);
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
+      zeroClimber.onTrue(m_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(m_zeroElevator);
 
@@ -161,10 +152,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(m_scoreCoral);
 
-    Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
-      zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
-
-    Trigger elevatorL2 = new Trigger(m_OI::getOperatorDPadRight);
+    // Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
+    //   zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
+    Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
       elevatorL2.whileTrue(m_coralElevatorToL2);
 
     Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
@@ -220,18 +210,18 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     switch(m_positionChooser.getSelected())
     {
-      case zeroClawAndLift:
-        return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
+      // case zeroClawAndLift:
+      //   return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
       case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator, autoDelay);
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
       case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climberClaw, m_climberLift, m_coralEndeffector, m_coralElevator, autoDelay);
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
       default:
         return null;
     }
@@ -294,7 +284,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         }
   
         if (alliance == Alliance.Blue)
-        {
+       {
           isRed = false;
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
           startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline the 2 causes the startup to be correct but we don't know why

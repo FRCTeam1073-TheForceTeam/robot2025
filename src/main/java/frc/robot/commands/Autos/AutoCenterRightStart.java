@@ -6,27 +6,31 @@ package frc.robot.commands.Autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.CoralElevator;
+import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
-public class AutoCenterStart 
+public class AutoCenterRightStart 
 {
-   public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, Climber climber)
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
+                                     Climber climber, CoralEndeffector endEffector, CoralElevator elevator, double delay)
     {
         switch (level)
         {
             case 0: 
                return GenericL0.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return CenterL1.create(isRed, drivetrain);
+               return CenterL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
-               return CenterL2.create(isRed, drivetrain);
+               return CenterRightL2.create(isRed, drivetrain, map, localizer, delay);
             case 3:
-               return CenterL3.create(isRed, drivetrain);
+               return CenterRightL3.create(isRed, drivetrain, delay);
             case 4:
-               return CenterL4.create(isRed, drivetrain);
+               return CenterRightL4.create(isRed, drivetrain, delay);
             default:
                return new WaitCommand(0);
         }

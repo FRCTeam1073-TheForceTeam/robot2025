@@ -5,40 +5,47 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralElevator;
-import frc.robot.subsystems.OI;
+import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ZeroElevator extends Command {
-  /** Creates a new ZeroElevator. */
-  CoralElevator elevator;
-  OI oi;
-  
-  public ZeroElevator(CoralElevator elevator) {
-    this.elevator = elevator;
+public class TroughScoreAuto extends Command 
+{
+  /** Creates a new TroughScoreCoral. */
+  CoralEndeffector endeffector;
+  double velocity;
+
+  // height 12.8
+  public TroughScoreAuto(CoralEndeffector coralEndeffector) 
+  {
+    endeffector = coralEndeffector;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(elevator);
+    addRequirements(endeffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    elevator.setVelocity(-9);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
-
+  public void execute() 
+  {
+    if(endeffector.getHasCoral())
+    {
+      endeffector.setVelocity(22);
+    }
+  }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.setVelocity(0);
+    endeffector.setVelocity(0);
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return elevator.isCoralElevatorAtBottom();
+  public boolean isFinished() 
+  {
+    return !endeffector.getHasCoral();
   }
 }

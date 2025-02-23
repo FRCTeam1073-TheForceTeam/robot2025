@@ -16,6 +16,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AprilTagFinder;
@@ -98,25 +100,25 @@ public class AlignToTag extends Command
 
     if (oi.getDriverDPadLeft())
     {
-      slot = 0;
+      slot = -1;
     }
     else if (oi.getDriverDPadUp())
     {
-      slot = 1;
+      slot = 0;
     }
     else if (oi.getDriverDPadRight())
     {
-      slot = 2;
+      slot = 1;
     }
     else
     {
-      slot = -1;
+      slot = -2;
     }
 
     if (aprilTagID == -1)
     {
       aprilTagID = fieldMap.getBestAprilTagID(currentPose);
-      targetPose = fieldMap.getBestTagPose(aprilTagID, slot, 0.25);
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.25, 0, new Rotation2d(Math.PI)));
     }
 
     if (targetPose == null)

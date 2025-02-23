@@ -10,18 +10,20 @@ import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.CoralElevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TroughScoreCoral extends Command {
+public class TroughScoreCoral extends Command 
+{
   /** Creates a new TroughScoreCoral. */
   CoralEndeffector endeffector;
   CoralElevator elevator;
   double velocity;
   double targetHeight = 12.8;
   // height 12.8
-  public TroughScoreCoral(CoralEndeffector coralEndeffector, CoralElevator coralElevator) {
+  public TroughScoreCoral(CoralEndeffector coralEndeffector, CoralElevator coralElevator) 
+  {
     endeffector = coralEndeffector;
     elevator = coralElevator;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(endeffector);
+    addRequirements(endeffector, elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -32,16 +34,16 @@ public class TroughScoreCoral extends Command {
   @Override
   public void execute() {
     velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    if(targetHeight > elevator.getPosition()){
+    if (targetHeight > elevator.getPosition()){
       velocity = MathUtil.clamp(velocity, 3, 12);
     }
-    else{
+    else {
       velocity = MathUtil.clamp(velocity, -12, -3);  
     }
     elevator.setVelocity(velocity);
 
     if(endeffector.getHasCoral() && finishedElevator()){
-      endeffector.setVelocity(15);
+      endeffector.setVelocity(22);
     }
   }
   public boolean finishedElevator() {

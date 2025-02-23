@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,7 +30,8 @@ import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.TroughScoreCoral;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.commands.Autos.AutoCenterStart;
+import frc.robot.commands.Autos.AutoCenterLeftStart;
+import frc.robot.commands.Autos.AutoCenterRightStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.commands.Autos.GenericL0;
@@ -42,7 +45,7 @@ import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
 
-public class RobotContainer 
+public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final OI m_OI = new OI();
@@ -53,7 +56,7 @@ public class RobotContainer
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator, m_OI);
+  private final ZeroElevator m_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop m_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
   private final CoralEndeffectorTeleop m_coralEndeffectorTeleop = new CoralEndeffectorTeleop(m_coralEndeffector, m_OI);
   private final LoadCoral m_loadCoral = new LoadCoral(m_coralEndeffector);
@@ -74,11 +77,14 @@ public class RobotContainer
   private boolean isRed;
   private int level;
 
+  public boolean haveInitStartPos = false;
+
   private final SendableChooser<String> m_positionChooser = new SendableChooser<>();
   private static final String noPosition = "No Position";
   private static final String rightPosition = "Right Auto";
   private static final String leftPosition = "Left Auto";
-  private static final String centerPosition = "Center Auto";
+  private static final String centerLeftPosition = "Center Left Auto";
+  private static final String centerRightPosition = "Center Right Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
@@ -89,6 +95,8 @@ public class RobotContainer
   private static final String level3 = "Level 3";
   private static final String level4 = "Level 4";
   private static final String zeroClawAndLift = "Zero Claw And Lift";
+
+  private double autoDelay = 0;
 
   public RobotContainer() 
   {
@@ -105,7 +113,8 @@ public class RobotContainer
     m_positionChooser.setDefaultOption("No Position", noPosition);
     m_positionChooser.addOption("Right Position", rightPosition);
     m_positionChooser.addOption("Left Position", leftPosition);
-    m_positionChooser.addOption("Center Position", centerPosition);
+    m_positionChooser.addOption("Center Left Position", centerLeftPosition);
+    m_positionChooser.addOption("Center Right Position", centerRightPosition);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -119,6 +128,10 @@ public class RobotContainer
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
 
+    SmartDashboard.getNumber("Auto Delay", autoDelay);
+
+    m_positionChooser.onChange(this::accept); // this is so we can reset the start position
+
 
     configureBindings();
   }
@@ -129,23 +142,30 @@ public class RobotContainer
     Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
       engageClimber.onTrue(m_engageClimber);
     Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
-      ;zeroClimber.onTrue(m_zeroClimber);
+      zeroClimber.onTrue(m_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(m_zeroElevator);
+
     Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
       loadCoral.onTrue(m_loadCoral);
+
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(m_scoreCoral);
+
     // Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
     //   zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
       elevatorL2.whileTrue(m_coralElevatorToL2);
-    Trigger elevatorL3 = new Trigger(m_OI :: getOperatorDPadDown);
+
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
       elevatorL3.whileTrue(m_coralElevatorToL3);
+
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.onTrue(m_troughScoreCoral);
+
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
       cancelLoadCoral.onTrue(m_cancelLoadCoral);
+
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
       alignToTag.whileTrue(m_alignToTag);
   }
@@ -195,11 +215,13 @@ public class RobotContainer
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
-      case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_climber);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+      case centerLeftPosition:
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
+      case centerRightPosition:
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
       default:
         return null;
     }
@@ -229,6 +251,7 @@ public class RobotContainer
 
   public void disabledInit() 
   {
+    haveInitStartPos = false;
   }
 
   public boolean findStartPos() 
@@ -264,7 +287,7 @@ public class RobotContainer
        {
           isRed = false;
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
-          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d((Math.PI) / 2)); //startline the 2 causes the startup to be correct but we don't know why
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline the 2 causes the startup to be correct but we don't know why
         }
         else if (alliance == Alliance.Red)
         { 
@@ -292,5 +315,11 @@ public class RobotContainer
   public boolean disabledPeriodic() 
   {
     return findStartPos();
+  }
+
+  @Override
+  public void accept(String t) // gets called every time the selected position changes so the start position is reinitialized
+  {
+    haveInitStartPos = false;  
   }
 }

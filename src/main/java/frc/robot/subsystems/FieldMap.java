@@ -42,34 +42,32 @@ public class FieldMap
         return bestID;
     }
 
-    public Pose2d getBestTagPose(int tagID, int slot, double offset)
+    public Pose2d getTagRelativePose(int tagID, int slot, Transform2d offset)
     {
         Pose2d tagPose = fieldMap.getTagPose(tagID).get().toPose2d();
-        double rotation = Math.PI;
-        double xCoord = 0.5;
-        double yCoord = 0;
+        double yOffset = 0.5;
 
-        if(slot == 1) //center
+        if(slot == -1) // left
         {
-            yCoord = 0;
+            tagPose = tagPose.plus(new Transform2d(0, -yOffset, new Rotation2d()));
         }
-        else if(slot == 0) //left
+        else if(slot == 0) // center
         {
-            yCoord = -offset;
+            
         }
-        else if(slot == 2) //right
+        else if(slot == 1) // right
         {
-            yCoord = offset;
+            tagPose = tagPose.plus(new Transform2d(0, yOffset, new Rotation2d()));
         }
 
-        Transform2d robotToReef = new Transform2d(xCoord, yCoord, new Rotation2d(rotation));
+        tagPose = tagPose.plus(offset);
 
         SmartDashboard.putNumber("FieldMap/TargetTagID", tagID);
-        SmartDashboard.putNumber("FieldMap/Transform X", xCoord);
-        SmartDashboard.putNumber("FieldMap/Transform Y", yCoord);
-        SmartDashboard.putNumber("FieldMap/TargetTagRotation", rotation);
+        SmartDashboard.putNumber("FieldMap/TargetPoseX", tagPose.getX());
+        SmartDashboard.putNumber("FieldMap/TargetPoseY", tagPose.getY());
+        SmartDashboard.putNumber("FieldMap/TargetPoseTheta", tagPose.getRotation().getRadians());
 
-        return tagPose.plus(robotToReef);
+        return tagPose;
     }
 
     public double findDistance(Pose2d robot2DPose, int tagID) {

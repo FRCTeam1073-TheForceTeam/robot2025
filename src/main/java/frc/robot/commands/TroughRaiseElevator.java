@@ -4,41 +4,53 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralElevator;
-import frc.robot.subsystems.OI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ZeroElevator extends Command {
-  /** Creates a new ZeroElevator. */
+public class TroughRaiseElevator extends Command 
+{
+  /** Creates a new TroughScoreCoral. */
   CoralElevator elevator;
-  OI oi;
-  
-  public ZeroElevator(CoralElevator elevator) {
-    this.elevator = elevator;
+  double velocity;
+  double targetHeight = 12.8;
+  // height 12.8
+  public TroughRaiseElevator(CoralElevator coralElevator) 
+  {
+    elevator = coralElevator;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    elevator.setVelocity(-9);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
-
+  public void execute() 
+  {
+    velocity = (targetHeight - elevator.getPosition()) * 0.6;
+    if (targetHeight > elevator.getPosition())
+    {
+      velocity = MathUtil.clamp(velocity, 3, 12);
+    }
+    else 
+    {
+      velocity = MathUtil.clamp(velocity, -12, -3);  
+    }
+    elevator.setVelocity(velocity);
+  }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.setVelocity(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.isCoralElevatorAtBottom();
+    return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
   }
 }

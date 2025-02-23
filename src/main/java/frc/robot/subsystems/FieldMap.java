@@ -35,8 +35,55 @@ public class FieldMap
         {
             if (findDistance(robotPose, tag.ID) < shortestDistance && tag.ID != 4 && tag.ID != 5 && tag.ID != 14 && tag.ID != 15) 
             {
-                shortestDistance = findDistance(robotPose, bestID);
+                shortestDistance = findDistance(robotPose, tag.ID);
                 bestID = tag.ID;
+            }
+        }
+        return bestID;
+    }
+
+    public int getBestReefTagID(Pose2d robotPose)
+    {
+        double shortestDistance = 998;
+
+        List<AprilTag> aprilTags = fieldMap.getTags();
+        int bestID = -1;
+
+        for(AprilTag tag : aprilTags) 
+        {
+            if (findDistance(robotPose, tag.ID) < shortestDistance && ((tag.ID >= 6 && tag.ID <= 11) || (tag.ID >= 17 && tag.ID <= 22))) 
+            {
+                shortestDistance = findDistance(robotPose, tag.ID);
+                bestID = tag.ID;
+            }
+        }
+        return bestID;
+    }
+
+    public int getBestSourceAndProcessorTagID(Pose2d robotPose, boolean isRed)
+    {
+        double shortestDistance = 998;
+
+        List<AprilTag> aprilTags = fieldMap.getTags();
+        int bestID = -1;
+
+        for(AprilTag tag : aprilTags) 
+        {
+            if (isRed)
+            {
+                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID <= 3 && tag.ID > 0)) 
+                {
+                    shortestDistance = findDistance(robotPose, tag.ID);
+                    bestID = tag.ID;
+                }
+            }
+            else
+            {
+                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID == 12 || tag.ID == 13 || tag.ID == 16)) 
+                {
+                    shortestDistance = findDistance(robotPose, tag.ID);
+                    bestID = tag.ID;
+                }
             }
         }
         return bestID;
@@ -45,19 +92,19 @@ public class FieldMap
     public Pose2d getTagRelativePose(int tagID, int slot, Transform2d offset)
     {
         Pose2d tagPose = fieldMap.getTagPose(tagID).get().toPose2d();
-        double yOffset = 0.5;
+        double yOffset = 0.165;
 
         if(slot == -1) // left
         {
-            tagPose = tagPose.plus(new Transform2d(0, -yOffset, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, -yOffset + 0.2, new Rotation2d()));
         }
         else if(slot == 0) // center
         {
-            
+            tagPose = tagPose.plus(new Transform2d(0, 0.2286, new Rotation2d()));
         }
         else if(slot == 1) // right
         {
-            tagPose = tagPose.plus(new Transform2d(0, yOffset, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, yOffset + 0.2, new Rotation2d()));
         }
 
         tagPose = tagPose.plus(offset);

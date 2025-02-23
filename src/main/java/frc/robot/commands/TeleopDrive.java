@@ -59,7 +59,7 @@ public class TeleopDrive extends Command
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     m_OI = oi;
-
+    fieldCentric = true;
     pointAtTarget = false;
     snapPidProfile = new PIDController(
       0.05, 

@@ -170,7 +170,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
 
-    Trigger alignToTag = new Trigger(m_OI::getDriverAlignToTag);
+    Trigger alignToTag = new Trigger(m_OI::getDriverDPad);
       alignToTag.whileTrue(cmd_alignToTag);
   }
 

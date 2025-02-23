@@ -187,9 +187,9 @@ public class OI extends DiagnosticsSubsystem
     return (driverController.getPOV() == 90);
   }
 
-  public boolean getDriverAlignToTag()
+  public boolean getDriverDPad()
   {
-    return getDriverDPadLeft() || getDriverDPadUp() || getDriverDPadRight();
+    return getDriverDPadLeft() || getDriverDPadUp() || getDriverDPadRight() || getDriverDPadDown();
   }
 
   public void zeroOperatorController() {

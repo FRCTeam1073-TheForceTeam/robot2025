@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -13,6 +15,7 @@ public class TroughScoreAuto extends Command
   /** Creates a new TroughScoreCoral. */
   CoralEndeffector endeffector;
   double velocity;
+  double targetHeight = 12.8;
 
   // height 12.8
   public TroughScoreAuto(CoralEndeffector coralEndeffector) 
@@ -30,10 +33,7 @@ public class TroughScoreAuto extends Command
   @Override
   public void execute() 
   {
-    if(endeffector.getHasCoral())
-    {
       endeffector.setVelocity(22);
-    }
   }
   
   // Called once the command ends or is interrupted.

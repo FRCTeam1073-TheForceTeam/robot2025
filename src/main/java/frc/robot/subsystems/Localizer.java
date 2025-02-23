@@ -152,11 +152,15 @@ public class Localizer extends SubsystemBase
             for(int index = 0; index < measurements.size(); index++) 
             {
                 VisionMeasurement currentMeasurement = measurements.get(index);
-                //TODO: compute terms based on range to target  
-                updateStdDevs(currentMeasurement);
 
-                estimator.addVisionMeasurement(currentMeasurement.pose, currentMeasurement.timeStamp, measurementStdDev);
-                measurementCounter++;
+                if (currentMeasurement.range <= 5)
+                {
+                    //TODO: compute terms based on range to target  
+                    updateStdDevs(currentMeasurement);
+
+                    estimator.addVisionMeasurement(currentMeasurement.pose, currentMeasurement.timeStamp, measurementStdDev);
+                    measurementCounter++;
+                }
             }
             lastUpdateTime = now;
             SmartDashboard.putNumber("Localize Measurements", measurementCounter);
@@ -203,8 +207,8 @@ public class Localizer extends SubsystemBase
 
     private void updateStdDevs(AprilTagFinder.VisionMeasurement measurement)
     {
-        measurementStdDev.set(0, 0, StdDevX + 0.1 * measurement.range); //x standard deviation
-        measurementStdDev.set(1, 0, StdDevY + 0.1 * measurement.range); //y standard deviation
-        measurementStdDev.set(2, 0, StdDevA + 0.1 * measurement.range); //angle standard deviation
+        measurementStdDev.set(0, 0, StdDevX + 0.2 * measurement.range); //x standard deviation
+        measurementStdDev.set(1, 0, StdDevY + 0.2 * measurement.range); //y standard deviation
+        measurementStdDev.set(2, 0, StdDevA + 0.2 * measurement.range); //angle standard deviation
     }
 }

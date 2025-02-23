@@ -67,7 +67,7 @@ public class AlignToTag extends Command
     );
 
     thetaController = new PIDController(
-      1.5, 
+      1.875, 
       0.0,
       0.03
     );
@@ -129,7 +129,7 @@ public class AlignToTag extends Command
       if (slot != 2)
       {
         aprilTagID = fieldMap.getBestReefTagID(currentPose);
-        targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+        targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.65, 0, new Rotation2d(Math.PI)));
       }
       else
       {

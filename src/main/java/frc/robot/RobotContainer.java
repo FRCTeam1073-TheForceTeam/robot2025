@@ -64,6 +64,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ScoreCoral cmd_scoreCoral = new ScoreCoral(m_coralEndeffector);
   private final CoralElevatorToHeight cmd_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, m_OI, 2);
   private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, m_OI, 3);
+  private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, m_OI, 4);
   private final TroughScoreCoral cmd_troughScoreCoral = new TroughScoreCoral(m_coralEndeffector, m_coralElevator);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
@@ -159,6 +160,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
+    
+    Trigger elevatorL4 = new Trigger(m_OI::getOperatorDPadLeft);
+      elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.onTrue(cmd_troughScoreCoral);

@@ -18,13 +18,13 @@ public class LeftL2
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer)  
     {
-        Pose2d tag11Pose = map.getTagRelativePose(11, 0, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+        Pose2d tag11Pose = map.getTagRelativePose(11, 0, new Transform2d(0.6, 0, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(0.75, 0, new Rotation2d()));
+        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(0.6, 0, new Rotation2d()));
 
-        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(0.6, 0, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(0.75, 0, new Rotation2d()));
+        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(0.6, 0, new Rotation2d()));
 
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());

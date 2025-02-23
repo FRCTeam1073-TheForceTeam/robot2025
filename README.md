@@ -49,8 +49,6 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |Y                 |                                |
 |LeftJoystick      |Translation                     |
 |RightJoystick     |Rotation                        |
-|LeftJoystickX     |                                |
-|RightJoystickX    |                                |
 |PressLeftJoystick |                                |
 |PressRightJoystick|                                |
 |DPadUp            |Centered on Apriltag            |
@@ -69,23 +67,23 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 
 |  Button/Joystick | Function/Command         |
 |------------------|--------------------------|
-|A                 |Raise Lift to max height  |
-|B                 |Zero Claw                 |
+|A                 |Disenage Climber          |
+|B                 |Engage Climber            |
 |X                 |Load Coral                |
 |Y                 |Score Coral               |
-|LeftJoystickY     |Raise Elevator            |
-|RightJoystickY    |Raise Lift                |
+|LeftJoystickY     |Coral Elevator            |
+|RightJoystickY    |                          |
 |LeftJoystickX     |                          |
 |RightJoystickX    |                          |
 |PressLeftJoystick |Zero Elevator             |
-|PressRightJoystick|Zero Claw & Lift          |
-|DPadUp            |                          |
+|PressRightJoystick|                          |
+|DPadUp            |Elavtor Trough Level      |
 |DPadDown          |Elevator Branch Level 3   |
 |DPadLeft          |                          |
 |DPadRight         |Elevator Branch Level 2   |
-|LeftBumper        |                          |
-|RightBumper       |                          |
+|LeftBumper        |Climber Up                |
+|RightBumper       |Climber Down              |
 |LeftTrigger       |Coral Endeffector Teleop  |
-|RightTrigger      |                          |
+|RightTrigger      |Cancel Load Coral         |
 |View Button       |                          |
-|Menu Button       |                          |
+|Menu Button       |Zero Climber              |

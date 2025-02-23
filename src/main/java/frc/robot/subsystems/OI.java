@@ -199,6 +199,7 @@ public class OI extends DiagnosticsSubsystem
     RIGHT_X_ZERO = 0;
     RIGHT_Y_ZERO = 0;
     LEFT_X_ZERO = getOperatorLeftX();
+    LEFT_Y_ZERO = getOperatorLeftY();
     RIGHT_X_ZERO = getOperatorRightX();
     RIGHT_Y_ZERO = getOperatorRightY();
   }

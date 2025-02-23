@@ -59,7 +59,7 @@ public class TeleopDrive extends Command
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     m_OI = oi;
-    fieldCentric = true;
+
     pointAtTarget = false;
     snapPidProfile = new PIDController(
       0.05, 
@@ -140,7 +140,7 @@ public class TeleopDrive extends Command
         else 
         {
           //william and Arjun (the short one) waz here
-          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(-vx, -vy, w));
         }
         
     }

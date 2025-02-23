@@ -4,23 +4,15 @@
 
 package frc.robot.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.lang.model.util.ElementScanner14;
-
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.OI;
@@ -42,11 +34,12 @@ public class AlignToTag extends Command
   double yVelocity;
   double wVelocity;
   int slot;
+  boolean isRed;
 
   // private final static double maximumLinearVelocity = 3.5;   // Meters/second
   // private final static double maximumRotationVelocity = 4.0; // Radians/second
-  private final static double maximumLinearVelocity = 1.5;   // Meters/second
-  private final static double maximumRotationVelocity = 2.0; // Radians/second
+  private final static double maximumLinearVelocity = 3.5;   // Meters/second
+  private final static double maximumRotationVelocity = 4.0; // Radians/second
 
   /** Creates a new alignToTag. */
   public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, OI oi) 
@@ -62,22 +55,38 @@ public class AlignToTag extends Command
     slot = -1;
 
     xController = new PIDController(
-      1.1, 
+      1.5, 
       0.0, 
-      0.01
+      0.03
     );
 
     yController = new PIDController(
-      1.1, 
+      1.5, 
       0.0, 
-      0.01
+      0.03
     );
 
     thetaController = new PIDController(
-      1.2, 
+      1.5, 
       0.0,
-      0.01
+      0.03
     );
+
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    if(DriverStation.getAlliance().isPresent())
+    {
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if (alliance == Alliance.Red)
+      {
+        isRed = true;
+      }
+      else
+      {
+        isRed = false;
+      }
+    }
+
 
     addRequirements(drivetrain);
   }
@@ -110,15 +119,23 @@ public class AlignToTag extends Command
     {
       slot = 1;
     }
-    else
+    else if (oi.getDriverDPadDown())
     {
-      slot = -2;
+      slot = 2;
     }
 
     if (aprilTagID == -1)
     {
-      aprilTagID = fieldMap.getBestAprilTagID(currentPose);
-      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.25, 0, new Rotation2d(Math.PI)));
+      if (slot != 2)
+      {
+        aprilTagID = fieldMap.getBestReefTagID(currentPose);
+        targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+      }
+      else
+      {
+        aprilTagID = fieldMap.getBestSourceAndProcessorTagID(currentPose, isRed);
+        targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
+      }
     }
 
     if (targetPose == null)

@@ -27,7 +27,6 @@ import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.TroughRaiseElevator;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterLeftStart;
@@ -64,7 +63,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ScoreCoral cmd_scoreCoral = new ScoreCoral(m_coralEndeffector);
   private final CoralElevatorToHeight cmd_coralElevatorToL2 = new CoralElevatorToHeight(m_coralElevator, 2, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, 3, false);
-  private final TroughRaiseElevator cmd_troughRaiseElevator = new TroughRaiseElevator(m_coralElevator);
+  private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);

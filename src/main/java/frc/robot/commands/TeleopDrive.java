@@ -152,16 +152,16 @@ public class TeleopDrive extends Command
         ChassisSpeeds creepSpeeds = new ChassisSpeeds();
 
         if(dPadUp) {
-          creepSpeeds.vxMetersPerSecond = 0.1;
+          creepSpeeds.vxMetersPerSecond = 0.15;
         }
         if(dPadDown) {
-          creepSpeeds.vxMetersPerSecond = -0.1;
+          creepSpeeds.vxMetersPerSecond = -0.15;
         }
         if(dPadRight) {
-          creepSpeeds.vyMetersPerSecond = -0.1;
+          creepSpeeds.vyMetersPerSecond = -0.15;
         }
         if(dPadLeft) {
-          creepSpeeds.vyMetersPerSecond = 0.1;
+          creepSpeeds.vyMetersPerSecond = 0.15;
         }
         drivetrain.setTargetChassisSpeeds(creepSpeeds);
 

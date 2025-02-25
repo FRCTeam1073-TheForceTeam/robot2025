@@ -23,7 +23,10 @@ public class CoralElevatorToHeight extends Command {
     this.branchLevel = branchLevel;
     this.terminate = terminate;
     
-    if(branchLevel == 2){
+    if(branchLevel == 1){
+      targetHeight = 12.8;
+    }
+    else if(branchLevel == 2){
       targetHeight = 17.3;
     }
     else if (branchLevel == 3){

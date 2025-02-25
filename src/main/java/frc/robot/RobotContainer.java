@@ -290,7 +290,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
        {
           isRed = false;
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
-          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline the 2 causes the startup to be correct but we don't know why
+          startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
         }
         else if (alliance == Alliance.Red)
         { 

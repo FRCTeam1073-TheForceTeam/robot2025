@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.concurrent.BlockingDeque;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -31,6 +34,7 @@ public class CoralElevator extends SubsystemBase {
   private final double frontKD = 0.0;
   private final double frontKI = 0.01;
   private final double frontKV = 0.12; // Kraken kV value.
+  private final double frontKA = 0.01;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 44.0;
@@ -42,12 +46,14 @@ public class CoralElevator extends SubsystemBase {
   private double frontLoad;
   private double load;
   private double commandedVelocity;
+  private double commandedPosition;
   private boolean brakemode;
   private boolean isAtZero;
+  private boolean velocityMode = true;
 
   private TalonFX backElevatorMotor, frontElevatorMotor;
   private VelocityVoltage frontElevatorMotorVelocityVoltage;
-  private PositionVoltage frontElevatorMotorPositionVoltage;
+  private MotionMagicVoltage frontPositionController = new MotionMagicVoltage(0);
   private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
@@ -60,7 +66,6 @@ public class CoralElevator extends SubsystemBase {
     commandedVelocity = 0.0;
 
     frontElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    frontElevatorMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     zeroSensor = new DigitalInput(4);
 
@@ -89,8 +94,13 @@ public class CoralElevator extends SubsystemBase {
 
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
-
-    frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
+    if(velocityMode) {
+      frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
+      commandedPosition = position;
+    }
+    else {
+      frontElevatorMotor.setControl(frontPositionController.withPosition(commandedPosition));
+    }
 
     SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
@@ -113,7 +123,14 @@ public class CoralElevator extends SubsystemBase {
 
   public void setVelocity(double velocity) {
     // TODO: Convert command internall from meters/second to internal commandedVelocity value using ratio, etc.
+    velocityMode = true;
     commandedVelocity = velocity;
+  }
+
+  public void setPosition(double position) {
+    //this method is for mode control to hold motor positions
+    velocityMode = false;
+    commandedPosition = position;
   }
 
   public boolean isCoralElevatorAtBottom(){
@@ -148,6 +165,12 @@ public class CoralElevator extends SubsystemBase {
   public void configureHardware() {
 
     var frontElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
+
+    var mmConfigs = frontElevatorMotorConfig.MotionMagic;
+    mmConfigs.MotionMagicCruiseVelocity = 30;
+    mmConfigs.MotionMagicAcceleration = 60;
+    mmConfigs.MotionMagicJerk = 600;
+
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
     var backElevatorMotorConfig = new TalonFXConfiguration();
@@ -160,6 +183,7 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorClosedLoopConfig.withKI(frontKI);
     frontElevatorMotorClosedLoopConfig.withKD(frontKD);
     frontElevatorMotorClosedLoopConfig.withKV(frontKV);
+    frontElevatorMotorClosedLoopConfig.withKA(frontKA);
 
     var error = frontElevatorMotor.getConfigurator().apply(frontElevatorMotorClosedLoopConfig, 0.5);
     // TODO hardware error checking.

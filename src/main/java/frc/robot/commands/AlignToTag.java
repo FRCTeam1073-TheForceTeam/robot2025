@@ -107,19 +107,19 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-    if (oi.getDriverDPadLeft())
+    if (oi.getDriverXButton())
     {
       slot = -1;
     }
-    else if (oi.getDriverDPadUp())
+    else if (oi.getDriverAButton())
     {
       slot = 0;
     }
-    else if (oi.getDriverDPadRight())
+    else if (oi.getDriverYButton())
     {
       slot = 1;
     }
-    else if (oi.getDriverDPadDown())
+    else if (oi.getDriverBButton())
     {
       slot = 2;
     }

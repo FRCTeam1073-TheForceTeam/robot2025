@@ -12,17 +12,21 @@ import frc.robot.subsystems.OI;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralElevatorToHeight extends Command {
   CoralElevator elevator;
-  OI oi;
   int branchLevel;
   double velocity;
   double targetHeight = 0.0;
+  boolean terminate = false;
+
   /** Creates a new CoralElevatorToHeight. */
-  public CoralElevatorToHeight(CoralElevator elevator, OI oi, int branchLevel) {
+  public CoralElevatorToHeight(CoralElevator elevator, int branchLevel, boolean terminate) {
     this.elevator = elevator;
-    this.oi = oi;
     this.branchLevel = branchLevel;
+    this.terminate = terminate;
     
-    if(branchLevel == 2){
+    if(branchLevel == 1){
+      targetHeight = 12.8;
+    }
+    else if(branchLevel == 2){
       targetHeight = 17.3;
     }
     else if (branchLevel == 3){
@@ -42,14 +46,16 @@ public class CoralElevatorToHeight extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = (targetHeight - elevator.getPosition()) * 0.6;
-    if(targetHeight > elevator.getPosition()){
-      velocity = MathUtil.clamp(velocity, 3, 12);
-    }
-    else{
-      velocity = MathUtil.clamp(velocity, -12, -3);  
-    }
-    elevator.setVelocity(velocity);
+    // velocity = (targetHeight - elevator.getPosition()) * 0.6;
+    // if(targetHeight > elevator.getPosition()){
+    //   velocity = MathUtil.clamp(velocity, 3, 12);
+    // }
+    // else{
+    //   velocity = MathUtil.clamp(velocity, -12, -3);  
+    // }
+    // elevator.setVelocity(velocity);
+
+    elevator.setPosition(targetHeight);
   }
 
   // Called once the command ends or is interrupted.
@@ -59,6 +65,11 @@ public class CoralElevatorToHeight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
+    if(terminate) {
+      return Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight);
+    }
+    else {
+      return false;
+    }
   }
 }

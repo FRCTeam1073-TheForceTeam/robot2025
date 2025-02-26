@@ -23,6 +23,7 @@ public class OI extends DiagnosticsSubsystem
   public Debouncer aDriverButtonDebouncer = new Debouncer(0.05);
   public Debouncer bDriverButtonDebouncer = new Debouncer(0.05);
   public Debouncer yDriverButtonDebouncer = new Debouncer(0.05);
+  public Debouncer xDriverButtonDebouncer = new Debouncer(0.05);
   public Debouncer menuOperatorButtonDebouncer = new Debouncer(0.13);
 
   // Declares the "zero" value variables (which allow us to compensate for joysticks that are a little off)
@@ -161,10 +162,15 @@ public class OI extends DiagnosticsSubsystem
     return bDriverButtonDebouncer.calculate(driverController.getRawButton(2));
   }
 
-  public boolean getYButtonDriver()
+  public boolean getDriverYButton()
   {
     
     return yDriverButtonDebouncer.calculate(driverController.getRawButton(4));
+  }
+
+  public boolean getDriverXButton()
+  {
+    return xDriverButtonDebouncer.calculate(driverController.getRawButton(3));
   }
 
   public boolean getDriverDPadUp()
@@ -187,9 +193,13 @@ public class OI extends DiagnosticsSubsystem
     return (driverController.getPOV() == 90);
   }
 
-  public boolean getDriverDPad()
+  public boolean getDriverPaddles()
   {
-    return getDriverDPadLeft() || getDriverDPadUp() || getDriverDPadRight() || getDriverDPadDown();
+    return getDriverAButton() || getDriverBButton() || getDriverXButton() || getDriverYButton();
+  }
+
+  public boolean getDriverLeftJoystickPress(){
+    return getDriverRawButton(9);
   }
 
   public void zeroOperatorController() {

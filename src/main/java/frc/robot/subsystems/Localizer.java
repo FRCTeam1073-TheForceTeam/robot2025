@@ -7,6 +7,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -108,6 +109,12 @@ public class Localizer extends SubsystemBase
     public void resetPose(Pose2d newPos) 
     {
         estimator = new SwerveDrivePoseEstimator(kinematics, driveTrain.getOdometry().getRotation(), swerveModulePositions, newPos);
+    }
+
+    public void resetOrientation()
+    {
+        Pose2d restPos = new Pose2d(estimator.getEstimatedPosition().getTranslation(), new Rotation2d(0));
+        estimator = new SwerveDrivePoseEstimator(kinematics, driveTrain.getOdometry().getRotation(), swerveModulePositions, restPos);
     }
 
     public double getLinearSpeed() 

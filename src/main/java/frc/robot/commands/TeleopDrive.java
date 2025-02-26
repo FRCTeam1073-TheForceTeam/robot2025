@@ -108,12 +108,17 @@ public class TeleopDrive extends Command
       drivetrain.parkingBrake(false);
     }
     else 
-    { 
+    {
+      var dPadUp = m_OI.getDriverDPadUp(); 
+      var dPadDown = m_OI.getDriverDPadDown();
+      var dPadLeft = m_OI.getDriverDPadLeft();
+      var dPadRight = m_OI.getDriverDPadRight();
+
+      if(!dPadUp && !dPadDown && !dPadLeft && !dPadRight) {
+
       //multiples the angle by a number from 1 to the square root of 30:
         mult1 = 1.0 + (m_OI.getDriverLeftTrigger() * ((Math.sqrt(25)) - 1));
         mult2 = 1.0 + (m_OI.getDriverRightTrigger() * ((Math.sqrt(25)) - 1));
-
-        
 
         //sets deadzones on the controller to extend to .05:
         if(Math.abs(leftY) < .15) {leftY = 0;}
@@ -139,22 +144,44 @@ public class TeleopDrive extends Command
         }
         else 
         {
-          //william and Arjun (the short one) waz here
           drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(-vx, -vy, w));
         }
-        
-    }
-    
-    // Allow driver to zero the drive subsystem heading for field-centric control.
-    if(m_OI.getDriverViewButton())
-    {
-      drivetrain.zeroHeading();
+      }
+      else {
+        //robot centric creep
+        ChassisSpeeds creepSpeeds = new ChassisSpeeds();
+
+        if(dPadUp) {
+          creepSpeeds.vxMetersPerSecond = 0.15;
+        }
+        if(dPadDown) {
+          creepSpeeds.vxMetersPerSecond = -0.15;
+        }
+        if(dPadRight) {
+          creepSpeeds.vyMetersPerSecond = -0.15;
+        }
+        if(dPadLeft) {
+          creepSpeeds.vyMetersPerSecond = 0.15;
+        }
+        drivetrain.setTargetChassisSpeeds(creepSpeeds);
+
+      } 
     }
 
-    if(m_OI.getDriverAButton()){
+    
+    // Allow driver to zero the drive subsystem heading for field-centric control.
+    // if(m_OI.getDriverViewButton())
+    // {
+    //   drivetrain.zeroHeading();
+    // }
+
+
+    //TODO: we should test resetting odometry to see if it works
+    if(m_OI.getDriverMenuButton()){
       Rotation2d zeroRotate = new Rotation2d();
       Pose2d zero = new Pose2d(0.0, 0.0, zeroRotate);
       drivetrain.resetOdometry(zero);
+      localizer.resetOrientation();
     }
 
 

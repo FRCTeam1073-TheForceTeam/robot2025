@@ -43,10 +43,10 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 
 |  Button/Joystick | Function/Command               |
 |------------------|--------------------------------|
-|A                 |Reset odometry                  |
-|B                 |                                |
-|X                 |                                |
-|Y                 |                                |
+|A/P3              |AlignToTag Center               |
+|B/P1              |Align To Source                 |
+|X/P4              |AlignToTag Left                 |
+|Y/P2              |AlignToTag Right                |
 |LeftJoystick      |Translation                     |
 |RightJoystick     |Rotation                        |
 |PressLeftJoystick |                                |
@@ -60,7 +60,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
 |View Button       |Zero heading                    |
-|Menu Button       |                                |
+|Menu Button       |Reset Odometry                  |
 
 
 ## Operator Controller

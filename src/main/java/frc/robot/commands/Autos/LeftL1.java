@@ -8,9 +8,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
-import frc.robot.commands.TroughRaiseElevator;
 import frc.robot.commands.TroughScoreAuto;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
@@ -48,9 +49,10 @@ public class LeftL1
         
 
         return new SequentialCommandGroup(
+            new LoadCoral(endEffector),
             new ParallelCommandGroup(
                 new DrivePath(drivetrain, path, localizer),
-                new TroughRaiseElevator(elevator)
+                new CoralElevatorToHeight(elevator, 1, true)
             ),
             new TroughScoreAuto(endEffector),
             new ZeroElevator(elevator)

@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems;
 
+import java.util.concurrent.BlockingDeque;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,10 +32,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralElevator extends SubsystemBase {
   private final String kCANbus = "rio";
-  private final double frontKP = 0.2;
-  private final double frontKD = 0.0;
-  private final double frontKI = 0.01;
-  private final double frontKV = 0.12; // Kraken kV value.
+  private final double velocityKP = 0.2;
+  private final double velocityKD = 0.0;
+  private final double velocityKI = 0.01;
+  private final double velocityKV = 0.12; // Kraken kV value.
+  private final double velocityKA = 0.01;
+
+  private final double positionKP = 0.2;
+  private final double positionKD = 0.0;
+  private final double positionKI = 0.1;
+  private final double positionKV = 0.12; 
+  private final double positionKA = 0.01;
+  private final double positionKS = 0.1;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 44.0;
@@ -42,12 +55,14 @@ public class CoralElevator extends SubsystemBase {
   private double frontLoad;
   private double load;
   private double commandedVelocity;
+  private double commandedPosition;
   private boolean brakemode;
   private boolean isAtZero;
+  private boolean velocityMode = true;
 
   private TalonFX backElevatorMotor, frontElevatorMotor;
   private VelocityVoltage frontElevatorMotorVelocityVoltage;
-  private PositionVoltage frontElevatorMotorPositionVoltage;
+  private MotionMagicVoltage frontPositionController;
   private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
@@ -60,7 +75,7 @@ public class CoralElevator extends SubsystemBase {
     commandedVelocity = 0.0;
 
     frontElevatorMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
-    frontElevatorMotorPositionVoltage = new PositionVoltage(0).withSlot(0);
+    frontPositionController = new MotionMagicVoltage(0).withSlot(1);
 
     zeroSensor = new DigitalInput(4);
 
@@ -89,8 +104,13 @@ public class CoralElevator extends SubsystemBase {
 
     if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
-
-    frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity));
+    if(velocityMode) {
+      frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity).withSlot(0));
+      commandedPosition = position;
+    }
+    else {
+      frontElevatorMotor.setControl(frontPositionController.withPosition(commandedPosition).withSlot(1));
+    }
 
     SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
     SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
@@ -113,7 +133,14 @@ public class CoralElevator extends SubsystemBase {
 
   public void setVelocity(double velocity) {
     // TODO: Convert command internall from meters/second to internal commandedVelocity value using ratio, etc.
+    velocityMode = true;
     commandedVelocity = velocity;
+  }
+
+  public void setPosition(double position) {
+    //this method is for mode control to hold motor positions
+    velocityMode = false;
+    commandedPosition = position;
   }
 
   public boolean isCoralElevatorAtBottom(){
@@ -149,20 +176,33 @@ public class CoralElevator extends SubsystemBase {
 
     var frontElevatorMotorConfig = new TalonFXConfiguration();//TODO check configs with robots
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig);
+
+    var mmConfigs = frontElevatorMotorConfig.MotionMagic;
+    mmConfigs.MotionMagicCruiseVelocity = 40;
+    mmConfigs.MotionMagicAcceleration = 80;
+    mmConfigs.MotionMagicJerk = 800;
+
+    var frontElevatorMotorClosedLoop0Config =  frontElevatorMotorConfig.Slot0;
+    var frontElevatorMotorClosedLoop1Config = frontElevatorMotorConfig.Slot1;
+
+    frontElevatorMotorClosedLoop0Config.withKP(velocityKP);
+    frontElevatorMotorClosedLoop0Config.withKI(velocityKI);
+    frontElevatorMotorClosedLoop0Config.withKD(velocityKD);
+    frontElevatorMotorClosedLoop0Config.withKV(velocityKV);
+    frontElevatorMotorClosedLoop0Config.withKA(velocityKA);
+
+    frontElevatorMotorClosedLoop1Config.withKP(positionKP);
+    frontElevatorMotorClosedLoop1Config.withKI(positionKI);
+    frontElevatorMotorClosedLoop1Config.withKD(positionKD);
+    frontElevatorMotorClosedLoop1Config.withKV(positionKV);
+    frontElevatorMotorClosedLoop1Config.withKA(positionKA);
+    frontElevatorMotorClosedLoop1Config.withKS(positionKS);
+
+    frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig, 0.5);
+
     var backElevatorMotorConfig = new TalonFXConfiguration();
-    backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig);
+    backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig, 0.5);
      // Same config as other motor to start.
-
-
-    var frontElevatorMotorClosedLoopConfig = new SlotConfigs();
-    frontElevatorMotorClosedLoopConfig.withKP(frontKP);
-    frontElevatorMotorClosedLoopConfig.withKI(frontKI);
-    frontElevatorMotorClosedLoopConfig.withKD(frontKD);
-    frontElevatorMotorClosedLoopConfig.withKV(frontKV);
-
-    var error = frontElevatorMotor.getConfigurator().apply(frontElevatorMotorClosedLoopConfig, 0.5);
-    // TODO hardware error checking.
 
     //TODO consider changing brakemode (also test ungeared setup before gearing)
     frontElevatorMotor.setNeutralMode(NeutralModeValue.Brake);

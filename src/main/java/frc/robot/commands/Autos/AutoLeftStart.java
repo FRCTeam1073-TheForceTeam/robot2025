@@ -22,9 +22,9 @@ public class AutoLeftStart
         {
             
             case 0: 
-               return GenericL0.create(isRed, drivetrain, localizer, climber);
+               return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return LeftL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+               return ScoreL4LoadLeft.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
                return LeftL2.create(isRed, drivetrain, map, localizer);
             case 3:

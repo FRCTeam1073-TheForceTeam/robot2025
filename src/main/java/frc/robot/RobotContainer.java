@@ -91,8 +91,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String testLevel = "Test Level";
   private static final String noLevelAuto = "No Level";
-  private static final String level0 = "Level 0";
-  private static final String level1 = "Level 1";
+  private static final String leave = "Leave";
+  private static final String scoreL4loadEdge = "Score L4 Load Edge";
+  private static final String scoreL4Center = "Score L4 Center";
   private static final String level2 = "Level 2";
   private static final String level3 = "Level 3";
   private static final String level4 = "Level 4";
@@ -121,8 +122,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
     m_levelChooser.addOption("Test Auto", testLevel);
-    m_levelChooser.addOption("Level 0", level0);
-    m_levelChooser.addOption("Level 1", level1);
+    m_levelChooser.addOption("Leave", leave);
+    m_levelChooser.addOption("Score L4 Load Edge", scoreL4loadEdge);
+    m_levelChooser.addOption("Score L4 Center", scoreL4Center);
     m_levelChooser.addOption("Level 2", level2);
     m_levelChooser.addOption("Level 3", level3);
     m_levelChooser.addOption("Level 4", level4);
@@ -189,10 +191,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noLevelAuto:
         level = -1;
         break;
-      case level0:
+      case leave:
         level = 0;
         break;
-      case level1:
+      case scoreL4loadEdge:
+        level = 1;
+        break;
+      case scoreL4Center:
         level = 1;
         break;
       case level2:
@@ -203,9 +208,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         break;
       case level4:
         level = 4;                  
-        break;
-      case testLevel:
-        level = 99;
         break;
       default:
         level = -1;

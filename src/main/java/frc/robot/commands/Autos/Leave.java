@@ -13,7 +13,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 
-public class GenericL0 
+public class Leave 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, Localizer localizer, Climber climber)
     {

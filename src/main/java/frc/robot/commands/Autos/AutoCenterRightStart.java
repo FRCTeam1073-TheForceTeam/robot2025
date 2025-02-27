@@ -22,9 +22,9 @@ public class AutoCenterRightStart
         switch (level)
         {
             case 0: 
-               return GenericL0.create(isRed, drivetrain, localizer, climber);
+               return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return CenterL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+               return CenterRightL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
                return CenterRightL2.create(isRed, drivetrain, map, localizer, delay);
             case 3:

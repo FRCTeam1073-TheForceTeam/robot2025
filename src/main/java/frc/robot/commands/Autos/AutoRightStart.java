@@ -21,17 +21,15 @@ public class AutoRightStart
         switch(level) 
         {
             case 0: 
-               return GenericL0.create(isRed, drivetrain, localizer, climber);
+               return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-                return RightL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return ScoreL4LoadRight.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
                 return RightL2.create(isRed, drivetrain, map, localizer);
             case 3:
                 return RightL3.create(isRed, drivetrain);
             case 4:
                 return RightL4.create(isRed, drivetrain);
-            case 99: 
-                return TestAuto.create(isRed, drivetrain, localizer);
             default:
                 return new WaitCommand(0);
         }

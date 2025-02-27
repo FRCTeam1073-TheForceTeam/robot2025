@@ -16,18 +16,19 @@ import frc.robot.commands.TroughScoreAuto;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
+import frc.robot.commands.ScoreCoral;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
-public class CenterL1 
+public class CenterLeftL1 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
     {
-        Pose2d tag10Pose = map.getTagRelativePose(10, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag10Pose = map.getTagRelativePose(10, -1, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag21Pose = map.getTagRelativePose(21, -1, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
@@ -50,11 +51,9 @@ public class CenterL1
 
         return new SequentialCommandGroup(
             new LoadCoral(endEffector),
-            new ParallelCommandGroup(
-                new DrivePath(drivetrain, path, localizer),
-                new CoralElevatorToHeight(elevator, 1, true)
-            ),
-            new TroughScoreAuto(endEffector), 
+            new DrivePath(drivetrain, path, localizer),
+            new CoralElevatorToHeight(elevator, 4, true),
+            new ScoreCoral(endEffector),
             new ZeroElevator(elevator)
         );
     }   

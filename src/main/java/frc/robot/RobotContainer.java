@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeCommand;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.CancelLoadCoral;
 import frc.robot.commands.ClimberTeleop;
@@ -71,6 +72,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
+  private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 

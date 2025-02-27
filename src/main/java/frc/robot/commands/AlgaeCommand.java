@@ -5,44 +5,28 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralEndeffectorTeleop extends Command {
-
+public class AlgaeCommand extends Command {
+  /** Creates a new AlgaeCommand. */
   CoralEndeffector endeffector;
-  OI oi;
-  private double velocity = 0.5;
-
-  /** Creates a new CoralEndeffectorTeleop. */
-  public CoralEndeffectorTeleop(CoralEndeffector Endeffector, OI Oi){
-    // Use addRequirements() here to declare subsystem dependencies.
+  double velocity;
+  public AlgaeCommand(CoralEndeffector Endeffector, double vel) {
     endeffector = Endeffector;
-    oi = Oi;
+    velocity = vel;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(endeffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(oi.getOperatorViewButton()){
-      endeffector.setVelocity(velocity);
-    }
-    
-    else if(oi.getOperatorLeftTrigger() > 0.2){
-      endeffector.setVelocity(-20 * oi.getOperatorLeftTrigger());
-    }
-
-    else {
-      endeffector.setVelocity(0);
-    }
+    endeffector.setVelocity(velocity);
   }
 
   // Called once the command ends or is interrupted.

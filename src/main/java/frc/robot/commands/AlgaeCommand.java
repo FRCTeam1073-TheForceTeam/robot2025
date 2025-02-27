@@ -11,9 +11,10 @@ import frc.robot.subsystems.CoralEndeffector;
 public class AlgaeCommand extends Command {
   /** Creates a new AlgaeCommand. */
   CoralEndeffector endeffector;
-
-  public AlgaeCommand(CoralEndeffector Endeffector) {
+  double velocity;
+  public AlgaeCommand(CoralEndeffector Endeffector, double vel) {
     endeffector = Endeffector;
+    velocity = vel;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(endeffector);
   }
@@ -25,7 +26,7 @@ public class AlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endeffector.setVelocity(-10);
+    endeffector.setVelocity(velocity);
   }
 
   // Called once the command ends or is interrupted.

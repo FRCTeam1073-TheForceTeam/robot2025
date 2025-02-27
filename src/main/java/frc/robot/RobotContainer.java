@@ -72,7 +72,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
-  private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector);
+  private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -153,9 +153,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(cmd_scoreCoral);
-
-    Trigger removeAlgae = new Trigger(m_OI::getOperatorLeftTrigger);
-      removeAlgae.whileTrue(cmd_algaeCommand);
 
     // Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
     //   zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));

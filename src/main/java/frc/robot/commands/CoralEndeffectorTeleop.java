@@ -35,7 +35,12 @@ public class CoralEndeffectorTeleop extends Command {
     if(oi.getOperatorViewButton()){
       endeffector.setVelocity(velocity);
     }
-    else{
+    
+    else if(oi.getOperatorLeftTrigger() > 0.2){
+      endeffector.setVelocity(-20 * oi.getOperatorLeftTrigger());
+    }
+
+    else {
       endeffector.setVelocity(0);
     }
   }

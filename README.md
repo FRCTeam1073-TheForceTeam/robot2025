@@ -30,14 +30,14 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Endeffector Motor     |  21    |   Rio         |
 | LaserCAN              |  22    |   Rio         |
 | PDH                   |  36    |   Rio         |
-| Collector Motor       |   ?    | CANivore |
-| Lift Motor            |   ?    | CANivore |
-| Extend Motor          |   ?    | CANivore |
-| Top Shooter Motor     |   ?    | CANivore |
-| Bottom Shooter Motor  |   ?    | CANivore |
-| Leader Feeder Motor   |   ?    | CANivore |
-| Follower Feeder Motor |   ?    | CANivore |
-| Pivot Motor           |   ?    | CANivore |
+| Collector Motor       |   ?    |   CANivore    |
+| Lift Motor            |   ?    |   CANivore    |
+| Extend Motor          |   ?    |   CANivore    |
+| Top Shooter Motor     |   ?    |   CANivore    |
+| Bottom Shooter Motor  |   ?    |   CANivore    |
+| Leader Feeder Motor   |   ?    |   CANivore    |
+| Follower Feeder Motor |   ?    |   CANivore    |
+| Pivot Motor           |   ?    |   CANivore    |
 
 ## Driver Controller
 
@@ -51,10 +51,10 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightJoystick     |Rotation                        |
 |PressLeftJoystick |                                |
 |PressRightJoystick|                                |
-|DPadUp            |Centered on Apriltag            |
-|DPadDown          |                                |
-|DPadLeft          |Apriltag offset for left branch |
-|DPadRight         |Apriltag offset for right branch|
+|DPadUp            |Creep Forward                   |
+|DPadDown          |Creep Backward                  |
+|DPadLeft          |Creep Left                      |
+|DPadRight         |Creep Right                     |
 |LeftBumper        |Parking break                   |
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |

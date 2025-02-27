@@ -133,7 +133,7 @@ public class AlignToTag extends Command
       }
       else
       {
-        aprilTagID = fieldMap.getBestSourceAndProcessorTagID(currentPose, isRed);
+        aprilTagID = fieldMap.getBestSourceTagID(currentPose, isRed);
         targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
       }
     }

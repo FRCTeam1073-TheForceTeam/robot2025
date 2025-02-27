@@ -60,7 +60,7 @@ public class FieldMap
         return bestID;
     }
 
-    public int getBestSourceAndProcessorTagID(Pose2d robotPose, boolean isRed)
+    public int getBestSourceTagID(Pose2d robotPose, boolean isRed)
     {
         double shortestDistance = 998;
 
@@ -71,7 +71,7 @@ public class FieldMap
         {
             if (isRed)
             {
-                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID <= 3 && tag.ID > 0)) 
+                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID <= 2 && tag.ID > 0)) 
                 {
                     shortestDistance = findDistance(robotPose, tag.ID);
                     bestID = tag.ID;
@@ -79,7 +79,7 @@ public class FieldMap
             }
             else
             {
-                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID == 12 || tag.ID == 13 || tag.ID == 16)) 
+                if (findDistance(robotPose, tag.ID) < shortestDistance && (tag.ID == 12 || tag.ID == 13)) 
                 {
                     shortestDistance = findDistance(robotPose, tag.ID);
                     bestID = tag.ID;

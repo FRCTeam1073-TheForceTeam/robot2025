@@ -59,7 +59,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
-|View Button       |Zero heading                    |
+|View Button       |Correction Align                |
 |Menu Button       |Reset Odometry                  |
 
 

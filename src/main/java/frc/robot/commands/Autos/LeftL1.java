@@ -8,10 +8,12 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
+import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TroughScoreAuto;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
@@ -26,11 +28,11 @@ public class LeftL1
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
     {
-        Pose2d tag11Pose = map.getTagRelativePose(11, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag11Pose = map.getTagRelativePose(11, -1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
         Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(0.6, 0, new Rotation2d()));
 
-        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
         Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(0.6, 0, new Rotation2d()));
 
@@ -54,8 +56,8 @@ public class LeftL1
         {
             segments1.add(new Segment(start, tag11, tag11Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag11, redI1, redIntermediatePose.getRotation().getRadians(), 1));
-            segments2.add(new Segment(redI1, tag1, tag1Pose.getRotation().getRadians(), 1));
+            segments2.add(new Segment(tag11, redI1, redIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(redI1, tag1, tag1Pose.getRotation().getRadians(), 2));
 
             path1 = new Path(segments1, tag11Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag1Pose.getRotation().getRadians());
@@ -64,8 +66,8 @@ public class LeftL1
         {
             segments1.add(new Segment(start, tag20, tag20Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag20, blueI1, blueIntermediatePose.getRotation().getRadians(), 1));
-            segments2.add(new Segment(blueI1, tag13, tag13Pose.getRotation().getRadians(), 1));
+            segments2.add(new Segment(tag20, blueI1, blueIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(blueI1, tag13, tag13Pose.getRotation().getRadians(), 2));
 
             path1 = new Path(segments1, tag20Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag13Pose.getRotation().getRadians());
@@ -76,11 +78,15 @@ public class LeftL1
             new LoadCoral(endEffector),
             new ParallelCommandGroup(
                 new DrivePath(drivetrain, path1, localizer),
-                new CoralElevatorToHeight(elevator, 1, true)
+                new CoralElevatorToHeight(elevator, 4, true)
             ),
-            new TroughScoreAuto(endEffector),
-            new ZeroElevator(elevator),
-            new DrivePath(drivetrain, path2, localizer)
+            new WaitCommand(3),
+            // new TroughScoreAuto(endEffector),
+            new ScoreCoral(endEffector),
+            new ParallelCommandGroup(
+                new ZeroElevator(elevator),
+                new DrivePath(drivetrain, path2, localizer)
+            )
         );
     }     
 }

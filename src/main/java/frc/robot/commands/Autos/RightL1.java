@@ -52,20 +52,20 @@ public class RightL1
 
         if (isRed)
         {
-            segments1.add(new Segment(start, tag9, tag9Pose.getRotation().getRadians(), 1));
+            segments1.add(new Segment(start, tag9, tag9Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag9, redI1, redIntermediatePose.getRotation().getRadians(), 1));
-            segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), 1));
+            segments2.add(new Segment(tag9, redI1, redIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), 2));
 
             path1 = new Path(segments1, tag9Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
         }
         else
         {
-            segments1.add(new Segment(start, tag22, tag22Pose.getRotation().getRadians(), 1));
+            segments1.add(new Segment(start, tag22, tag22Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag22, blueI1, blueIntermediatePose.getRotation().getRadians(), 1));
-            segments2.add(new Segment(blueI1, tag12, tag12Pose.getRotation().getRadians(), 1));
+            segments2.add(new Segment(tag22, blueI1, blueIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(blueI1, tag12, tag12Pose.getRotation().getRadians(), 2));
 
             path1 = new Path(segments1, tag22Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
@@ -78,9 +78,11 @@ public class RightL1
                 new DrivePath(drivetrain, path1, localizer),
                 new CoralElevatorToHeight(elevator, 1, true)
             ),
-            new TroughScoreAuto(endEffector), 
-            new ZeroElevator(elevator),
-            new DrivePath(drivetrain, path2, localizer)
+            new TroughScoreAuto(endEffector),
+            new ParallelCommandGroup(
+                new ZeroElevator(elevator),
+                new DrivePath(drivetrain, path2, localizer)
+            )
         );
     }  
 }

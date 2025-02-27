@@ -39,8 +39,8 @@ public class CoralElevator extends SubsystemBase {
   private final double velocityKA = 0.01;
 
   private final double positionKP = 0.2;
-  private final double positionKD = 0.0;
-  private final double positionKI = 0.1;
+  private final double positionKD = 0.02;
+  private final double positionKI = 0.15;
   private final double positionKV = 0.12; 
   private final double positionKA = 0.01;
   private final double positionKS = 0.1;

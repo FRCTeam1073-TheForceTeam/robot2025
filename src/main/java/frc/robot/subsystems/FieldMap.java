@@ -96,7 +96,7 @@ public class FieldMap
 
         if(slot == -1) // left
         {
-            tagPose = tagPose.plus(new Transform2d(0, -yOffset + 0.2, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, -yOffset + 0.25, new Rotation2d()));
         }
         else if(slot == 0) // center
         {

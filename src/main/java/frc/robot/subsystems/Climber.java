@@ -38,8 +38,8 @@ public class Climber extends SubsystemBase
   private double commandedVelocity = 0;
   private boolean brakeMode = true;
 
-  public final double minPosition = -.275;
-  public final double maxPosition = .4;
+  public final double minPosition = -.262;
+  public final double maxPosition = .35;
 
 
   /** Creates a new Climber. */
@@ -140,7 +140,7 @@ public class Climber extends SubsystemBase
 
     motor.getConfigurator().apply(motorClosedLoopConfig, 0.5);
 
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.setNeutralMode(NeutralModeValue.Coast);
 
     CurrentLimitsConfigs motorCurrentLimitsConfigs = new CurrentLimitsConfigs();
     motorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)

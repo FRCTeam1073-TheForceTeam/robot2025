@@ -16,7 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // For the LaserCAN Sensor:
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.ConfigurationFailedException;
-
+import edu.wpi.first.epilogue.logging.LazyBackend;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,19 +30,24 @@ public class CoralEndeffector extends SubsystemBase {
     private final double leftKV = 0.12; // Kraken.
 
     private final double minCoralDistance = 0.03;
+    private final double minReefDistance = 0.50;
 
     private double velocity;
     private double position;
     private double load;
     private double commandedVelocity;
     private double coralDistance;
-    private boolean hasCoral;
+    private boolean hasCoral = false;
+
+    private double reefDistance;
+    private boolean hasReef = false;
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
    
     // LaserCAN Sensor:
-    private LaserCan laserCAN;
+    private LaserCan laserCANCoral;
+    private LaserCan laserCANReef;
 
     public CoralEndeffector() {
         hasCoral = false;
@@ -51,7 +56,8 @@ public class CoralEndeffector extends SubsystemBase {
         motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
 
         // Sensor setup:
-        laserCAN = new LaserCan(22);
+        laserCANCoral = new LaserCan(22);
+        laserCANReef = new LaserCan(24);
 
 
         configureHardware();
@@ -67,9 +73,9 @@ public class CoralEndeffector extends SubsystemBase {
         load = motor.getTorqueCurrent().getValueAsDouble();
         
         // Read the coral sensor.
-        LaserCan.Measurement measurement = laserCAN.getMeasurement();
-        if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-            coralDistance = measurement.distance_mm * 0.001; // mm's
+        LaserCan.Measurement coral_measurement = laserCANCoral.getMeasurement();
+        if (coral_measurement != null && coral_measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            coralDistance = coral_measurement.distance_mm * 0.001; // mm's
             if (coralDistance < minCoralDistance) hasCoral = true;
             else hasCoral = false;
         } else {
@@ -77,15 +83,28 @@ public class CoralEndeffector extends SubsystemBase {
             hasCoral = false;
         }
 
+        // Read the reef sensor.
+        LaserCan.Measurement reef_measurement = laserCANReef.getMeasurement();
+        if (reef_measurement != null && reef_measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            reefDistance = reef_measurement.distance_mm * 0.001; // mm's
+            if (reefDistance < minReefDistance) hasReef = true;
+            else hasReef = false;
+        } else {
+            reefDistance = 999.0;
+            hasReef = false;
+        }
+
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-        SmartDashboard.putNumber("[CORAL End Effector] distance", coralDistance);
-        SmartDashboard.putBoolean("[CORAL End Effector] has Coral", hasCoral);
+        SmartDashboard.putNumber("[CORAL End Effector] Coral Distance", coralDistance);
+        SmartDashboard.putBoolean("[CORAL End Effector] Has Coral", hasCoral);
         SmartDashboard.putNumber("[CORAL End Effector] velocity", velocity);
         SmartDashboard.putNumber("[CORAL End Effector] command", commandedVelocity);
         SmartDashboard.putNumber("[CORAL End Effector] load", load);
-       
+        SmartDashboard.putNumber("[CORAL End Effector] Reef Distance", reefDistance);
+        SmartDashboard.putBoolean("[CORAL End Effector] Has Reef", hasReef);
+    
     }
     
     
@@ -106,9 +125,22 @@ public class CoralEndeffector extends SubsystemBase {
         return load;
     }
 
+    public double getCoralDistance() {
+        return coralDistance;
+    }
+
     public boolean getHasCoral() {
         return hasCoral;
     }
+
+    public double getReefDistance() {
+        return reefDistance;
+    }
+
+    public boolean getHasReef() {
+        return hasReef;
+    }
+
 
     public void configureHardware() {
 
@@ -130,9 +162,9 @@ public class CoralEndeffector extends SubsystemBase {
 
     // Laser CAN Setup:
     try {
-        laserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
-        laserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 8, 8));
-        laserCAN.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+        laserCANCoral.setRangingMode(LaserCan.RangingMode.SHORT);
+        laserCANCoral.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 8, 8));
+        laserCANCoral.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
       } catch (ConfigurationFailedException e) {
         System.out.println("Configuration failed for LaserCAN: " + e);
       }

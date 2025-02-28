@@ -43,6 +43,7 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
@@ -56,6 +57,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final Climber m_climber = new Climber();
+  private final CANdleControl m_CANdleControl = new CANdleControl();
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop cmd_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);

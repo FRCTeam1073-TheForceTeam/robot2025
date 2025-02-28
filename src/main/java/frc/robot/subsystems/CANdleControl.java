@@ -26,7 +26,7 @@ public class CANdleControl extends SubsystemBase {
     m_candle = new CANdle(30); // creates a new CANdle with ID 0
     CANdleConfiguration config = new CANdleConfiguration();
     config.stripType = LEDStripType.RGB; // set the strip type to RGB
-    config.brightnessScalar = 0.09; // dim the LEDs to half brightness
+    config.brightnessScalar = 0.05; // dim the LEDs to half brightness
     m_candle.configAllSettings(config);
     m_candle.setLEDs(255, 255, 255); // set the CANdle LEDs to white
   }
@@ -34,7 +34,7 @@ public class CANdleControl extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, 64);
+    RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, 8);
     m_candle.animate(rainbowAnim); 
     // This method will be called once per scheduler run
   }

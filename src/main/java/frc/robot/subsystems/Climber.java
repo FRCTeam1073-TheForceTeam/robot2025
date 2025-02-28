@@ -39,7 +39,7 @@ public class Climber extends SubsystemBase
   private boolean brakeMode = true;
 
   public final double minPosition = -.262;
-  public final double maxPosition = .35;
+  public final double maxPosition = .31;
 
 
   /** Creates a new Climber. */

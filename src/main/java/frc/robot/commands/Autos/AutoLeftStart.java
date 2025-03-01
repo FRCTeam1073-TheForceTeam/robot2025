@@ -23,15 +23,15 @@ public class AutoLeftStart
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return LeftScoreL1.create(isRed, drivetrain);
+               return LeftScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
-               return LeftScoreL2.create(isRed, drivetrain);
+               return LeftScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 3:
-               return LeftScoreL3.create(isRed, drivetrain);
+               return LeftScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 4:
                return LeftScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 5:
-               return LeftScore2L4.create(isRed, drivetrain, map, localizer);
+               return LeftScore2L4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             default:
             return new WaitCommand(0);
         }

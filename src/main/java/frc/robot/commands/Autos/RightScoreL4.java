@@ -76,7 +76,6 @@ public class RightScoreL4
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
             new CoralElevatorToHeight(elevator, 4, true),
-            // new WaitCommand(1),
             new ScoreCoral(endEffector),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),

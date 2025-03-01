@@ -55,9 +55,4 @@ public class CenterRightScoreL4
             new ZeroElevator(elevator)
         );
     }
-
-    public static Command create(boolean isRed, Drivetrain drivetrain, double delay) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
-    }
 }

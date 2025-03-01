@@ -27,7 +27,9 @@ public class CenterLeftScoreL4
     {
         Pose2d tag10Pose = map.getTagRelativePose(10, -1, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
         Pose2d tag21Pose = map.getTagRelativePose(21, -1, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
+        
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
 
@@ -54,10 +56,5 @@ public class CenterLeftScoreL4
             new ScoreCoral(endEffector),
             new ZeroElevator(elevator)
         );
-    }
-
-    public static Command create(boolean isRed, Drivetrain drivetrain, double delay) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
-    }   
+    }  
 }

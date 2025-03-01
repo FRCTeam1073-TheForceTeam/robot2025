@@ -17,18 +17,18 @@ import frc.robot.subsystems.Localizer;
 public class AutoCenterRightStart 
 {
     public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
-                                     Climber climber, CoralEndeffector endEffector, CoralElevator elevator, double delay)
+                                     Climber climber, CoralEndeffector endEffector, CoralElevator elevator)
     {
         switch (level)
         {
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return CenterRightScoreL1.create(isRed, drivetrain, map, localizer, delay);
+               return CenterRightScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
-               return CenterRightScoreL2.create(isRed, drivetrain, delay);
+               return CenterRightScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 3:
-               return CenterRightScoreL3.create(isRed, drivetrain, delay);
+               return CenterRightScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 4:
                return CenterRightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 5:

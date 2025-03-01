@@ -183,9 +183,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
       alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger correctionAlign = new Trigger(m_OI::getDriverViewButton);
+    // Trigger correctionAlign = new Trigger(m_OI::getDriverViewButton);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverLeftJoystickPress);
+    Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
     Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
@@ -239,13 +239,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       default:
         return null;
     }

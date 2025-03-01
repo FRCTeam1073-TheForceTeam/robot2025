@@ -11,25 +11,26 @@ import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
 public class AutoRightStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator) 
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar) 
     {
         switch(level) 
         {
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-                return RightScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
             case 2:
-                return RightScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
             case 3:
-                return RightScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
             case 4:
-                return RightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
             case 5:
                 return RightScore2L4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             default:

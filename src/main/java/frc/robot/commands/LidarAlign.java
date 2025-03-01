@@ -96,6 +96,9 @@ public class LidarAlign extends Command {
     if(lidar.getMeanX() <= 0.43 && lidar.getCovxyAtZero()){
       return true;
     }
+    if(lidar.getCovxyAtZero() || lidar.getCovxyIsBad()){
+      return true;
+    }
       return false;
   }
 }

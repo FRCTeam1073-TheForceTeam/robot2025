@@ -27,13 +27,13 @@ public class LidarAlign extends Command {
   double vx;
   int sign = 0;
   PIDController thetaController;
-  PIDController vxController;
+  PIDController xController;
   
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
     thetaController = new PIDController(0.9, 0, 0.01);
-    vxController = new PIDController(0.8, 0, 0.01);
+    xController = new PIDController(0.8, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -43,6 +43,7 @@ public class LidarAlign extends Command {
   @Override
   public void initialize() {
     thetaController.reset();
+    xController.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,19 +55,9 @@ public class LidarAlign extends Command {
 
       thetaVelocity = MathUtil.clamp(lidar.getSqrtCovxy(), 0.25, 0.5);
       thetaVelocity = sign * thetaVelocity;
-      // thetaVelocity = thetaController.calculate(drivetrain.getWrappedHeadingRadians(), drivetrain.getWrappedHeadingRadians() + angleToRotate);
-      // thetaVelocity = MathUtil.clamp(thetaVelocity, -2, 2);
-      // SmartDashboard.putNumber("LidarAlign theta velocity", thetaVelocity);
-      // drivetrain.setTargetChassisSpeeds(
-
-      //   ChassisSpeeds.fromFieldRelativeSpeeds(
-      //     0, 
-      //     0, 
-      //     thetaVelocity, 
-      //     Rotation2d.fromDegrees(drivetrain.getHeadingDegrees())));
       xToDrive = lidar.getMeanX() - 0.4;
-      if(xToDrive > 0){
-        vx = vxController.calculate(lidar.getMeanX(), lidar.getMeanX() + xToDrive);
+      if(xToDrive > 0 && lidar.getMeanXCounter() < 6){
+        vx = xController.calculate(lidar.getMeanX(), xToDrive);
         if(vx < 0){
           vx = MathUtil.clamp(vx, -2, -0.2);
         }
@@ -94,6 +85,9 @@ public class LidarAlign extends Command {
   @Override
   public boolean isFinished() {
     if(lidar.getMeanX() <= 0.43 && lidar.getCovxyAtZero()){
+      return true;
+    }
+    if(lidar.getCovxyAtZero() || lidar.getTimeCovxyIsBad() > 5 || lidar.getMeanXCounter() > 6){
       return true;
     }
       return false;

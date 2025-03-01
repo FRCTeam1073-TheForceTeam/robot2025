@@ -20,45 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lidar extends DiagnosticsSubsystem {
     SerialPort serialPort;
-    private final int bytesPerScan = 5;
-    //private final double elevationFactor = 0.94293; //0.97237; //compensating for the fact that it's not level: cos(angle of rangeFinder)
-    public class Point{
-        double x;
-        double y;
-        public Point(double x, double y){
-            this.x = x;
-            this.y = y;
-        }
-
-        public double getX(){
-            return x;
-        }
-
-        public double getY(){
-            return y;
-        }
-
-        public void setX(double x){
-            this.x = x;
-        }
-        
-        public void setY(double y){
-            this.y = y;
-        }
-    }
-    
     ArrayList <Scan> one = new ArrayList<Scan>();
     ArrayList <Scan> two = new ArrayList<Scan>();
-    ArrayList <Scan> data = new ArrayList<Scan>();
-    ArrayList <Scan> inliers = new ArrayList<Scan>();
-    ArrayList <Scan> bestInliers = new ArrayList<Scan>();
-    ArrayList <Scan> points  = new ArrayList<Scan>();
-    ArrayList <Double> xVal1 = new ArrayList<Double>();
-    ArrayList <Double> yVal1 = new ArrayList<Double>();
-    ArrayList <Double> xVal2 = new ArrayList<Double>();
-    ArrayList <Double> yVal2 = new ArrayList<Double>();
     ArrayList <Scan> principle = new ArrayList<Scan>();
-    Point[] startAndEnd = new Point[2];
+    // ArrayList <Double> xVal1 = new ArrayList<Double>();
+    // ArrayList <Double> yVal1 = new ArrayList<Double>();
+    // ArrayList <Double> xVal2 = new ArrayList<Double>();
+    // ArrayList <Double> yVal2 = new ArrayList<Double>();
     byte getInfo[] = {(byte) 0xa5, (byte) 0x52};
     byte scanDescriptor[] = {(byte) 0xa5, (byte) 0x5a, (byte) 0x05, (byte) 0x00, (byte) 0x00, (byte) 0x40, (byte) 0x81};
     byte stopCommand[] = {(byte) 0xa5, (byte) 0x25};
@@ -67,26 +35,11 @@ public class Lidar extends DiagnosticsSubsystem {
     boolean recordScan = true;
     boolean measureMode = false;
     boolean writeToOne = true;
-    boolean searchingForStart = true;
-    boolean searchingForEnd = false;
-    boolean lastPositive;
-    boolean positive;
-    boolean foundLine = false;
     double arrayOneTimestamp;
     double arrayTwoTimestamp;
-    double filtered_range = 0.0;
-    double intensity = 0.0; // starts to die at under 0.005
     double timestamp = 0.0;
     double x_l;
     double y_l;
-    double a; // a value for standard form of a line
-    double b; // b value for standard form of a line
-    double c; // c value for standard form of a line
-    double lidarSlope;
-    double robotSlope;
-    double angleToRotate;
-    double filteredAngleToRotate;
-    double filteredAngleTimestamp;
     double sumx = 0;
     double sumy = 0;
     double sumxx = 0;
@@ -107,44 +60,31 @@ public class Lidar extends DiagnosticsSubsystem {
     double k = 2;
     double mag = 0;
     double denomPlus, denomMinus, majoraxis, minoraxis;
-    double[] bestLine = new double[3]; // a, b, and c value of the best line
-    final double distanceThreshold = 0.02; // maximum distance a point can be from the line to be considered an inlier
     double distance;
     float angle_deg;
     float angle_rad;
     float quality;
     float range_m;
     float range_mm;
-    final float minAcceptedRange = 0.07f; // In meters
+    final double minAcceptedRange = 0.09; // In meters
     final double maxAcceptedRange = 2.2; // In meters
     final int minAcceptedAngle1 = 0; // In degrees, for the first range of accepted angles
-    final int maxAcceptedAngle1 = 80; // In degrees, for the first range of accepted angles
-    final int minAcceptedAngle2 = 280; // In degrees, for the second range of accepted angles
+    final int maxAcceptedAngle1 = 45; // In degrees, for the first range of accepted angles
+    final int minAcceptedAngle2 = 325; // In degrees, for the second range of accepted angles
     final int maxAcceptedAngle2 = 360; // In degrees, for the second range of accepted angles
     private final int minAcceptedQuality = 5;
-    final int minInliers = 10; // minimum number of inliers for a model to be considered valid
-    final int maxIterations = 20; // maximum number of iterations to find a model
-    int indexOfEnd;
-    int minSamples;
+    private final int bytesPerScan = 5;
     int numBytesAvail = 0;
     int numTimesLidarArraySwitch = 0;
     int numScansRead;
     int numScansToRead;
     int offset;
-    int rawDataByte;
-    int pointsOnLine;
-    int slopeCount;
     int counter = 0;
     int sign = 0;
-    LinearFilter filter;
+    int timesBad = 0;
+    int meanXCounter = 0;
     Transform2d robotToLidar = new Transform2d(new Translation2d(0.289, 0.22), new Rotation2d()); // Translation needs x and y, rotation needs 
     Matrix<N3,N3> T;
-    Point start = new Point(0, 0);
-    Point end = new Point(0, 0);
-    Pose2d targetRotationPose;
-    Pose2d currentPose;
-    Scan point1;
-    Scan point2;
 
     public Lidar () {
         T = robotToLidar.toMatrix();
@@ -157,9 +97,6 @@ public class Lidar extends DiagnosticsSubsystem {
             serialPort = null;
         }
         if(serialPort != null){
-            // Infinite Impulse Response filter: timeConstant is 0.1 seconds, period is 0.02 seconds
-            filter = LinearFilter.singlePoleIIR(0.1, 0.02);
-            filter.reset(); 
             serialPort.setWriteBufferMode(SerialPort.WriteBufferMode.kFlushOnAccess);
             super.setSubsystem("Lidar");
             serialPort.setFlowControl(SerialPort.FlowControl.kNone);
@@ -205,13 +142,21 @@ public class Lidar extends DiagnosticsSubsystem {
 
     }
 
-    public void printXVals(){
-        SmartDashboard.putString("LiDAR X Array", getXValArray().toString());
-    }
+    // public ArrayList<Double> getXValArray(){
+    //     if(writeToOne){
+    //         return xVal2; 
+    //     } else {
+    //         return xVal1;
+    //     }
+    // }
 
-    public void printYVals(){
-        SmartDashboard.putString("LiDAR Y Array", getYValArray().toString());
-    }
+    // public ArrayList<Double> getYValArray(){
+    //     if(writeToOne){
+    //         return yVal2; 
+    //     } else {
+    //         return yVal1;
+    //     }
+    // }
 
     public ArrayList<Scan> getLidarArray(){
         if(writeToOne){
@@ -221,29 +166,11 @@ public class Lidar extends DiagnosticsSubsystem {
         }
     }
 
-    public ArrayList<Double> getXValArray(){
-        if(writeToOne){
-            return xVal2; 
-        } else {
-            return xVal1;
-        }
-    }
-
-    public ArrayList<Double> getYValArray(){
-        if(writeToOne){
-            return yVal2; 
-        } else {
-            return yVal1;
-        }
-    }
-
-    
     public double getLidarArrayTimestamp() {
         // return the opposite that is being filled
         if (writeToOne) return arrayTwoTimestamp;
         else return arrayOneTimestamp;
     }
-
 
     public boolean parseDescriptor(){
         byte [] received = serialPort.read(7);
@@ -331,6 +258,7 @@ public class Lidar extends DiagnosticsSubsystem {
         }
     }
 
+    //Principle Components Analysis
     public void principleComp(){
         principle.clear();
         sumx = 0; 
@@ -382,17 +310,51 @@ public class Lidar extends DiagnosticsSubsystem {
             majoraxis = k * Math.sqrt(lambdaplus);
             minoraxis = k * Math.sqrt(lambdaminus);
             
+            setTimesCovxyIsBad();
+            setMeanXOutOfRangeInARow();
+
             SmartDashboard.putNumber("Lidar/Covxy", covxy);
             SmartDashboard.putNumber("Lidar/Sqrt Covxy", getSqrtCovxy());
             SmartDashboard.putBoolean("Lidar/is at zero", getCovxyAtZero());
+            SmartDashboard.putBoolean("Lidar/at zero (covxy)", Math.abs(covxy) < 0.005);
             SmartDashboard.putNumber("Lidar/Mean X", xbar);
             SmartDashboard.putNumber("Lidar/Mean Y", ybar);
             SmartDashboard.putNumber("Lidar/varx", varx);
             SmartDashboard.putNumber("Lidar/vary", vary);
             SmartDashboard.putBoolean("Lidar/covxy is bad", getCovxyIsBad());
-            SmartDashboard.putBoolean("Var X Is High", Math.abs(varx) > 0.005);
-            SmartDashboard.putBoolean("Ratio of Varx to Covxy is High", Math.abs(varx/covxy) > 0.04);
+            SmartDashboard.putBoolean("Lidar/Var X Is High", Math.abs(varx) > 0.005);
+            SmartDashboard.putBoolean("Lidar/Ratio of Varx to Covxy is High", Math.abs(varx/covxy) > 0.04);
         }
+    }
+
+    public void setTimesCovxyIsBad(){
+        if(getCovxyIsBad()){
+            timesBad++;
+        }
+        else{
+            timesBad--;
+        }
+    }
+
+    public int getTimeCovxyIsBad(){
+        return timesBad;
+    }
+
+    public void setMeanXOutOfRangeInARow(){
+        if(getMeanXOutOfRange()){
+            meanXCounter++;
+        }
+        else{
+            meanXCounter--;
+        }
+    }
+
+    public int getMeanXCounter(){
+        return meanXCounter;
+    }
+
+    public boolean getMeanXOutOfRange(){
+        return getMeanX() > 1.0;
     }
 
     public boolean getCovxyIsBad(){
@@ -418,7 +380,6 @@ public class Lidar extends DiagnosticsSubsystem {
         mag = Math.sqrt(mag);
         return sign * mag;
     }
-
 
     public double getMeanX(){
         return xbar;
@@ -446,16 +407,16 @@ public class Lidar extends DiagnosticsSubsystem {
             return;
         }
         if(arrayTwoFilled && getLidarArray().size() > 0){
-            SmartDashboard.putNumber("Times Lidar Array Switched", getTimesArraySwitch());
-            SmartDashboard.putNumber("Range", getRange());
-            SmartDashboard.putNumber("Angle", getAngle());
-            SmartDashboard.putNumber("Quality", getQuality());
-            SmartDashboard.putNumber("LiDAR X Value", getXVal());
-            SmartDashboard.putNumber("LiDAR Y Value", getYVal());
-            SmartDashboard.putNumber("LiDAR R Value", getRVal());
-            SmartDashboard.putBoolean("Against Reef", againstReef());
-            SmartDashboard.putNumber("Number of Scans in LiDAR Array", getNumberScans());
-            SmartDashboard.putNumber("Number of Scans to Read", getNumberScansToRead());
+            SmartDashboard.putNumber("Lidar/Times Lidar Array Switched", getTimesArraySwitch());
+            SmartDashboard.putNumber("Lidar/Range", getRange());
+            SmartDashboard.putNumber("Lidar/Angle", getAngle());
+            SmartDashboard.putNumber("Lidar/Quality", getQuality());
+            SmartDashboard.putNumber("Lidar/LiDAR X Value", getXVal());
+            SmartDashboard.putNumber("Lidar/LiDAR Y Value", getYVal());
+            SmartDashboard.putNumber("Lidar/LiDAR R Value", getRVal());
+            SmartDashboard.putBoolean("Lidar/Against Reef", againstReef());
+            SmartDashboard.putNumber("Lidar/Number of Scans in LiDAR Array", getNumberScans());
+            SmartDashboard.putNumber("Lidar/Number of Scans to Read", getNumberScansToRead());
         }
         numBytesAvail = serialPort.getBytesReceived();
          if(measureMode){
@@ -500,7 +461,7 @@ public class Lidar extends DiagnosticsSubsystem {
     }
     
     public boolean againstReef(){
-        return Math.abs(getRVal() - 0.385) <= 0.005;
+        return getMeanX() <= 0.43;
     }
 
     public double getYVal(){

@@ -22,15 +22,17 @@ public class AutoCenterLeftStart
       switch (level)
       {
          case 0: 
-            return GenericL0.create(isRed, drivetrain, localizer, climber);
+            return Leave.create(isRed, drivetrain, localizer, climber);
          case 1: 
-            return CenterL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+            return CenterLeftScoreL1.create(isRed, drivetrain, map, localizer, delay);
          case 2:
-            return CenterLeftL2.create(isRed, drivetrain, map, localizer, delay);
+            return CenterLeftScoreL2.create(isRed, drivetrain, delay);
          case 3:
-            return CenterLeftL3.create(isRed, drivetrain, delay);
+            return CenterLeftScoreL3.create(isRed, drivetrain, delay);
          case 4:
-            return CenterLeftL4.create(isRed, drivetrain, delay);
+            return CenterLeftScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+         case 5:
+            return CenterLeftScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
          default:
             return new WaitCommand(0);
         }

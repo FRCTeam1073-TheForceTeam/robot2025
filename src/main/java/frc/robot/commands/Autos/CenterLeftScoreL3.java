@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Drivetrain;
 
-public class CenterLeftL3 
+public class CenterLeftScoreL3 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, double delay)  
     {

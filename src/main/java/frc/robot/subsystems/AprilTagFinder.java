@@ -25,7 +25,7 @@ public class AprilTagFinder extends SubsystemBase
 {
   public class VisionMeasurement
   {
-    public Pose2d pose;
+    public Pose2d pose; // this is in field coordinates
     public double timeStamp;
     public int tagID;
     public double range;
@@ -223,6 +223,18 @@ public class AprilTagFinder extends SubsystemBase
     }
 
     return measurements;
+  }
+
+  public Transform3d getRobotToFRCam() {
+    return fRCamTransform3d;
+  }
+
+  public Transform3d getRobotToFLCam() {
+    return fCCamTransform3d;
+  }
+
+  public Transform3d getRobotToFCCam() {
+    return fCCamTransform3d;
   }
 
   @Override

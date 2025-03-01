@@ -178,8 +178,8 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var mmConfigs = frontElevatorMotorConfig.MotionMagic;
-    mmConfigs.MotionMagicCruiseVelocity = 40;
-    mmConfigs.MotionMagicAcceleration = 80;
+    mmConfigs.MotionMagicCruiseVelocity = 45;
+    mmConfigs.MotionMagicAcceleration = 100;
     mmConfigs.MotionMagicJerk = 800;
 
     var frontElevatorMotorClosedLoop0Config =  frontElevatorMotorConfig.Slot0;

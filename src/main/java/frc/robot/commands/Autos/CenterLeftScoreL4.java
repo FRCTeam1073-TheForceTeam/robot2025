@@ -54,5 +54,10 @@ public class CenterLeftScoreL4
             new ScoreCoral(endEffector),
             new ZeroElevator(elevator)
         );
+    }
+
+    public static Command create(boolean isRed, Drivetrain drivetrain, double delay) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'create'");
     }   
 }

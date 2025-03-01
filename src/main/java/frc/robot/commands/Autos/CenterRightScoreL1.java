@@ -16,7 +16,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
-public class CenterRightL2 
+public class CenterRightScoreL1 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, double delay)  
     {

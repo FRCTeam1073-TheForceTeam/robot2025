@@ -92,13 +92,14 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String centerRightPosition = "Center Right Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
-  private static final String testLevel = "Test Level";
   private static final String noLevelAuto = "No Level";
   private static final String leave = "Leave";
+  private static final String scoreL1 = "Score L1";
+  private static final String scoreL2 = "Score L2";
+  private static final String scoreL3 = "Score L3";
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
-  private static final String level3 = "Level 3";
-  private static final String level4 = "Level 4";
+  
   private static final String zeroClawAndLift = "Zero Claw And Lift";
 
   private double autoDelay = 0;
@@ -123,12 +124,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
-    m_levelChooser.addOption("Test Auto", testLevel);
     m_levelChooser.addOption("Leave", leave);
+    m_levelChooser.addOption("Score L1", scoreL1);
+    m_levelChooser.addOption("Score L2", scoreL2);
+    m_levelChooser.addOption("Score L3", scoreL3);
     m_levelChooser.addOption("Score L4", scoreL4);
     m_levelChooser.addOption("Score 2 L4", score2L4);
-    m_levelChooser.addOption("Level 3", level3);
-    m_levelChooser.addOption("Level 4", level4);
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
@@ -198,18 +199,20 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case leave:
         level = 0;
         break;
-      case scoreL4:
+      case scoreL1:
         level = 1;
         break;
-      case score2L4:
+      case scoreL2:
         level = 2;
         break;
-      case level3:
+      case scoreL3:
         level = 3;
         break;
-      case level4:
+      case scoreL4:
         level = 4;                  
         break;
+      case score2L4:
+        level = 5;
       default:
         level = -1;
         break;

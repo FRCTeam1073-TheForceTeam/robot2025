@@ -25,6 +25,7 @@ import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
+import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -56,6 +58,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final Climber m_climber = new Climber();
+  private final Lidar m_lidar = new Lidar();
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop cmd_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
@@ -73,6 +76,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
+  private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -153,9 +157,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(cmd_scoreCoral);
-
-    // Trigger zeroClawAndLift = new Trigger(m_OI::getOperatorRightJoystickPress);
-    //   zeroClawAndLift.onTrue(ZeroClawAndLift.create(m_climberClaw, m_climberLift));
+      
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
       elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
@@ -173,6 +175,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
       alignToTag.whileTrue(cmd_alignToTag);
+    
+    Trigger lidarAlign = new Trigger(m_OI::getDriverLeftJoystickPress);
+      lidarAlign.whileTrue(cmd_lidarAlign);
   }
 
   public void autonomousInit()

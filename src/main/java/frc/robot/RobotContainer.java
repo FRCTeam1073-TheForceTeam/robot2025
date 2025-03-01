@@ -55,9 +55,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
-  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final Climber m_climber = new Climber();
   private final CANdleControl m_CANdleControl = new CANdleControl();
+  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop cmd_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);

@@ -51,7 +51,7 @@ public class CoralEndeffector extends SubsystemBase {
     private LaserCan laserCANCoral;
     private LaserCan laserCANReef;
 
-    public CoralEndeffector() {
+    public CoralEndeffector(CANdleControl candleControl) {
         hasCoral = false;
         motor = new TalonFX(21, kCANbus);
         
@@ -60,8 +60,7 @@ public class CoralEndeffector extends SubsystemBase {
         // Sensor setup:
         laserCANCoral = new LaserCan(22);
         laserCANReef = new LaserCan(24);
-        candle = new CANdleControl();
-
+        candle = candleControl;
 
         configureHardware();
     }
@@ -104,7 +103,7 @@ public class CoralEndeffector extends SubsystemBase {
         if (hasReef){
             candle.setRGB(0, 255, 0, 0, 8); //set candle to green
         }
-        
+
         else{
             candle.setRGB(255, 0, 0, 0, 8); //set candle to red
         }

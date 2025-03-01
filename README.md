@@ -29,6 +29,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Elevator Motor right  |  20    |   Rio         |
 | Endeffector Motor     |  21    |   Rio         |
 | LaserCAN              |  22    |   Rio         |
+| CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
 | Collector Motor       |   ?    |   CANivore    |
 | Lift Motor            |   ?    |   CANivore    |

@@ -99,6 +99,18 @@ public class Climber extends SubsystemBase
     return absolutePosition;
   }
 
+  public boolean getIsAtZero(){
+    return Math.abs(getEncoderPosition()) < 0.01;
+  }
+
+  public boolean getIsDisengaged(){
+    return Math.abs(getEncoderPosition() - maxPosition) < 0.04;
+  }
+
+  public boolean getIsEngaged(){
+    return Math.abs(getEncoderPosition() - minPosition) < 0.01;
+  }
+
   public double getMinPosition(){
     return minPosition;
   }

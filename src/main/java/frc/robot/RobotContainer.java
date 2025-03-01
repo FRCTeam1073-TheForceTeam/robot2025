@@ -83,7 +83,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CorrectionAlign cmd_correctionAlign = new CorrectionAlign(m_drivetrain, 11, m_aprilTagFinder, new Transform2d(0.5, 0, new Rotation2d(0)));
-  private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector);
+  private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);

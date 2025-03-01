@@ -52,8 +52,13 @@ public class CANdleControl extends SubsystemBase {
     m_candle.setLEDs(r, g, b, 0, q, c);
   }
 
-  public void setRainbow(){
-    RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, 8);
-    m_candle.animate(rainbowAnim); 
+  /**
+   * creates rainbow animation
+   * @param n number of leds
+   * @param s which led to start at
+   */
+  public void setRainbow(int n, int s){
+    RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, n, false, s);
+    m_candle.animate(rainbowAnim);
   }
 }

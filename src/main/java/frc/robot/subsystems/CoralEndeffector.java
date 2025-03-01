@@ -19,6 +19,7 @@ import au.grapplerobotics.ConfigurationFailedException;
 import edu.wpi.first.epilogue.logging.LazyBackend;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.CANdleControl;
 
 
 /** Add your docs here. */
@@ -44,6 +45,7 @@ public class CoralEndeffector extends SubsystemBase {
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
+    private CANdleControl candle;
    
     // LaserCAN Sensor:
     private LaserCan laserCANCoral;
@@ -58,6 +60,7 @@ public class CoralEndeffector extends SubsystemBase {
         // Sensor setup:
         laserCANCoral = new LaserCan(22);
         laserCANReef = new LaserCan(24);
+        candle = new CANdleControl();
 
 
         configureHardware();
@@ -87,13 +90,24 @@ public class CoralEndeffector extends SubsystemBase {
         LaserCan.Measurement reef_measurement = laserCANReef.getMeasurement();
         if (reef_measurement != null && reef_measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
             reefDistance = reef_measurement.distance_mm * 0.001; // mm's
-            if (reefDistance < minReefDistance) hasReef = true;
-            else hasReef = false;
+            if (reefDistance < minReefDistance){
+                hasReef = true;
+            }
+            else {
+                hasReef = false;
+            }
         } else {
             reefDistance = 999.0;
             hasReef = false;
         }
 
+        if (hasReef){
+            candle.setRGB(0, 255, 0, 0, 8); //set candle to green
+        }
+        
+        else{
+            candle.setRGB(255, 0, 0, 0, 8); //set candle to red
+        }
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 

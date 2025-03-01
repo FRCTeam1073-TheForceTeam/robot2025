@@ -19,7 +19,6 @@ import au.grapplerobotics.ConfigurationFailedException;
 import edu.wpi.first.epilogue.logging.LazyBackend;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CANdleControl;
 
 
 /** Add your docs here. */
@@ -45,13 +44,12 @@ public class CoralEndeffector extends SubsystemBase {
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
-    private CANdleControl candle;
    
     // LaserCAN Sensor:
     private LaserCan laserCANCoral;
     private LaserCan laserCANReef;
 
-    public CoralEndeffector(CANdleControl candleControl) {
+    public CoralEndeffector() {
         hasCoral = false;
         motor = new TalonFX(21, kCANbus);
         
@@ -60,7 +58,6 @@ public class CoralEndeffector extends SubsystemBase {
         // Sensor setup:
         laserCANCoral = new LaserCan(22);
         laserCANReef = new LaserCan(24);
-        candle = candleControl;
 
         configureHardware();
     }
@@ -100,13 +97,6 @@ public class CoralEndeffector extends SubsystemBase {
             hasReef = false;
         }
 
-        if (hasReef){
-            candle.setRGB(0, 255, 0, 0, 8); //set candle to green
-        }
-
-        else{
-            candle.setRGB(255, 0, 0, 0, 8); //set candle to red
-        }
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 

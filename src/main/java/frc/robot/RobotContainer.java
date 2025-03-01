@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeCommand;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.CancelLoadCoral;
+import frc.robot.commands.CANdleObserver;
 import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
@@ -62,7 +63,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final Climber m_climber = new Climber();
   private final Lidar m_lidar = new Lidar();
   private final CANdleControl m_CANdleControl = new CANdleControl();
-  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
+  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -82,7 +83,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CorrectionAlign cmd_correctionAlign = new CorrectionAlign(m_drivetrain, 11, m_aprilTagFinder, new Transform2d(0.5, 0, new Rotation2d(0)));
-
+  private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
@@ -118,6 +119,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, cmd_coralElevatorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);

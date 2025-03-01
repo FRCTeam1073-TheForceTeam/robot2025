@@ -30,7 +30,7 @@ public class CoralEndeffector extends SubsystemBase {
     private final double leftKV = 0.12; // Kraken.
 
     private final double minCoralDistance = 0.03;
-    private final double minReefDistance = 0.50;
+    private final double minReefDistance = 0.45;
 
     private double velocity;
     private double position;

@@ -24,7 +24,7 @@ public class AutoCenterLeftStart
          case 0: 
             return Leave.create(isRed, drivetrain, localizer, climber);
          case 1: 
-            return CenterLeftL1.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+            return CenterLeftScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
          case 2:
             return CenterLeftL2.create(isRed, drivetrain, map, localizer, delay);
          case 3:

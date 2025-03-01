@@ -20,13 +20,12 @@ public class AutoLeftStart
    {
         switch (level)
         {
-            
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return ScoreL4LoadLeft.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+               return LeftScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
-               return LeftL2.create(isRed, drivetrain, map, localizer);
+               return LeftScore2L4.create(isRed, drivetrain, map, localizer);
             case 3:
                return LeftL3.create(isRed, drivetrain);
             case 4:

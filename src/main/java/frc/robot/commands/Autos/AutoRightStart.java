@@ -23,9 +23,9 @@ public class AutoRightStart
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-                return ScoreL4LoadRight.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
             case 2:
-                return RightL2.create(isRed, drivetrain, map, localizer);
+                return RightScore2L4.create(isRed, drivetrain, map, localizer);
             case 3:
                 return RightL3.create(isRed, drivetrain);
             case 4:

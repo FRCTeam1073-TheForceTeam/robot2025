@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
@@ -15,7 +14,6 @@ import frc.robot.commands.Path;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
-import frc.robot.commands.TroughScoreAuto;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
@@ -23,7 +21,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
-public class CenterRightL1 
+public class CenterRightScoreL4 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
     {

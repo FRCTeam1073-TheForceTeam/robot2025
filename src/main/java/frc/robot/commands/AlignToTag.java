@@ -12,9 +12,11 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
+import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
 import frc.robot.subsystems.FieldMap;
 
@@ -24,6 +26,7 @@ public class AlignToTag extends Command
   Drivetrain drivetrain;
   Localizer localizer;
   FieldMap fieldMap;
+  MapDisplay mapDisplay;
   OI oi;
   int aprilTagID;
   Pose2d targetPose;
@@ -42,12 +45,13 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 4.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, OI oi) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     this.fieldMap = fieldMap;
+    this.mapDisplay = mapDisplay;
     this.oi = oi;
     xVelocity = 0;
     yVelocity = 0;
@@ -137,6 +141,7 @@ public class AlignToTag extends Command
         targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
       }
     }
+    SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
 
     if (targetPose == null)
     {
@@ -152,7 +157,7 @@ public class AlignToTag extends Command
     wVelocity = MathUtil.clamp(wVelocity, -maximumRotationVelocity, maximumRotationVelocity);
 
     drivetrain.setTargetChassisSpeeds(
-      ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
+      ChassisSpeeds.fromFieldRelativeSpeeds (xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
     );
   }
 

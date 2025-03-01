@@ -45,6 +45,7 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
@@ -56,9 +57,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
-  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final Climber m_climber = new Climber();
   private final Lidar m_lidar = new Lidar();
+  private final CANdleControl m_CANdleControl = new CANdleControl();
+  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
+
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
   private final CoralElevatorTeleop cmd_coralElevatorTeleop = new CoralElevatorTeleop(m_coralElevator, m_OI);
@@ -70,7 +73,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_OI);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);

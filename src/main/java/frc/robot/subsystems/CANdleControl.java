@@ -38,4 +38,8 @@ public class CANdleControl extends SubsystemBase {
     m_candle.animate(rainbowAnim); 
     // This method will be called once per scheduler run
   }
+
+  public void setRGBAll(int r, int g, int b){
+    m_candle.setLEDs(r,g,b);
+  }
 }

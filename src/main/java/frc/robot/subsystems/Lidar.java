@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 
@@ -51,7 +50,6 @@ public class Lidar extends DiagnosticsSubsystem {
     ArrayList <Scan> one = new ArrayList<Scan>();
     ArrayList <Scan> two = new ArrayList<Scan>();
     ArrayList <Scan> data = new ArrayList<Scan>();
-    ArrayList <Scan> ransac = new ArrayList<Scan>();
     ArrayList <Scan> inliers = new ArrayList<Scan>();
     ArrayList <Scan> bestInliers = new ArrayList<Scan>();
     ArrayList <Scan> points  = new ArrayList<Scan>();
@@ -135,8 +133,6 @@ public class Lidar extends DiagnosticsSubsystem {
     int offset;
     int rawDataByte;
     int pointsOnLine;
-    int rand1;
-    int rand2;
     int slopeCount;
     int counter = 0;
     int sign = 0;
@@ -147,7 +143,6 @@ public class Lidar extends DiagnosticsSubsystem {
     Point end = new Point(0, 0);
     Pose2d targetRotationPose;
     Pose2d currentPose;
-    Random randy = new Random();
     Scan point1;
     Scan point2;
 
@@ -218,103 +213,6 @@ public class Lidar extends DiagnosticsSubsystem {
         SmartDashboard.putString("LiDAR Y Array", getYValArray().toString());
     }
 
-    // public double[] getLine(){
-    //     return bestLine;
-    // }
-
-    // public double getSlope(){
-    //     if(getLine() != null && b !=0){
-    //         return bestLine[0]/bestLine[1];
-    //     }
-    //     else{
-    //         return 100;
-    //     }
-    // }
-
-    // public void filterAngleToRotate(){
-    //     if(getAngleToRotate() != Math.PI){ 
-    //         filteredAngleToRotate = filter.calculate(getAngleToRotate());
-    //         filteredAngleTimestamp = Timer.getFPGATimestamp();
-    //     }
-    // }
-
-    // public double getAngleToRotate(){
-    //     if(getSlope() > 100){ // flagged as invalid
-    //         return Math.PI;
-    //     } else if (getSlope() == 0) {
-    //         return 0.0;
-    //     } else {
-    //         return Math.atan(1 / getSlope());
-    //     }
-    // }
-
-    // public double getFilteredAngleToRotate(){
-    //     return filteredAngleToRotate;
-    // }
-
-    // public Point[] findLineSegment(ArrayList<Scan> arr){
-    //         points.clear();
-    //         if(arr.size() <= 15){
-    //             return null;
-    //         }
-    //         points = new ArrayList<Scan>(arr);
-    //     if(points != null && points.size() >= 15){
-    //         pointsOnLine = 0;
-    //         searchingForStart = true;
-    //         searchingForEnd = false;
-    //         foundLine = false;
-    //         SmartDashboard.putBoolean("Found Line", foundLine);
-    //         for(int i = 0; i < points.size() - 1; i++){
-    //             if(searchingForStart){
-    //                 // checks the distance of a point in the inlier set to the next point
-    //                 // if the distance between the two points is within 0.05 m, then the points are close enough
-    //                 double xPoint = points.get(i).getX();
-    //                 double yPoint = points.get(i).getY();
-    //                 if(Math.sqrt(Math.pow((yPoint - points.get(i + 1).getY()), 2) + Math.pow((xPoint - points.get(i + 1).getX()), 2)) <= 0.05){
-    //                     searchingForStart = false;
-    //                     searchingForEnd = true;
-    //                     pointsOnLine = 2;
-    //                     start.setX(xPoint);
-    //                     start.setY(yPoint);
-    //                 }
-    //             }
-    //             if(searchingForEnd){
-    //                 if(Math.sqrt(Math.pow((points.get(i).getY() - points.get(i + 1).getY()), 2) + Math.pow((points.get(i).getX() - points.get(i + 1).getX()), 2)) <= 0.05){
-    //                     pointsOnLine ++;
-    //                 }
-    //                 else if(Math.sqrt(Math.pow((points.get(i).getY() - points.get(i + 1).getY()), 2) + Math.pow((points.get(i).getX() - points.get(i + 1).getX()), 2)) > 0.05){
-    //                     if(pointsOnLine >= 10){
-    //                         indexOfEnd = i;
-    //                         foundLine = true;
-    //                         end.setX(points.get(i).getX());
-    //                         end.setY(points.get(i).getY());
-    //                         break;
-    //                     }
-    //                     else{
-    //                         searchingForStart = true;
-    //                         searchingForEnd = false;
-    //                         pointsOnLine = 0;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         if(pointsOnLine >= 10 && indexOfEnd < points.size()){
-    //             //TODO: implement point class to return array of start and end point, not index
-    //             startAndEnd[0] = start;
-    //             startAndEnd[1] = end;
-    //             SmartDashboard.putNumber("Start Point X", startAndEnd[0].getX());
-    //             SmartDashboard.putNumber("Start Point Y", startAndEnd[0].getY());
-    //             SmartDashboard.putNumber("End Point X", startAndEnd[1].getX());
-    //             SmartDashboard.putNumber("End Point Y", startAndEnd[1].getY());
-    //             SmartDashboard.putBoolean("Found Line", true);
-    //             SmartDashboard.putNumber("Angle to Rotate", Math.atan((1 / getSlope())));
-    //             return startAndEnd;
-    //         }
-    //         return null;
-    //     }
-    //     return null;
-    // }
-
     public ArrayList<Scan> getLidarArray(){
         if(writeToOne){
             return two; 
@@ -339,9 +237,6 @@ public class Lidar extends DiagnosticsSubsystem {
         }
     }
 
-    // public double getFilteredAngleTimestamp(){
-    //     return filteredAngleTimestamp;
-    // }
     
     public double getLidarArrayTimestamp() {
         // return the opposite that is being filled
@@ -351,12 +246,7 @@ public class Lidar extends DiagnosticsSubsystem {
 
 
     public boolean parseDescriptor(){
-        //System.out.println("Parsing lidar scan descriptor");
         byte [] received = serialPort.read(7);
-        //System.out.println("Scan descriptor received from serialPort");
-        // for(int i = 0; i < received.length; i++){
-        //     System.out.println(String.format("0x%02x", received[i]));
-        // }
         return Arrays.equals(received, scanDescriptor);
     }
 
@@ -566,8 +456,6 @@ public class Lidar extends DiagnosticsSubsystem {
             SmartDashboard.putBoolean("Against Reef", againstReef());
             SmartDashboard.putNumber("Number of Scans in LiDAR Array", getNumberScans());
             SmartDashboard.putNumber("Number of Scans to Read", getNumberScansToRead());
-            // SmartDashboard.putNumber("Filtered Angle", getFilteredAngleToRotate());
-            // SmartDashboard.putNumber("Filter Angle Timestamp", getFilteredAngleTimestamp());
         }
         numBytesAvail = serialPort.getBytesReceived();
          if(measureMode){
@@ -580,7 +468,6 @@ public class Lidar extends DiagnosticsSubsystem {
                 if(parseDescriptor()){
                     // expected descriptor received, switch to read data
                     measureMode = true;
-                    //System.out.println("Started Lidar measurement mode");
                 }
                 else{
                     System.out.println("Lidar handshake error");

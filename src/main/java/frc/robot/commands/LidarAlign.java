@@ -93,7 +93,7 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(lidar.getMeanX() <= 0.41 && lidar.getCovxyAtZero()){
+    if(lidar.getMeanX() <= 0.43 && lidar.getCovxyAtZero()){
       return true;
     }
       return false;

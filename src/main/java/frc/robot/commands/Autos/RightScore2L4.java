@@ -26,27 +26,27 @@ public class RightScore2L4
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
     {
-        Pose2d tag9RightPose = map.getTagRelativePose(9, 1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
-        Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(0.75, 0, new Rotation2d()));
+        Pose2d tag9Pose = map.getTagRelativePose(9, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
+        Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(1, -0.5, new Rotation2d(Math.PI)));
+        Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag8Pose = map.getTagRelativePose(8, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
 
-        Pose2d tag22RightPose = map.getTagRelativePose(22, 1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d tag22LeftPose = map.getTagRelativePose(22, -1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
+        Pose2d tag22Pose = map.getTagRelativePose(22, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
+        Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(1, -0.5, new Rotation2d(Math.PI)));
         Pose2d tag12Pose = map.getTagRelativePose(12, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag17Pose = map.getTagRelativePose(17, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
-        Point tag9R = new Point(tag9RightPose.getX(), tag9RightPose.getY());
+        Point tag9 = new Point(tag9Pose.getX(), tag9Pose.getY());
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         Point tag1 = new Point(tag2Pose.getX(), tag2Pose.getY());
-        Point tag9L = new Point(tag9LeftPose.getX(), tag9LeftPose.getY());
+        Point tag8 = new Point(tag8Pose.getX(), tag8Pose.getY());
 
-        Point tag22R = new Point(tag22RightPose.getX(), tag22RightPose.getY());
+        Point tag22 = new Point(tag22Pose.getX(), tag22Pose.getY());
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         Point tag13 = new Point(tag12Pose.getX(), tag12Pose.getY());
-        Point tag22L = new Point(tag22LeftPose.getX(), tag22LeftPose.getY());
+        Point tag17 = new Point(tag17Pose.getX(), tag17Pose.getY());
 
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();
@@ -58,31 +58,31 @@ public class RightScore2L4
 
         if (isRed)
         {
-            segments1.add(new Segment(start, tag9R, tag9RightPose.getRotation().getRadians(), 1.5));
+            segments1.add(new Segment(start, tag9, tag9Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag9R, redI1, redIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(tag9, redI1, redIntermediatePose.getRotation().getRadians(), 2));
             segments2.add(new Segment(redI1, tag1, tag2Pose.getRotation().getRadians(), 2));
 
             segments3.add(new Segment(tag1, redI1, redIntermediatePose.getRotation().getRadians(), 2));
-            segments3.add(new Segment(redI1, tag9L, tag9LeftPose.getRotation().getRadians(), 1.5));
+            segments3.add(new Segment(redI1, tag8, tag8Pose.getRotation().getRadians(), 1.5));
 
-            path1 = new Path(segments1, tag9RightPose.getRotation().getRadians());
+            path1 = new Path(segments1, tag9Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
-            path3 = new Path(segments3, tag9LeftPose.getRotation().getRadians());
+            path3 = new Path(segments3, tag8Pose.getRotation().getRadians());
         }
         else
         {
-            segments1.add(new Segment(start, tag22R, tag22RightPose.getRotation().getRadians(), 1.5));
+            segments1.add(new Segment(start, tag22, tag22Pose.getRotation().getRadians(), 1.5));
 
-            segments2.add(new Segment(tag22R, blueI1, blueIntermediatePose.getRotation().getRadians(), 2));
+            segments2.add(new Segment(tag22, blueI1, blueIntermediatePose.getRotation().getRadians(), 2));
             segments2.add(new Segment(blueI1, tag13, tag12Pose.getRotation().getRadians(), 2));
 
             segments3.add(new Segment(tag13, blueI1, blueIntermediatePose.getRotation().getRadians(), 2));
-            segments3.add(new Segment(blueI1, tag22L, tag22LeftPose.getRotation().getRadians(), 1.5));
+            segments3.add(new Segment(blueI1, tag17, tag17Pose.getRotation().getRadians(), 1.5));
 
-            path1 = new Path(segments1, tag22RightPose.getRotation().getRadians());
+            path1 = new Path(segments1, tag22Pose.getRotation().getRadians());
             path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
-            path3 = new Path(segments3, tag22LeftPose.getRotation().getRadians());
+            path3 = new Path(segments3, tag17Pose.getRotation().getRadians());
         }
         
 

@@ -61,7 +61,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final Climber m_climber = new Climber();
-  private final Lidar m_lidar = new Lidar();
+  private final Lidar m_lidar = null;// = new Lidar();
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
 
@@ -86,7 +86,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final RemoveAlgae cmd_RemoveAlgaeL3 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 3);
   private final CorrectionAlign cmd_correctionAlign = new CorrectionAlign(m_drivetrain, 11, m_aprilTagFinder, new Transform2d(0.5, 0, new Rotation2d(0)));
 
-  private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
+  // private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -185,8 +185,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     // Trigger correctionAlign = new Trigger(m_OI::getDriverViewButton);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
-      lidarAlign.whileTrue(cmd_lidarAlign);
+    // Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
+    //   lidarAlign.whileTrue(cmd_lidarAlign);
 
     Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
       removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);

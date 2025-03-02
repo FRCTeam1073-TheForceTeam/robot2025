@@ -40,12 +40,12 @@ public class RemoveAlgae extends Command
     @Override 
     public void execute()
     {
-        if (!(Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight)))
+        if (!(Math.abs(elevator.getPosition() - targetHeight) < 4.6))
         {
             elevator.setPosition(targetHeight);
         }
         endEffector.setVelocity(-20);
-        if (Math.abs(elevator.getPosition() - targetHeight) < (0.01 * targetHeight))
+        if (Math.abs(elevator.getPosition() - targetHeight) < 4.6)
         {
             elevator.setPosition(targetHeight + 10);
             drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(-0.5, 0, 0));

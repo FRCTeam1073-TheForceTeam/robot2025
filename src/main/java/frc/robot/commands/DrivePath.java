@@ -52,15 +52,15 @@ public class DrivePath extends Command
     this.localizer = localizer;
 
     xController = new PIDController(
-      1.1, 
+      1.5, 
       0.0, 
-      0.01
+      0.03
     );
 
     yController = new PIDController(
-      1.1, 
+      1.5, 
       0.0, 
-      0.01
+      0.03
     );
 
     thetaController = new PIDController(

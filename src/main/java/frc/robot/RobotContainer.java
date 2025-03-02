@@ -61,7 +61,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final Climber m_climber = new Climber();
-  private final Lidar m_lidar = new Lidar();
+  // private final Lidar m_lidar = new Lidar();
+  private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
 

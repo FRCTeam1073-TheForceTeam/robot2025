@@ -6,13 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Lidar;
-import frc.robot.subsystems.Localizer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LidarAlign extends Command {
@@ -49,23 +46,30 @@ public class LidarAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(lidar.getCovxy() < 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = 1;
-      if(lidar.getCovxy() > 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = -1;
-      if(lidar.getCovxy() == 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = 0;
-
-      thetaVelocity = MathUtil.clamp(lidar.getSqrtCovxy(), 0.25, 0.5);
-      thetaVelocity = sign * thetaVelocity;
-      xToDrive = lidar.getMeanX() - 0.4;
-      if(xToDrive > 0 && lidar.getMeanXCounter() < 6){
-        vx = xController.calculate(lidar.getMeanX(), xToDrive);
+    //covxyAtZero based on sqrt of covxy, isbad - if the varx is above 0.005 & varx/covxy > 0.04
+    if(lidar.getAngleToRotate() != Math.PI){
+      thetaVelocity = thetaController.calculate(drivetrain.getOdometryThetaRadians(), lidar.getAngleToRotate());  
+      thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 1.5);
+      if(thetaVelocity < 0){
+          thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.2);
+      }
+      else if(thetaVelocity > 0){
+        thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 2);
+      }
+      else if(thetaVelocity == 0){
+        thetaVelocity = 0;
+      }
+    }
+    
+      xToDrive = lidar.getAverageX() - 0.4;
+      if(xToDrive > 0 && lidar.getAverageX() != 1){
+        //TODO: check if setpoint is correct
+        vx = xController.calculate(lidar.getAverageX(), 0.4);
         if(vx < 0){
           vx = MathUtil.clamp(vx, -2, -0.2);
         }
         if(vx > 0){
           vx = MathUtil.clamp(vx, 0.2, 2);
-        }
-        if(lidar.getCovxyAtZero()){
-          thetaVelocity = 0;
         }
         drivetrain.setTargetChassisSpeeds(
           new ChassisSpeeds(
@@ -84,10 +88,11 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(lidar.getMeanX() <= 0.43 && lidar.getCovxyAtZero()){
+    //TODO: change numbers
+    if(lidar.getAverageX() <= 0.43 && Math.abs(lidar.getAverageSlope()) < 0.01){
       return true;
     }
-    if(lidar.getCovxyAtZero() || lidar.getTimeCovxyIsBad() > 5 || lidar.getMeanXCounter() > 6){
+    if(lidar.getAverageX() <= 0.43){
       return true;
     }
       return false;

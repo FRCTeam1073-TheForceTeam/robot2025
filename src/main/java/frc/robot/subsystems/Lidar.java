@@ -2,13 +2,8 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -61,6 +56,12 @@ public class Lidar extends DiagnosticsSubsystem {
     double mag = 0;
     double denomPlus, denomMinus, majoraxis, minoraxis;
     double distance;
+    double ave;
+    double lastAverage = 2;
+    double lastSlope = 5;
+    double s;
+    double ssum;
+    double slope;
     float angle_deg;
     float angle_rad;
     float quality;
@@ -68,6 +69,9 @@ public class Lidar extends DiagnosticsSubsystem {
     float range_mm;
     final double minAcceptedRange = 0.09; // In meters
     final double maxAcceptedRange = 2.2; // In meters
+    double maxAcceptedX = 1.0;
+    double minAcceptedY = -0.39;
+    double maxAcceptedY = 0.39;
     final int minAcceptedAngle1 = 0; // In degrees, for the first range of accepted angles
     final int maxAcceptedAngle1 = 45; // In degrees, for the first range of accepted angles
     final int minAcceptedAngle2 = 325; // In degrees, for the second range of accepted angles
@@ -78,6 +82,7 @@ public class Lidar extends DiagnosticsSubsystem {
     int numTimesLidarArraySwitch = 0;
     int numScansRead;
     int numScansToRead;
+    int count;
     int offset;
     int counter = 0;
     int sign = 0;
@@ -88,7 +93,8 @@ public class Lidar extends DiagnosticsSubsystem {
 
     public Lidar () {
         T = robotToLidar.toMatrix();
-
+        one.ensureCapacity(512);
+        two.ensureCapacity(512);
         try{
             serialPort = new SerialPort(460800, SerialPort.Port.kUSB1, 8, SerialPort.Parity.kNone, SerialPort.StopBits.kOne);
         }
@@ -177,6 +183,14 @@ public class Lidar extends DiagnosticsSubsystem {
         return Arrays.equals(received, scanDescriptor);
     }
 
+    public boolean isXInRange(double x){
+        return x <= maxAcceptedX && x > 0;
+    }
+
+    public boolean isYInRange(double y){
+        return y > minAcceptedY && y < maxAcceptedY;
+    }
+
     public boolean isAngleGood(float angle){
         if((angle > minAcceptedAngle1 && angle < maxAcceptedAngle1) || (angle > minAcceptedAngle2 && angle < maxAcceptedAngle2)) return true;
         else return false;
@@ -205,8 +219,8 @@ public class Lidar extends DiagnosticsSubsystem {
                     arrayTwoTimestamp = Timer.getFPGATimestamp();
                     numTimesLidarArraySwitch ++;
                     writeToOne = false;
-                    if(arrayTwoFilled && getLidarArray() != null){
-                        principleComp();
+                    if(arrayTwoFilled && getLidarArray().size() > 20){
+                        calculateOutput();
                     }
                 }
                 else {
@@ -218,8 +232,8 @@ public class Lidar extends DiagnosticsSubsystem {
                     numTimesLidarArraySwitch ++;
                     arrayTwoFilled = true;
                     writeToOne = true;
-                    if(getLidarArray() != null){
-                        principleComp();
+                    if(getLidarArray().size() > 20){
+                        calculateOutput();
                     }
                 }
             } 
@@ -235,14 +249,16 @@ public class Lidar extends DiagnosticsSubsystem {
             angle_rad = 3.141592f * angle_deg / 180.0f;
             range_m = (range_mm / 4.0f) / 1000;
             //quality, range, and angle filter
-            if(isAngleGood(angle_deg) == false) recordScan = false;
-            if(isRangeGood(range_m) == false) recordScan = false;
-
-            if(recordScan){
                 x_l = Math.cos(-angle_rad) * range_m;
                 y_l = Math.sin(-angle_rad) * range_m;
                 Matrix<N3, N1> lidarPoint = VecBuilder.fill(x_l, y_l, 1.0);
                 Matrix<N3, N1> robotPoint = T.times(lidarPoint);
+            if(isAngleGood(angle_deg) == false) recordScan = false;
+            if(isRangeGood(range_m) == false) recordScan = false;
+            if(!isXInRange(robotPoint.get(0,0))) recordScan = false;
+            if(!isYInRange(robotPoint.get(1,0))) recordScan = false;
+
+            if(recordScan){
                 if(writeToOne && one.size() < 512){
                     // xVal1.add(robotPoint.get(0,0));
                     // yVal1.add(robotPoint.get(1,0));
@@ -258,135 +274,42 @@ public class Lidar extends DiagnosticsSubsystem {
         }
     }
 
-    //Principle Components Analysis
-    public void principleComp(){
-        principle.clear();
-        sumx = 0; 
-        sumy = 0; 
-        sumxx = 0; 
-        sumyy = 0; 
-        sumxy = 0; 
-        principle = (ArrayList<Scan>) getLidarArray().clone();
-        if(getLidarArray() != null && getLidarArray().size() > 0){
-            for(int i = 0; i < principle.size(); i++){
-                sumx += principle.get(i).getX();
-                sumy += principle.get(i).getY();
-                sumxx += (principle.get(i).getX() * principle.get(i).getX());
-                sumyy += (principle.get(i).getY() * principle.get(i).getY());
-                sumxy += (principle.get(i).getX() * principle.get(i).getY());
+    public void calculateOutput(){
+        ave = 0;
+        count = 0;
+        s = 0;
+        ssum = 0;
+        if(getLidarArray().size() > 20){
+            for(int i = 0; i < getLidarArray().size(); i++){
+                ave += getLidarArray().get(i).getX();
             }
-    
-            // baricenter - averages
-            xbar = sumx / principle.size();
-            ybar = sumy / principle.size();
-    
-            // variances and covariances
-            varx = sumxx / principle.size() - xbar * xbar;
-            vary = sumyy / principle.size() - ybar * ybar;
-            covxy = sumxy / principle.size() - xbar * ybar;
-            sumvars = varx + vary;
-            diffvars = varx - vary;
-            discriminant = diffvars*diffvars + 4 * covxy * covxy;
-            sqrtdiscr = Math.sqrt(discriminant);
-    
-            // eigenvalues
-            lambdaplus = (sumvars + sqrtdiscr) / 2;
-            lambdaminus = (sumvars - sqrtdiscr) / 2;
-            //eigenvectors - components of the two vectors
-            aplus = varx + covxy - lambdaminus;
-            aminus = varx + covxy - lambdaplus;
-            bplus = vary + covxy - lambdaminus;
-            bminus = vary + covxy - lambdaplus;
+            ave /= getLidarArray().size();
+            for(int i = 0; i < getLidarArray().size() - 3; i++){
+                if(Math.abs(getLidarArray().get(i + 2).getY() - getLidarArray().get(i).getY()) > 0.0001){
+                    s = (getLidarArray().get(i + 2).getX() - getLidarArray().get(i).getX()) / (getLidarArray().get(i + 2).getY() - getLidarArray().get(i).getY());
+                    if(s < 5 && s > -5){
+                        ssum += s;
+                        count++;
+                    }
+                }
+            }
+            slope = ssum / count;
+        }        
+    }
 
-            // Normalizing the vectors
-            denomPlus = Math.sqrt(aplus * aplus + bplus * bplus);
-            denomMinus = Math.sqrt(aminus * aminus + bminus * bminus);
-    
-            aParallel = aplus/denomPlus;
-            bParallel = bplus/denomPlus;
-            aNormal = aminus/denomMinus;
-            bNormal = bminus/denomMinus;
-    
-            majoraxis = k * Math.sqrt(lambdaplus);
-            minoraxis = k * Math.sqrt(lambdaminus);
-            
-            setTimesCovxyIsBad();
-            setMeanXOutOfRangeInARow();
+    public double getAverageX(){
+        return ave;
+    }
 
-            SmartDashboard.putNumber("Lidar/Covxy", covxy);
-            SmartDashboard.putNumber("Lidar/Sqrt Covxy", getSqrtCovxy());
-            SmartDashboard.putBoolean("Lidar/is at zero", getCovxyAtZero());
-            SmartDashboard.putBoolean("Lidar/at zero (covxy)", Math.abs(covxy) < 0.005);
-            SmartDashboard.putNumber("Lidar/Mean X", xbar);
-            SmartDashboard.putNumber("Lidar/Mean Y", ybar);
-            SmartDashboard.putNumber("Lidar/varx", varx);
-            SmartDashboard.putNumber("Lidar/vary", vary);
-            SmartDashboard.putBoolean("Lidar/covxy is bad", getCovxyIsBad());
-            SmartDashboard.putBoolean("Lidar/Var X Is High", Math.abs(varx) > 0.005);
-            SmartDashboard.putBoolean("Lidar/Ratio of Varx to Covxy is High", Math.abs(varx/covxy) > 0.04);
+    public double getAverageSlope(){
+        return slope;
+    }
+
+    public double getAngleToRotate(){
+        if(Math.abs(getAverageSlope()) >= 5){
+            return Math.PI;
         }
-    }
-
-    public void setTimesCovxyIsBad(){
-        if(getCovxyIsBad()){
-            timesBad++;
-        }
-        else{
-            timesBad--;
-        }
-    }
-
-    public int getTimeCovxyIsBad(){
-        return timesBad;
-    }
-
-    public void setMeanXOutOfRangeInARow(){
-        if(getMeanXOutOfRange()){
-            meanXCounter++;
-        }
-        else{
-            meanXCounter--;
-        }
-    }
-
-    public int getMeanXCounter(){
-        return meanXCounter;
-    }
-
-    public boolean getMeanXOutOfRange(){
-        return getMeanX() > 1.0;
-    }
-
-    public boolean getCovxyIsBad(){
-        if(Math.abs(varx) > 0.005 && Math.abs(varx/covxy) > 0.04){
-            return true;
-        }
-        return false;
-    }
-
-    public boolean getCovxyAtZero(){
-        return Math.abs(getSqrtCovxy()) < 0.015;
-    }
-
-    public double getCovxy(){
-        return covxy;
-    }
-
-    public double getSqrtCovxy(){
-        if(covxy < 0) sign = -1;
-        if(covxy > 0) sign = 1;
-        if(covxy == 0) sign = 0;
-        mag = Math.abs(covxy);
-        mag = Math.sqrt(mag);
-        return sign * mag;
-    }
-
-    public double getMeanX(){
-        return xbar;
-    }
-
-    public double getMeanY(){
-        return ybar;
+        return Math.atan(getAverageSlope());
     }
 
     public int getNumberScansToRead(){
@@ -414,9 +337,11 @@ public class Lidar extends DiagnosticsSubsystem {
             SmartDashboard.putNumber("Lidar/LiDAR X Value", getXVal());
             SmartDashboard.putNumber("Lidar/LiDAR Y Value", getYVal());
             SmartDashboard.putNumber("Lidar/LiDAR R Value", getRVal());
-            SmartDashboard.putBoolean("Lidar/Against Reef", againstReef());
             SmartDashboard.putNumber("Lidar/Number of Scans in LiDAR Array", getNumberScans());
             SmartDashboard.putNumber("Lidar/Number of Scans to Read", getNumberScansToRead());
+            SmartDashboard.putNumber("Lidar/Average Slope", getAverageSlope());
+            SmartDashboard.putNumber("Lidar/Average X", getAverageX());
+            SmartDashboard.putNumber("Lidar/Angle to Rotate", getAngleToRotate());
         }
         numBytesAvail = serialPort.getBytesReceived();
          if(measureMode){
@@ -458,10 +383,6 @@ public class Lidar extends DiagnosticsSubsystem {
 
     public double getRVal(){
         return getLidarArray().get(0).getX() * Math.cos(getAngle());
-    }
-    
-    public boolean againstReef(){
-        return getMeanX() <= 0.43;
     }
 
     public double getYVal(){

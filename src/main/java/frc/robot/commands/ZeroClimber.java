@@ -30,7 +30,7 @@ public class ZeroClimber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (climber.getEncoderPosition() > 0){
+    if (climber.getEncoderPosition() > 0.04){
       velocity = -10;
     }
     else{

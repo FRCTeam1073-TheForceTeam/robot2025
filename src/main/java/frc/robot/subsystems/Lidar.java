@@ -12,16 +12,17 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Scan;
 
-public class Lidar extends DiagnosticsSubsystem {
+public class Lidar extends SubsystemBase {
     SerialPort serialPort;
     ArrayList <Scan> one = new ArrayList<Scan>();
+    int one_count = 0; // Keep separate count of scans to avoid reallocation
     ArrayList <Scan> two = new ArrayList<Scan>();
-    ArrayList <Scan> principle = new ArrayList<Scan>();
-    // ArrayList <Double> xVal1 = new ArrayList<Double>();
-    // ArrayList <Double> yVal1 = new ArrayList<Double>();
-    // ArrayList <Double> xVal2 = new ArrayList<Double>();
-    // ArrayList <Double> yVal2 = new ArrayList<Double>();
+    int two_count = 0; // Keep separate count of scans to avoid reallocation
+
+
     byte getInfo[] = {(byte) 0xa5, (byte) 0x52};
     byte scanDescriptor[] = {(byte) 0xa5, (byte) 0x5a, (byte) 0x05, (byte) 0x00, (byte) 0x00, (byte) 0x40, (byte) 0x81};
     byte stopCommand[] = {(byte) 0xa5, (byte) 0x25};
@@ -95,6 +96,13 @@ public class Lidar extends DiagnosticsSubsystem {
         T = robotToLidar.toMatrix();
         one.ensureCapacity(512);
         two.ensureCapacity(512);
+
+        // Add all our scan records *once* and reuse them later.
+        for (int ii = 0; ii < 512; ++ii) {
+            one.add(new Scan(0,0,0,0,0));
+            two.add(new Scan(0,0,0,0,0));
+        }
+
         try{
             serialPort = new SerialPort(460800, SerialPort.Port.kUSB1, 8, SerialPort.Parity.kNone, SerialPort.StopBits.kOne);
         }
@@ -148,27 +156,21 @@ public class Lidar extends DiagnosticsSubsystem {
 
     }
 
-    // public ArrayList<Double> getXValArray(){
-    //     if(writeToOne){
-    //         return xVal2; 
-    //     } else {
-    //         return xVal1;
-    //     }
-    // }
-
-    // public ArrayList<Double> getYValArray(){
-    //     if(writeToOne){
-    //         return yVal2; 
-    //     } else {
-    //         return yVal1;
-    //     }
-    // }
-
+    // Returns one of the two double buffers, but the number of scans comes from getScanCount()
     public ArrayList<Scan> getLidarArray(){
         if(writeToOne){
             return two; 
         } else {
             return one;
+        }
+    }
+
+    // Return a count to match the scan array. Use with getLidarArray() to access data.
+    public int getScanCount() {
+        if (writeToOne) {
+            return two_count;
+        } else {
+            return one_count;
         }
     }
 
@@ -211,11 +213,9 @@ public class Lidar extends DiagnosticsSubsystem {
             offset = i * bytesPerScan;
             recordScan = true;
            if((rawData[offset] & 0x003) == 1){
-                if(writeToOne){
+                if (writeToOne){
                     //done writing to one, switching to writing to two - sets the timestamp for array two
-                    two.clear();
-                    // xVal2.clear();
-                    // yVal2.clear();
+                    two_count = 0; // Start over with the count of used entries  in arraylist two.
                     arrayTwoTimestamp = Timer.getFPGATimestamp();
                     numTimesLidarArraySwitch ++;
                     writeToOne = false;
@@ -225,9 +225,7 @@ public class Lidar extends DiagnosticsSubsystem {
                 }
                 else {
                     //done writing to two, switching to writing to one - sets the timestamp for array one
-                    one.clear();
-                    // xVal1.clear();
-                    // yVal1.clear();
+                    one_count = 0; // Start over with the count of used entries in arraylist one.
                     arrayOneTimestamp = Timer.getFPGATimestamp();
                     numTimesLidarArraySwitch ++;
                     arrayTwoFilled = true;
@@ -244,33 +242,46 @@ public class Lidar extends DiagnosticsSubsystem {
             // angle = Math.pow(2, 7) * angle[14:7] + angle[6:0]
             angle_deg = ((Byte.toUnsignedInt(rawData[offset + 2]) & 0x0FF) << 7) | ((Byte.toUnsignedInt(rawData[offset + 1]) & 0x0FE) >> 1);
             angle_deg /= 64.0f;
-            //range = Math.pow(2, 8) * distance[15:8] + distance[7:0]
+            // range = Math.pow(2, 8) * distance[15:8] + distance[7:0]
             range_mm = ((rawData[offset + 4] & 0x0FF) << 8) | (rawData[offset + 3] & 0x0FF);
             angle_rad = 3.141592f * angle_deg / 180.0f;
             range_m = (range_mm / 4.0f) / 1000;
-            //quality, range, and angle filter
-                x_l = Math.cos(-angle_rad) * range_m;
-                y_l = Math.sin(-angle_rad) * range_m;
-                Matrix<N3, N1> lidarPoint = VecBuilder.fill(x_l, y_l, 1.0);
-                Matrix<N3, N1> robotPoint = T.times(lidarPoint);
-            if(isAngleGood(angle_deg) == false) recordScan = false;
-            if(isRangeGood(range_m) == false) recordScan = false;
-            if(!isXInRange(robotPoint.get(0,0))) recordScan = false;
-            if(!isYInRange(robotPoint.get(1,0))) recordScan = false;
 
-            if(recordScan){
-                if(writeToOne && one.size() < 512){
-                    // xVal1.add(robotPoint.get(0,0));
-                    // yVal1.add(robotPoint.get(1,0));
-                    one.add(new Scan(range_m, angle_rad, quality, robotPoint.get(0,0), robotPoint.get(1, 0)));
+            x_l = Math.cos(-angle_rad) * range_m;
+            y_l = Math.sin(-angle_rad) * range_m;
+            // Matrix<N3, N1> lidarPoint = VecBuilder.fill(x_l, y_l, 1.0);
+            // Trying an offset-only approach, less general, but faster.
+            double x_robot = x_l + T.get(0,2);
+            double y_robot = y_l + T.get(1,2);
+            // Matrix<N3, N1> robotPoint = T.times(lidarPoint);
+            // Quality, range, and angle filter
+            if (isAngleGood(angle_deg) == false) recordScan = false;
+            if (isRangeGood(range_m) == false) recordScan = false;
+            if (!isXInRange(x_robot)) recordScan = false;
+            if (!isYInRange(y_robot)) recordScan = false;
+
+            if(recordScan) {
+                if (writeToOne && one_count < one.size()){
+                    var scan = one.get(one_count);
+                    // Fill out existing scan:
+                    scan.range = range_m;
+                    scan.angle = angle_rad;
+                    scan.quality = quality;
+                    scan.x_robot = x_robot;
+                    scan.y_robot = y_robot;
+                    one_count++; // Count this scan for array one.
                 } 
-                else if(!writeToOne && two.size() < 512){
-                    // xVal2.add(robotPoint.get(0,0));
-                    // yVal2.add(robotPoint.get(1,0));
-                    two.add(new Scan(range_m, angle_rad, quality, robotPoint.get(0,0), robotPoint.get(1, 0)));
+                else if (!writeToOne && two_count < two.size()){
+                    var scan = two.get(two_count);
+                    // Fill out existing scan.
+                    scan.range = range_m;
+                    scan.angle = angle_rad;
+                    scan.quality = quality;
+                    scan.x_robot = x_robot;
+                    scan.y_robot = y_robot;
+                    two_count++; // Count this scan for array two.
                 }
             }
-            
         }
     }
 
@@ -279,14 +290,18 @@ public class Lidar extends DiagnosticsSubsystem {
         count = 0;
         s = 0;
         ssum = 0;
-        if(getLidarArray().size() > 20){
-            for(int i = 0; i < getLidarArray().size(); i++){
+        int numScans = getScanCount();
+        if(numScans > 20){
+            for(int i = 0; i < numScans; i++){
                 ave += getLidarArray().get(i).getX();
             }
             ave /= getLidarArray().size();
-            for(int i = 0; i < getLidarArray().size() - 3; i++){
-                if(Math.abs(getLidarArray().get(i + 2).getY() - getLidarArray().get(i).getY()) > 0.0001){
-                    s = (getLidarArray().get(i + 2).getX() - getLidarArray().get(i).getX()) / (getLidarArray().get(i + 2).getY() - getLidarArray().get(i).getY());
+            for(int i = 0; i < numScans - 3; i++){
+                var scan = getLidarArray().get(i);
+                var scan2 = getLidarArray().get(i+2);
+
+                if(Math.abs(scan2.getY() - scan.getY()) > 0.0001){
+                    s = (scan2.getX() - scan.getX()) / (scan2.getY() - scan.getY());
                     if(s < 5 && s > -5){
                         ssum += s;
                         count++;
@@ -316,13 +331,6 @@ public class Lidar extends DiagnosticsSubsystem {
         return numScansToRead;
     }
 
-    public int getNumberScans(){
-        if(writeToOne){
-            return two.size(); 
-        } else {
-            return one.size();
-        }
-    }
 
     @Override
     public void periodic() {
@@ -337,7 +345,7 @@ public class Lidar extends DiagnosticsSubsystem {
             SmartDashboard.putNumber("Lidar/LiDAR X Value", getXVal());
             SmartDashboard.putNumber("Lidar/LiDAR Y Value", getYVal());
             SmartDashboard.putNumber("Lidar/LiDAR R Value", getRVal());
-            SmartDashboard.putNumber("Lidar/Number of Scans in LiDAR Array", getNumberScans());
+            SmartDashboard.putNumber("Lidar/Number of Scans in LiDAR Array", getScanCount());
             SmartDashboard.putNumber("Lidar/Number of Scans to Read", getNumberScansToRead());
             SmartDashboard.putNumber("Lidar/Average Slope", getAverageSlope());
             SmartDashboard.putNumber("Lidar/Average X", getAverageX());
@@ -347,9 +355,7 @@ public class Lidar extends DiagnosticsSubsystem {
          if(measureMode){
                 // read and parse all available scan data to read - fill array
                 readAndParseMeasurements(numBytesAvail);
-            }
-    
-            if(numBytesAvail >= 7 && !measureMode){
+        } else if(numBytesAvail >= 7) {
                 // read and check the first 7 bytes of response
                 if(parseDescriptor()){
                     // expected descriptor received, switch to read data
@@ -358,8 +364,8 @@ public class Lidar extends DiagnosticsSubsystem {
                 else{
                     System.out.println("Lidar handshake error");
                 }
-            }
         }
+    }
 
     public int getTimesArraySwitch(){
         return numTimesLidarArraySwitch;
@@ -389,17 +395,4 @@ public class Lidar extends DiagnosticsSubsystem {
         return getLidarArray().get(0).getY();
     }
 
-    @Override
-    public boolean updateDiagnostics() {
-        double now = Timer.getFPGATimestamp();
-        boolean OK = true;
-        if (now - timestamp > 2.0) {
-            OK = false;
-        }
-
-        else {
-            OK = false;
-        }
-        return setDiagnosticsFeedback("", OK);
-    }
 }

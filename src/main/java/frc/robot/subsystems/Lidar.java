@@ -219,7 +219,7 @@ public class Lidar extends SubsystemBase {
                     arrayTwoTimestamp = Timer.getFPGATimestamp();
                     numTimesLidarArraySwitch ++;
                     writeToOne = false;
-                    if(arrayTwoFilled && getLidarArray().size() > 20){
+                    if(arrayTwoFilled && getScanCount() > 20){
                         calculateOutput();
                     }
                 }
@@ -230,7 +230,7 @@ public class Lidar extends SubsystemBase {
                     numTimesLidarArraySwitch ++;
                     arrayTwoFilled = true;
                     writeToOne = true;
-                    if(getLidarArray().size() > 20){
+                    if(getScanCount() > 20){
                         calculateOutput();
                     }
                 }
@@ -295,7 +295,7 @@ public class Lidar extends SubsystemBase {
             for(int i = 0; i < numScans; i++){
                 ave += getLidarArray().get(i).getX();
             }
-            ave /= getLidarArray().size();
+            ave /= getScanCount();
             for(int i = 0; i < numScans - 3; i++){
                 var scan = getLidarArray().get(i);
                 var scan2 = getLidarArray().get(i+2);
@@ -337,8 +337,7 @@ public class Lidar extends SubsystemBase {
         if(serialPort == null){
             return;
         }
-        if(arrayTwoFilled && getLidarArray().size() > 0){
-            SmartDashboard.putNumber("Lidar/Times Lidar Array Switched", getTimesArraySwitch());
+        if(arrayTwoFilled && getScanCount() > 0){
             SmartDashboard.putNumber("Lidar/Range", getRange());
             SmartDashboard.putNumber("Lidar/Angle", getAngle());
             SmartDashboard.putNumber("Lidar/Quality", getQuality());

@@ -199,7 +199,6 @@ public class Lidar extends SubsystemBase {
             return Arrays.equals(received, scanDescriptor);
         }
 
-         // what is most efficient?
         public void readAndParseMeasurements(int numBytesAvail){
             // round down to determine number of full scans available
             int numScansToRead = numBytesAvail/bytesPerScan;
@@ -211,7 +210,7 @@ public class Lidar extends SubsystemBase {
 
                     // If we have enough, then process scan and update output.
                     if (readScanCount > 20) {
-                        // This is a synchronized method to store data for external threads to access.
+                        // This method has a synchronized block to store data for external threads to access.
                         calculateOutput(readScanCount, Timer.getFPGATimestamp()); // Updates outputs based on scan we have right now.
                     }
                     // Always start over accumulating new data for next time:
@@ -260,15 +259,17 @@ public class Lidar extends SubsystemBase {
             }
         }
 
-        private synchronized void calculateOutput(int newScanCount, double newTimestamp){
+        private void calculateOutput(int newScanCount, double newTimestamp){
             int count = 0;
             double s = 0;
             double ssum = 0;
-            
+            double localXAvg = 0.0;
+            double localSlope = 0.0;
+
             for(int i = 0; i < scanCount; i++){
-                xAvg += scans.get(i).getX();
+                localXAvg += scans.get(i).getX();
             }
-            xAvg /= scanCount;  // Externally visible synchronized variable.
+            localXAvg /= scanCount;  // Externally visible synchronized variable.
 
             for(int i = 0; i < scanCount - 3; i++){
                 var scan = scans.get(i);
@@ -282,12 +283,17 @@ public class Lidar extends SubsystemBase {
                     }
                 }
             }
-            slope = ssum / count; // Externally visible synchronized variable.
+            localSlope = ssum / count; // Externally visible synchronized variable.
 
-            // SET our other externally visible output variables inside this synchronized method.
-            scanCount = newScanCount;
-            scanTimestamp = newTimestamp;
-            lidarUpdatesReceived++; // Increment number of updates we've done
+            // SET our other externally visible output variables inside this synchronized block.
+            // Do as little work in a synchronized block as *possible*
+            synchronized (this) {
+                xAvg = localXAvg;
+                slope = localSlope;
+                scanCount = newScanCount;
+                scanTimestamp = newTimestamp;
+                lidarUpdatesReceived++; // Increment number of updates we've done
+            }
         }
 
         private synchronized void setLastIterationTime(double t) {

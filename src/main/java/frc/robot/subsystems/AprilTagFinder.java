@@ -48,29 +48,10 @@ public class AprilTagFinder extends SubsystemBase
   public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(15), 0));
   public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
   
-  List<PhotonTrackedTarget> responseFL;
-  List<PhotonTrackedTarget> responseFR;
-  List<PhotonTrackedTarget> responseFC;
-
-  double ambiguityThreshold = 0.2; // TODO: verify this number
 
 
-  public int wait_counter = 0;
+  double ambiguityThreshold = 0.28; // TODO: verify this number
 
-  public List<PhotonTrackedTarget> getFLCurrentTagData() 
-  {
-    return responseFL;
-  }
-
-  public List<PhotonTrackedTarget> getFCCurrentTagData()
-  {
-    return responseFC;
-  }
-
-  public List<PhotonTrackedTarget> getFRCurrentTagData() 
-  {
-    return responseFR;
-  }
 
   public ArrayList<VisionMeasurement> getAllMeasurements() {
     ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
@@ -136,66 +117,7 @@ public class AprilTagFinder extends SubsystemBase
 
   @Override
   public void periodic() 
-  { 
-    if(responseFL.size() > 0) 
-    {
-      SmartDashboard.putNumber("FL ID", responseFL.get(0).getFiducialId());
-    }
-    else 
-    {
-      SmartDashboard.putNumber("FL ID", -1);
-    }
-    if(responseFR.size() > 0) 
-    {
-      SmartDashboard.putNumber("FR ID", responseFR.get(0).getFiducialId());
-    }
-    else 
-    {
-      SmartDashboard.putNumber("FR ID", -1);
-    }
-    SmartDashboard.putNumber("Total Tags Seen", responseFL.size() + responseFR.size() + responseFC.size());
-    if(getAllMeasurements().size() > 0) 
-    {
-      //SmartDashboard.putNumber("FL Measurement X", getMeasurements().get(0).pose.getX());
-      //SmartDashboard.putNumber("FL Measurement Y", getMeasurements().get(0).pose.getY());
-    }
+  {   
   }
 
-  // public ArrayList<VisionMeasurement> getMeasurements() FORMER CODED CHANGED ABOVE
-  // {
-
-  //   //PhotonTrackedTarget targetFC = frontCenterCam.getLatestResult().getBestTarget();
-  //   PhotonPipelineResult latestResultFC = frontCenterCam.getLatestResult();
-  //   if (latestResultFC.hasTargets()) {
-  //     targetFC = latestResultFC.getBestTarget();
-  //   }
-
-  //   if (targetFC != null && FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).isPresent())
-  //   {
-  //     Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetFC.getBestCameraToTarget(),
-  //                                                                     FieldMap.fieldMap.getTagPose(targetFC.getFiducialId()).get(), 
-  //                                                                     fCCamTransform3d.inverse());
-  //     range = targetFC.bestCameraToTarget.getTranslation().getNorm();
-  //     measurements.add(new VisionMeasurement(robotPoseFC.toPose2d(), responseFCTimestamp, targetFC.getFiducialId(), range));
-  //   }
-
-  //   return measurements;
-  // }
-
-
-    // ArrayList<PhotonTrackedTarget> targetsFC = new ArrayList<>(frontCenterCam.getLatestResult().getTargets()); FORMER CODED CHANGED ABOVE
-    // for (int i = 0; i < targetsFC.size(); i++)
-    // {
-    //   if (targetsFC.get(i) != null && 
-    //       FieldMap.fieldMap.getTagPose(targetsFC.get(i).getFiducialId()).isPresent() &&
-    //       targetsFC.get(i).getPoseAmbiguity() < ambiguityThreshold && 
-    //       targetsFC.get(i).getPoseAmbiguity() != -1) 
-    //   {
-    //     Pose3d robotPoseFC = PhotonUtils.estimateFieldToRobotAprilTag(targetsFC.get(i).getBestCameraToTarget(),
-    //                                                         FieldMap.fieldMap.getTagPose(targetsFC.get(i).getFiducialId()).get(), 
-    //                                                         fCCamTransform3d.inverse());
-    //     range = targetsFC.get(i).bestCameraToTarget.getTranslation().getNorm();
-    //     measurements.add(new VisionMeasurement(robotPoseFC.toPose2d(), responseFCTimestamp, targetsFC.get(i).getFiducialId(), range));
-    //   }
-    // }
 }

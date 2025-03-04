@@ -24,7 +24,6 @@ import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
-import frc.robot.commands.CorrectionAlign;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
@@ -85,7 +84,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final RemoveAlgae cmd_removeAlgaeL2 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 2);
   private final RemoveAlgae cmd_RemoveAlgaeL3 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 3);
-  private final CorrectionAlign cmd_correctionAlign = new CorrectionAlign(m_drivetrain, 11, m_aprilTagFinder, new Transform2d(0.5, 0, new Rotation2d(0)));
 
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
@@ -183,8 +181,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
       alignToTag.whileTrue(cmd_alignToTag);
-
-    // Trigger correctionAlign = new Trigger(m_OI::getDriverViewButton);
 
     Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
       lidarAlign.whileTrue(cmd_lidarAlign);

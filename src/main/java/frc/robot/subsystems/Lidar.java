@@ -36,30 +36,8 @@ public class Lidar extends SubsystemBase {
     double timestamp = 0.0;
     double x_l;
     double y_l;
-    double sumx = 0;
-    double sumy = 0;
-    double sumxx = 0;
-    double sumyy = 0;
-    double sumxy = 0;
-    double xbar = 0;
-    double ybar = 0;
-    double varx = 0;
-    double vary = 0;
-    double covxy = 0;
-    double sumvars = 0;
-    double diffvars = 0;
-    double discriminant = 0;
-    double sqrtdiscr = 0;
-    double lambdaplus, lambdaminus;
-    double aplus, bplus, aminus, bminus;
-    double aParallel, aNormal, bParallel, bNormal;
-    double k = 2;
-    double mag = 0;
-    double denomPlus, denomMinus, majoraxis, minoraxis;
     double distance;
     double ave;
-    double lastAverage = 2;
-    double lastSlope = 5;
     double s;
     double ssum;
     double slope;
@@ -89,22 +67,25 @@ public class Lidar extends SubsystemBase {
     int sign = 0;
     int timesBad = 0;
     int meanXCounter = 0;
-    Transform2d robotToLidar = new Transform2d(new Translation2d(0.289, 0.22), new Rotation2d()); // Translation needs x and y, rotation needs 
     Matrix<N3,N3> T;
+    Transform2d robotToLidar = new Transform2d(new Translation2d(0.289, 0.22), new Rotation2d());
+    Scan scan;
+    Scan scan2;
 
     public Lidar () {
         T = robotToLidar.toMatrix();
-        one.ensureCapacity(512);
-        two.ensureCapacity(512);
+        one.ensureCapacity(250);
+        two.ensureCapacity(250);
 
         // Add all our scan records *once* and reuse them later.
-        for (int ii = 0; ii < 512; ++ii) {
+        for (int ii = 0; ii < 250; ++ii) {
             one.add(new Scan(0,0,0,0,0));
             two.add(new Scan(0,0,0,0,0));
         }
 
         try{
             serialPort = new SerialPort(460800, SerialPort.Port.kUSB1, 8, SerialPort.Parity.kNone, SerialPort.StopBits.kOne);
+            serialPort.setReadBufferSize(8192);
         }
         catch(Exception e){
             System.out.println("No LiDAR found");
@@ -118,7 +99,6 @@ public class Lidar extends SubsystemBase {
             Handshake();
         }
     }
-
 
     public void Handshake () {
         System.out.println("Beginning of handshake method for Lidar sensor");
@@ -181,7 +161,7 @@ public class Lidar extends SubsystemBase {
     }
 
     public boolean parseDescriptor(){
-        byte [] received = serialPort.read(7);
+        byte[] received = serialPort.read(7);
         return Arrays.equals(received, scanDescriptor);
     }
 
@@ -205,11 +185,10 @@ public class Lidar extends SubsystemBase {
 
     // what is most efficient?
     public void readAndParseMeasurements(int numBytesAvail){
-
         // round down to determine number of full scans available
         numScansToRead = numBytesAvail/bytesPerScan;
         byte[] rawData = serialPort.read(numScansToRead * bytesPerScan);
-        for(int i = 0; i < numScansToRead; i ++){
+        for(int i = 0; i < numScansToRead; i +=2){
             offset = i * bytesPerScan;
             recordScan = true;
            if((rawData[offset] & 0x003) == 1){
@@ -219,9 +198,9 @@ public class Lidar extends SubsystemBase {
                     arrayTwoTimestamp = Timer.getFPGATimestamp();
                     numTimesLidarArraySwitch ++;
                     writeToOne = false;
-                    if(arrayTwoFilled && getScanCount() > 20){
-                        calculateOutput();
-                    }
+                    // if(arrayTwoFilled && getScanCount() > 20){
+                    //     calculateOutput();
+                    // }
                 }
                 else {
                     //done writing to two, switching to writing to one - sets the timestamp for array one
@@ -230,9 +209,9 @@ public class Lidar extends SubsystemBase {
                     numTimesLidarArraySwitch ++;
                     arrayTwoFilled = true;
                     writeToOne = true;
-                    if(getScanCount() > 20){
-                        calculateOutput();
-                    }
+                    // if(getScanCount() > 20){
+                    //     calculateOutput();
+                    // }
                 }
             } 
             
@@ -291,25 +270,23 @@ public class Lidar extends SubsystemBase {
         s = 0;
         ssum = 0;
         int numScans = getScanCount();
-        if(numScans > 20){
-            for(int i = 0; i < numScans; i++){
-                ave += getLidarArray().get(i).getX();
-            }
-            ave /= getScanCount();
-            for(int i = 0; i < numScans - 3; i++){
-                var scan = getLidarArray().get(i);
-                var scan2 = getLidarArray().get(i+2);
+        for(int i = 0; i < numScans; i++){
+            ave += getLidarArray().get(i).getX();
+        }
+        ave /= getScanCount();
+        for(int i = 0; i < numScans - 3; i++){
+            scan = getLidarArray().get(i);
+            scan2 = getLidarArray().get(i+2);
 
-                if(Math.abs(scan2.getY() - scan.getY()) > 0.0001){
-                    s = (scan2.getX() - scan.getX()) / (scan2.getY() - scan.getY());
-                    if(s < 5 && s > -5){
-                        ssum += s;
-                        count++;
-                    }
+            if(Math.abs(scan2.getY() - scan.getY()) > 0.0001){
+                s = (scan2.getX() - scan.getX()) / (scan2.getY() - scan.getY());
+                if(s < 5 && s > -5){
+                    ssum += s;
+                    count++;
                 }
             }
-            slope = ssum / count;
-        }        
+        }
+        slope = ssum / count;
     }
 
     public double getAverageX(){
@@ -352,17 +329,17 @@ public class Lidar extends SubsystemBase {
         }
         numBytesAvail = serialPort.getBytesReceived();
          if(measureMode){
-                // read and parse all available scan data to read - fill array
-                readAndParseMeasurements(numBytesAvail);
+            // read and parse all available scan data to read - fill array
+            readAndParseMeasurements(numBytesAvail);
         } else if(numBytesAvail >= 7) {
-                // read and check the first 7 bytes of response
-                if(parseDescriptor()){
-                    // expected descriptor received, switch to read data
-                    measureMode = true;
-                }
-                else{
-                    System.out.println("Lidar handshake error");
-                }
+            // read and check the first 7 bytes of response
+            if(parseDescriptor()){
+                // expected descriptor received, switch to read data
+                measureMode = true;
+            }
+            else{
+                System.out.println("Lidar handshake error");
+            }
         }
     }
 
@@ -393,5 +370,4 @@ public class Lidar extends SubsystemBase {
     public double getYVal(){
         return getLidarArray().get(0).getY();
     }
-
 }

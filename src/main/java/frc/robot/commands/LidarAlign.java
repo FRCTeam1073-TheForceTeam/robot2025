@@ -29,7 +29,7 @@ public class LidarAlign extends Command {
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(0.9, 0, 0.01);
+    thetaController = new PIDController(0.8, 0, 0.01);
     xController = new PIDController(0.8, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -47,36 +47,36 @@ public class LidarAlign extends Command {
   @Override
   public void execute() {
     //covxyAtZero based on sqrt of covxy, isbad - if the varx is above 0.005 & varx/covxy > 0.04
-    if(lidar.getAngleToRotate() != Math.PI){
-      thetaVelocity = thetaController.calculate(drivetrain.getOdometryThetaRadians(), lidar.getAngleToRotate());  
-      thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 1.5);
-      if(thetaVelocity < 0){
-          thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.2);
-      }
-      else if(thetaVelocity > 0){
-        thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 2);
-      }
-      else if(thetaVelocity == 0){
-        thetaVelocity = 0;
-      }
-    }
+    // if(lidar.getAngleToRotate() != Math.PI){
+    //   thetaVelocity = thetaController.calculate(drivetrain.getOdometryThetaRadians(), lidar.getAngleToRotate());  
+    //   thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 1.5);
+    //   if(thetaVelocity < 0){
+    //       thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.2);
+    //   }
+    //   else if(thetaVelocity > 0){
+    //     thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 2);
+    //   }
+    //   else if(thetaVelocity == 0){
+    //     thetaVelocity = 0;
+    //   }
+   // }
     
-      xToDrive = lidar.getAverageX() - 0.4;
-      if(xToDrive > 0 && lidar.getAverageX() != 1){
-        //TODO: check if setpoint is correct
-        vx = xController.calculate(lidar.getAverageX(), 0.4);
-        if(vx < 0){
-          vx = MathUtil.clamp(vx, -2, -0.2);
-        }
-        if(vx > 0){
-          vx = MathUtil.clamp(vx, 0.2, 2);
-        }
-        drivetrain.setTargetChassisSpeeds(
-          new ChassisSpeeds(
-           vx, 
-           0, 
-           thetaVelocity));
-      }
+      // xToDrive = lidar.getAverageX() - 0.4;
+      // if(xToDrive > 0 && lidar.getAverageX() != 1){
+      //   //TODO: check if setpoint is correct
+      //   vx = xController.calculate(lidar.getAverageX(), 0.4);
+      //   if(vx < 0){
+      //     vx = MathUtil.clamp(vx, -2, -0.2);
+      //   }
+      //   if(vx > 0){
+      //     vx = MathUtil.clamp(vx, 0.2, 2);
+      //   }
+      //   drivetrain.setTargetChassisSpeeds(
+      //     new ChassisSpeeds(
+      //      vx, 
+      //      0, 
+      //      thetaVelocity));
+      // }
   }
 
   // Called once the command ends or is interrupted.
@@ -89,12 +89,13 @@ public class LidarAlign extends Command {
   @Override
   public boolean isFinished() {
     //TODO: change numbers
-    if(lidar.getAverageX() <= 0.43 && Math.abs(lidar.getAverageSlope()) < 0.01){
-      return true;
-    }
-    if(lidar.getAverageX() <= 0.43){
-      return true;
-    }
-      return false;
+    // if(lidar.getAverageX() <= 0.43 && Math.abs(lidar.getAverageSlope()) < 0.01){
+    //   return true;
+    // }
+    // if(lidar.getAverageX() <= 0.43){
+    //   return true;
+    // }
+    //   return false;
+    return true;
   }
 }

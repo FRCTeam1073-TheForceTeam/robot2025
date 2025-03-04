@@ -39,14 +39,14 @@ public class AprilTagFinder extends SubsystemBase
     }
   }
 
-  public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");
-  public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
+  public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");  
   public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
+  public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
 
   //Camera height: 0.2159m, x and y: 0.264m
   public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));
-  public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
   public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(15), 0));
+  public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
   
   List<PhotonTrackedTarget> responseFL;
   List<PhotonTrackedTarget> responseFR;
@@ -62,14 +62,14 @@ public class AprilTagFinder extends SubsystemBase
     return responseFL;
   }
 
-  public List<PhotonTrackedTarget> getFRCurrentTagData() 
-  {
-    return responseFR;
-  }
-
   public List<PhotonTrackedTarget> getFCCurrentTagData()
   {
     return responseFC;
+  }
+
+  public List<PhotonTrackedTarget> getFRCurrentTagData() 
+  {
+    return responseFR;
   }
 
   public ArrayList<VisionMeasurement> getAllMeasurements() {
@@ -96,8 +96,6 @@ public class AprilTagFinder extends SubsystemBase
 
   public ArrayList<VisionMeasurement> getCamMeasurements(PhotonCamera camera, Transform3d camTransform3d) {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
-    double range = 0;
-
     ArrayList<PhotonPipelineResult> results = new ArrayList<>(camera.getAllUnreadResults());
     ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
 
@@ -106,14 +104,17 @@ public class AprilTagFinder extends SubsystemBase
           targets.addAll(result.getTargets());
         
         var responseTimestamp = Timer.getFPGATimestamp() - result.metadata.getLatencyMillis() / 1000.0;
+        double range = 0;
 
-        for (int i = 0; i < targets.size(); i++){
-          if (targets.get(i) != null && FieldMap.fieldMap.getTagPose(targets.get(i).getFiducialId()).isPresent() && targets.get(i).getPoseAmbiguity() < ambiguityThreshold && targets.get(i).getPoseAmbiguity() != -1) {
-              Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(targets.get(i).getBestCameraToTarget(),
-                                                  FieldMap.fieldMap.getTagPose(targets.get(i).getFiducialId()).get(), 
+        for (PhotonTrackedTarget target : targets) {
+          if (FieldMap.fieldMap.getTagPose(target.getFiducialId()).isPresent()){
+            if (target.getPoseAmbiguity() != -1 && target.getPoseAmbiguity() < ambiguityThreshold){
+              Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+                                                  FieldMap.fieldMap.getTagPose(target.getFiducialId()).get(), 
                                                   camTransform3d.inverse());
-              range = targets.get(i).bestCameraToTarget.getTranslation().getNorm();
-              measurements.add(new VisionMeasurement(robotPose.toPose2d(), responseTimestamp, targets.get(i).getFiducialId(), range));
+              range = target.bestCameraToTarget.getTranslation().getNorm();
+              measurements.add(new VisionMeasurement(robotPose.toPose2d(), responseTimestamp, target.getFiducialId(), range));
+            }
           }
         }
       }

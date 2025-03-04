@@ -155,7 +155,7 @@ public class Localizer extends SubsystemBase
         // only run sensor update if we've moved enough and a few seconds have passed
         if (now - lastUpdateTime > timeGap && measurementStable())
         {
-            ArrayList<AprilTagFinder.VisionMeasurement> measurements = finder.getMeasurements();
+            ArrayList<AprilTagFinder.VisionMeasurement> measurements = finder.getAllMeasurements();
 
             for(int index = 0; index < measurements.size(); index++) 
             {

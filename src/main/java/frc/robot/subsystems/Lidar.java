@@ -68,7 +68,7 @@ public class Lidar extends SubsystemBase {
         LidarIO() {
             // Pre-allocate space for all scans, up to 250.
             scans.ensureCapacity(250);
-            for (int ii = 0; ii < 20; ++ii) {
+            for (int ii = 0; ii < 250; ++ii) {
                 scans.add(new Scan(0,0,0,0,0));
             }
 

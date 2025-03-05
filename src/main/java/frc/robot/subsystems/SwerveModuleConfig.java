@@ -16,7 +16,7 @@ public class SwerveModuleConfig
     public double wheelDiameterMeters = 0.1016;
     public Translation2d position = new Translation2d(0,0);
     //public double tickPerMeter = 1000;
-    public double rotationsPerMeter = gearRatio / (wheelDiameterMeters * Math.PI);
+    public double rotationsPerMeter = gearRatio / (wheelDiameterMeters * Math.PI * 1.06); // 1.06 is the measure correction factor while driving
     public double radiansPerRotation = (150.0 / 7.0) / (Math.PI * 2);
     //public double tickPerRadian = 1000;
     //public double steerRotationOffset = 0;
@@ -29,11 +29,12 @@ public class SwerveModuleConfig
     public double steerP = 0;
     public double steerI = 0;
     public double steerD = 0;
-    public double steerF = 0;
+    public double steerV = 0;
     public double driveP = 0;
     public double driveI = 0;
     public double driveD = 0;
-    public double driveF = 0;
+    public double driveV = 0;
+    public double driveA = 0;
     public double driveMaxIntegrator = 400.0;
     public double steerMaxIntegrator = 400.0;    
 
@@ -46,7 +47,8 @@ public class SwerveModuleConfig
         driveP = 0.3; 
         driveI = 0.0;
         driveD = 0.001;
-        driveF = 0.115;
+        driveV = 0.12;
+        driveA = 0.05;
         driveMaxIntegrator = 400.0;
         driveCurrentLimit = 30;
         driveCurrentThreshold = 35;
@@ -56,7 +58,7 @@ public class SwerveModuleConfig
         steerP = 30.0; 
         steerI = 4.0;
         steerD = 1.0;
-        steerF = 0.0;
+        steerV = 0.12;
         steerMaxIntegrator = 400.0;
         steerCurrentLimit = 12;
         steerCurrentThreshold = 15;

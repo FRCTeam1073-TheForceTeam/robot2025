@@ -10,27 +10,29 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
-import frc.robot.commands.TroughScoreAuto;
+import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
-public class RightL1 
+public class RightScoreL2 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator) 
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar) 
     {
-        Pose2d tag9Pose = map.getTagRelativePose(9, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag9Pose = map.getTagRelativePose(9, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
         Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(0.75, 0, new Rotation2d()));
 
-        Pose2d tag22Pose = map.getTagRelativePose(22, 0, new Transform2d(0.5, 0, new Rotation2d(Math.PI)));
+        Pose2d tag22Pose = map.getTagRelativePose(22, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
         Pose2d tag12Pose = map.getTagRelativePose(12, 0, new Transform2d(0.75, 0, new Rotation2d()));
 
@@ -74,15 +76,14 @@ public class RightL1
 
         return new SequentialCommandGroup(
             new LoadCoral(endEffector),
-            new ParallelCommandGroup(
-                new DrivePath(drivetrain, path1, localizer),
-                new CoralElevatorToHeight(elevator, 1, true)
-            ),
-            new TroughScoreAuto(endEffector),
+            new DrivePath(drivetrain, path1, localizer),
+            // new LidarAlign(lidar, drivetrain),
+            new CoralElevatorToHeight(elevator, 2, true),
+            new ScoreCoral(endEffector),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)
             )
         );
-    }  
+    }    
 }

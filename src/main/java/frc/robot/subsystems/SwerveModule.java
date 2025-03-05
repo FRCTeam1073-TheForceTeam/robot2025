@@ -288,7 +288,7 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         steerMotorClosedLoopConfig.withKP(cfg.steerP); 
         steerMotorClosedLoopConfig.withKI(cfg.steerI); 
         steerMotorClosedLoopConfig.withKD(cfg.steerD); 
-        steerMotorClosedLoopConfig.withKV(cfg.steerF); 
+        steerMotorClosedLoopConfig.withKV(cfg.steerV); 
         error = steerMotor.getConfigurator().apply(steerMotorClosedLoopConfig, 0.5);
         if (!error.isOK()) {
             System.err.println(String.format("SwerveModule %d Steer Motor Configuration Error: %s", cfg.moduleNumber, error.getDescription()));
@@ -300,7 +300,8 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         driveMotorClosedLoopConfig.withKP(cfg.driveP);
         driveMotorClosedLoopConfig.withKI(cfg.driveI);
         driveMotorClosedLoopConfig.withKD(cfg.driveD);
-        driveMotorClosedLoopConfig.withKV(cfg.driveF);
+        driveMotorClosedLoopConfig.withKV(cfg.driveV);
+        driveMotorClosedLoopConfig.withKA(cfg.driveA);
 
         error = driveMotor.getConfigurator().apply(driveMotorClosedLoopConfig, 0.5);
         if (error.isOK()) {

@@ -39,10 +39,11 @@ public class CoralElevator extends SubsystemBase {
   private final double velocityKA = 0.01;
 
   private final double positionKP = 0.2;
-  private final double positionKD = 0.02;
+  private final double positionKG = 0.1; //gravity
+  private final double positionKD = 0.03;
   private final double positionKI = 0.15;
   private final double positionKV = 0.12; 
-  private final double positionKA = 0.01;
+  private final double positionKA = 0.0;
   private final double positionKS = 0.1;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
@@ -178,8 +179,8 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var mmConfigs = frontElevatorMotorConfig.MotionMagic;
-    mmConfigs.MotionMagicCruiseVelocity = 40;
-    mmConfigs.MotionMagicAcceleration = 80;
+    mmConfigs.MotionMagicCruiseVelocity = 45;
+    mmConfigs.MotionMagicAcceleration = 100;
     mmConfigs.MotionMagicJerk = 800;
 
     var frontElevatorMotorClosedLoop0Config =  frontElevatorMotorConfig.Slot0;
@@ -197,6 +198,7 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorClosedLoop1Config.withKV(positionKV);
     frontElevatorMotorClosedLoop1Config.withKA(positionKA);
     frontElevatorMotorClosedLoop1Config.withKS(positionKS);
+    frontElevatorMotorClosedLoop1Config.withKG(positionKG);
 
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig, 0.5);
 

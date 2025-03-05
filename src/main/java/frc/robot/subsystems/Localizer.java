@@ -33,9 +33,10 @@ public class Localizer extends SubsystemBase
     private double StdDevX = 0.5;
     private double StdDevY = 0.5;
     private double StdDevA = 0.5;
-    private double timeGap = 0.25;
+    private double timeGap = 0.1;
     private double linearSpeedThreshold = 2.5; // TODO: get actual numbers here
     private double angularSpeedThreshold = 1.5; // TODO: get actual numbers here
+    private double maxRange = 5;
 
     //added a set transform from sensor to center of the robot to the sensor and can have multiple as needed
     private final Transform3d sensorTransform = new Transform3d();
@@ -154,13 +155,13 @@ public class Localizer extends SubsystemBase
         // only run sensor update if we've moved enough and a few seconds have passed
         if (now - lastUpdateTime > timeGap && measurementStable())
         {
-            ArrayList<AprilTagFinder.VisionMeasurement> measurements = finder.getMeasurements();
+            ArrayList<AprilTagFinder.VisionMeasurement> measurements = finder.getAllMeasurements();
 
             for(int index = 0; index < measurements.size(); index++) 
             {
                 VisionMeasurement currentMeasurement = measurements.get(index);
 
-                if (currentMeasurement.range <= 5)
+                if (currentMeasurement.range <= maxRange)
                 {
                     //TODO: compute terms based on range to target  
                     updateStdDevs(currentMeasurement);

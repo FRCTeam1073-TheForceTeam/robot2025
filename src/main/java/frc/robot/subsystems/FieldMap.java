@@ -93,18 +93,20 @@ public class FieldMap
     {
         Pose2d tagPose = fieldMap.getTagPose(tagID).get().toPose2d();
         double yOffset = 0.165;
+        // double endEffectorOffset = 0.2286;
+        double endEffectorOffset = 0.1905;
 
         if(slot == -1) // left
         {
-            tagPose = tagPose.plus(new Transform2d(0, -yOffset + 0.25, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, -yOffset + endEffectorOffset, new Rotation2d()));
         }
         else if(slot == 0) // center
         {
-            tagPose = tagPose.plus(new Transform2d(0, 0.2286, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, endEffectorOffset, new Rotation2d()));
         }
         else if(slot == 1) // right
         {
-            tagPose = tagPose.plus(new Transform2d(0, yOffset + 0.2, new Rotation2d()));
+            tagPose = tagPose.plus(new Transform2d(0, yOffset + endEffectorOffset, new Rotation2d()));
         }
 
         tagPose = tagPose.plus(offset);

@@ -69,8 +69,11 @@ public class CoralEndeffector extends SubsystemBase {
     public void periodic() {
 
         // TODO: Scale factors.
-        velocity = motor.getVelocity().refresh().getValueAsDouble();
-        position = motor.getPosition().refresh().getValueAsDouble();
+        velocity = motor.getVelocity().getValueAsDouble();
+        position = motor.getPosition().getValueAsDouble();
+
+        // velocity = motor.getVelocity().refresh().getValueAsDouble();
+        // position = motor.getPosition().refresh().getValueAsDouble();
 
         load = motor.getTorqueCurrent().getValueAsDouble();
         
@@ -110,13 +113,13 @@ public class CoralEndeffector extends SubsystemBase {
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-        SmartDashboard.putNumber("[CORAL End Effector] Coral Distance", coralDistance);
-        SmartDashboard.putBoolean("[CORAL End Effector] Has Coral", hasCoral);
-        SmartDashboard.putNumber("[CORAL End Effector] velocity", velocity);
-        SmartDashboard.putNumber("[CORAL End Effector] command", commandedVelocity);
-        SmartDashboard.putNumber("[CORAL End Effector] load", load);
-        SmartDashboard.putNumber("[CORAL End Effector] Reef Distance", reefDistance);
-        SmartDashboard.putBoolean("[CORAL End Effector] Has Reef", hasReef);
+        SmartDashboard.putNumber("Coral End Effector/Coral Distance", coralDistance);
+        SmartDashboard.putBoolean("Coral End Effector/Has Coral", hasCoral);
+        SmartDashboard.putNumber("Coral End Effector/ velocity", velocity);
+        SmartDashboard.putNumber("Coral End Effector/command", commandedVelocity);
+        SmartDashboard.putNumber("Coral End Effector/load", load);
+        SmartDashboard.putNumber("Coral End Effector/Reef Distance", reefDistance);
+        SmartDashboard.putBoolean("Coral End Effector/ Has Reef", hasReef);
     
     }
     

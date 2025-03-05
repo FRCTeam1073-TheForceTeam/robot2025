@@ -110,7 +110,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
   
-  private static final String zeroClawAndLift = "Zero Claw And Lift";
+  private static final String zeroClimber = "Zero Climber";
 
   public RobotContainer() 
   {
@@ -129,7 +129,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.addOption("Left Position", leftPosition);
     m_positionChooser.addOption("Center Left Position", centerLeftPosition);
     m_positionChooser.addOption("Center Right Position", centerRightPosition);
-    m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
+    m_positionChooser.addOption("Zero Climber", zeroClimber);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
     m_levelChooser.addOption("Leave", leave);
@@ -231,8 +231,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     switch(m_positionChooser.getSelected())
     {
-      // case zeroClawAndLift:
-      //   return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
+      
       case noPosition:
         return null;
       case leftPosition:

@@ -57,10 +57,15 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic() 
   {
-    velocity = motor.getVelocity().refresh().getValueAsDouble(); 
-    position = motor.getPosition().refresh().getValueAsDouble();
-    load = motor.getTorqueCurrent().refresh().getValueAsDouble();
-    absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    velocity = motor.getVelocity().getValueAsDouble(); 
+    position = motor.getPosition().getValueAsDouble();
+    load = motor.getTorqueCurrent().getValueAsDouble();
+    absolutePosition = encoder.getAbsolutePosition().getValueAsDouble();
+
+    // velocity = motor.getVelocity().refresh().getValueAsDouble(); 
+    // position = motor.getPosition().refresh().getValueAsDouble();
+    // load = motor.getTorqueCurrent().refresh().getValueAsDouble();
+    // absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
     if(absolutePosition > maxPosition && commandedVelocity > 0){
       commandedVelocity = 0;
     }
@@ -69,9 +74,9 @@ public class Climber extends SubsystemBase
     }
     motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-    SmartDashboard.putNumber("[CLIMBER] commanded velocity",commandedVelocity);
-    SmartDashboard.putNumber("[CLIMBER] velocity",velocity);
-    SmartDashboard.putNumber("[CLIMBER] absolute position", absolutePosition);
+    SmartDashboard.putNumber("Cimber/commanded velocity",commandedVelocity);
+    SmartDashboard.putNumber("Cimber/velocity",velocity);
+    SmartDashboard.putNumber("Cimber/absolute position", absolutePosition);
   }
 
   public void setCommandedVelocity(double velocity)

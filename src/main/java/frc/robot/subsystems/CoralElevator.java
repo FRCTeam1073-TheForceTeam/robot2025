@@ -67,10 +67,16 @@ public class CoralElevator extends SubsystemBase {
   private DigitalInput zeroSensor;
   public Debouncer zeroDebouncer = new Debouncer(0.05);
 
+  private static boolean hasConf = false;
+
 
   public CoralElevator() {
-    frontElevatorMotor = new TalonFX(20, kCANbus);
-    backElevatorMotor = new TalonFX(19, kCANbus);
+    if(hasConf) {
+      frontElevatorMotor = new TalonFX(20, kCANbus);
+      backElevatorMotor = new TalonFX(19, kCANbus);
+      hasConf = true;
+    }
+    
     brakemode = true;
 
     commandedVelocity = 0.0;
@@ -88,8 +94,12 @@ public class CoralElevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // TODO: Need to use scale factors from ratio, etc. units need to be meters.
-    velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
-    position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
+
+    // velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
+    // position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
+
+    velocity = frontElevatorMotor.getVelocity().getValueAsDouble();
+    position = frontElevatorMotor.getPosition().getValueAsDouble();
 
     frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
@@ -113,13 +123,13 @@ public class CoralElevator extends SubsystemBase {
       frontElevatorMotor.setControl(frontPositionController.withPosition(commandedPosition).withSlot(1));
     }
 
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] position", position);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] commanded velocity", commandedVelocity);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] load", load);
+    SmartDashboard.putBoolean("Coral Elevator/At Zero", isAtZero);
+    SmartDashboard.putBoolean("Coral Elevator/brake mode", brakemode);
+    SmartDashboard.putNumber("Coral Elevator/position", position);
+    SmartDashboard.putNumber("Coral Elevator/velocity", velocity);
+    SmartDashboard.putNumber("Coral Elevator/commanded velocity", commandedVelocity);
+    SmartDashboard.putBoolean("Coral Elevator/hit hardstop", hitHardStop);
+    SmartDashboard.putNumber("Coral Elevator/load", load);
   }
 
   public double getPosition(){// where motor is

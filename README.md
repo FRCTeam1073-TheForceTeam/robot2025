@@ -23,22 +23,13 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Pigeon 2              |  13    |   CANivore    |
 | Climber Motor         |  15    |   Rio         |
 | Climber Encoder       |  16    |   Rio         |
-| Claw Motor left       |  17    |   Rio         |
-| Claw Motor right      |  18    |   Rio         |
 | Elevator Motor left   |  19    |   Rio         |
 | Elevator Motor right  |  20    |   Rio         |
 | Endeffector Motor     |  21    |   Rio         |
-| LaserCAN              |  22    |   Rio         |
+| LaserCAN Coral        |  22    |   Rio         |
+| LaserCAN Reef         |  24    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
-| Collector Motor       |   ?    |   CANivore    |
-| Lift Motor            |   ?    |   CANivore    |
-| Extend Motor          |   ?    |   CANivore    |
-| Top Shooter Motor     |   ?    |   CANivore    |
-| Bottom Shooter Motor  |   ?    |   CANivore    |
-| Leader Feeder Motor   |   ?    |   CANivore    |
-| Follower Feeder Motor |   ?    |   CANivore    |
-| Pivot Motor           |   ?    |   CANivore    |
 
 ## Driver Controller
 

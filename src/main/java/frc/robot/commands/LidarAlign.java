@@ -46,37 +46,13 @@ public class LidarAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //covxyAtZero based on sqrt of covxy, isbad - if the varx is above 0.005 & varx/covxy > 0.04
-    // if(lidar.getAngleToRotate() != Math.PI){
-    //   thetaVelocity = thetaController.calculate(drivetrain.getOdometryThetaRadians(), lidar.getAngleToRotate());  
-    //   thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 1.5);
-    //   if(thetaVelocity < 0){
-    //       thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.2);
-    //   }
-    //   else if(thetaVelocity > 0){
-    //     thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 2);
-    //   }
-    //   else if(thetaVelocity == 0){
-    //     thetaVelocity = 0;
-    //   }
-   // }
-    
-      // xToDrive = lidar.getAverageX() - 0.4;
-      // if(xToDrive > 0 && lidar.getAverageX() != 1){
-      //   //TODO: check if setpoint is correct
-      //   vx = xController.calculate(lidar.getAverageX(), 0.4);
-      //   if(vx < 0){
-      //     vx = MathUtil.clamp(vx, -2, -0.2);
-      //   }
-      //   if(vx > 0){
-      //     vx = MathUtil.clamp(vx, 0.2, 2);
-      //   }
-      //   drivetrain.setTargetChassisSpeeds(
-      //     new ChassisSpeeds(
-      //      vx, 
-      //      0, 
-      //      thetaVelocity));
-      // }
+    if(lidar.getAvgX() < 1.5 && Math.abs(lidar.getSlope()) < 5){
+      angleToRotate = -Math.atan(lidar.getSlope());
+      xToDrive = lidar.getAvgX() - 0.41;
+      vx = xController.calculate(xToDrive);
+      thetaVelocity = thetaController.calculate(angleToRotate);
+      drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -88,14 +64,12 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //TODO: change numbers
-    // if(lidar.getAverageX() <= 0.43 && Math.abs(lidar.getAverageSlope()) < 0.01){
-    //   return true;
-    // }
-    // if(lidar.getAverageX() <= 0.43){
-    //   return true;
-    // }
-    //   return false;
-    return true;
+    if (lidar.getAvgX() <= 0.43 && Math.abs(angleToRotate) <= 0.01){ //TODO change values or add vaiable in smartdashboard
+      return true;
+    }
+    if (lidar.getAvgX() <= 0.43){
+      return true;
+    }
+    return false;
   }
 }

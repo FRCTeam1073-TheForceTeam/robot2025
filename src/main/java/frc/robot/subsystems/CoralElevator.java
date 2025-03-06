@@ -71,11 +71,6 @@ public class CoralElevator extends SubsystemBase {
 
 
   public CoralElevator() {
-    if(hasConf) {
-      frontElevatorMotor = new TalonFX(20, kCANbus);
-      backElevatorMotor = new TalonFX(19, kCANbus);
-      hasConf = true;
-    }
     
     brakemode = true;
 
@@ -86,7 +81,11 @@ public class CoralElevator extends SubsystemBase {
 
     zeroSensor = new DigitalInput(4);
 
-    configureHardware();
+    if(!hasConf) {
+      frontElevatorMotor = new TalonFX(20, kCANbus);
+      backElevatorMotor = new TalonFX(19, kCANbus);
+      configureHardware();
+    }
   }
 
   @Override
@@ -234,5 +233,6 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotor.setPosition(0);
 
     System.out.println("Coral Elevator configured");
+    hasConf = true;
   }
 }

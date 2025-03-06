@@ -26,7 +26,7 @@ import frc.robot.subsystems.CANdleControl;
 public class CoralEndeffector extends SubsystemBase {
     private final String kCANbus = "rio";
     private final double leftKP = 0.2;
-    private final double leftKD = 0.02;
+    private final double leftKD = 0.01;
     private final double leftKI = 0.0;
     private final double leftKV = 0.12; // Kraken.
 

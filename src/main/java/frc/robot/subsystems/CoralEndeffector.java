@@ -69,8 +69,8 @@ public class CoralEndeffector extends SubsystemBase {
     public void periodic() {
 
         // TODO: Scale factors.
-        velocity = motor.getVelocity().refresh().getValueAsDouble();
-        position = motor.getPosition().refresh().getValueAsDouble();
+        velocity = motor.getVelocity().getValueAsDouble();
+        position = motor.getPosition().getValueAsDouble();
 
         load = motor.getTorqueCurrent().getValueAsDouble();
         

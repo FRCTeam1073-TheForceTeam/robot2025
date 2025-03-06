@@ -57,10 +57,10 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic() 
   {
-    velocity = motor.getVelocity().refresh().getValueAsDouble(); 
-    position = motor.getPosition().refresh().getValueAsDouble();
-    load = motor.getTorqueCurrent().refresh().getValueAsDouble();
-    absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    velocity = motor.getVelocity().getValueAsDouble(); 
+    position = motor.getPosition().getValueAsDouble();
+    load = motor.getTorqueCurrent().getValueAsDouble();
+    absolutePosition = encoder.getAbsolutePosition().getValueAsDouble();
     if(absolutePosition > maxPosition && commandedVelocity > 0){
       commandedVelocity = 0;
     }

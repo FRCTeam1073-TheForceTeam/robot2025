@@ -48,12 +48,15 @@ public class LidarAlign extends Command {
   public void execute() {
     if(lidar.getAvgX() < 1.5 && Math.abs(lidar.getSlope()) < 5){
       angleToRotate = -Math.atan(lidar.getSlope());
-      xToDrive = lidar.getAvgX() - 0.41;
-      vx = xController.calculate(xToDrive);
-      thetaVelocity = thetaController.calculate(angleToRotate);
+      if(xToDrive > 0){
+        //TODO: check if setpoint is correct
+        vx = xController.calculate(lidar.getAvgX(), 0.4);
+        vx = MathUtil.clamp(vx, 0.2, 2);
+      thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
       drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
-    }
+      }
   }
+}
 
   // Called once the command ends or is interrupted.
   @Override

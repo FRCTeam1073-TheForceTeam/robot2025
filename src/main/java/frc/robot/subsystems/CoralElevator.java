@@ -200,9 +200,16 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorClosedLoop1Config.withKS(positionKS);
     frontElevatorMotorClosedLoop1Config.withKG(positionKG);
 
+    frontElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(25)
+        .withSupplyCurrentLowerTime(0.25);
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig, 0.5);
 
+
     var backElevatorMotorConfig = new TalonFXConfiguration();
+    backElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(25)
+        .withSupplyCurrentLowerTime(0.25);
     backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig, 0.5);
      // Same config as other motor to start.
 
@@ -210,13 +217,13 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     backElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-    frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                            .withSupplyCurrentLimit(25)
-                            .withSupplyCurrentLowerTime(0.25);
+    // CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    // frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+    //                         .withSupplyCurrentLimit(25)
+    //                         .withSupplyCurrentLowerTime(0.25);
 
-    frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
-    backElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
+    // frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
+    // backElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
 
     backElevatorMotor.setControl(new Follower(frontElevatorMotor.getDeviceID(), true));
 

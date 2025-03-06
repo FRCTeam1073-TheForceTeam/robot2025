@@ -185,11 +185,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
-    Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
+    /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
       removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);
 
     Trigger removeAlgaeL3 = new Trigger(m_OI::getOperatorRightTrigger);
-      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);
+      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);*/
   }
 
   public void autonomousInit()

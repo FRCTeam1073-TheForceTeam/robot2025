@@ -264,12 +264,12 @@ public class OI extends SubsystemBase
     return MathUtil.clamp(operatorController.getRawAxis(3), 0, 1);
   }*/
 
-  public boolean getOperatorRightTrigger(){
-    return operatorController.getRawAxis(3) > 0.5;
+  public double getOperatorRightTrigger(){
+    return MathUtil.clamp( operatorController.getRawAxis(3), 0, 1);
   }
 
-  public boolean getOperatorLeftTrigger(){
-    return operatorController.getRawAxis(2) > 0.5;
+  public double getOperatorLeftTrigger(){
+    return MathUtil.clamp( operatorController.getRawAxis(2), 0, 1);
   }
 
   public boolean getOperatorViewButton() {

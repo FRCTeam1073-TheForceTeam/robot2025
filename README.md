@@ -85,7 +85,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |DPadRight         |Elevator Branch Level 2   |
 |LeftBumper        |Climber Up                |
 |RightBumper       |Climber Down              |
-|LeftTrigger       |Algae Remover L2          |
-|RightTrigger      |Algae Remover L3          |
+|LeftTrigger       |Algae Remover             |
+|RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Coral Endeffector Teleop  |
 |Menu Button       |Zero Climber              |

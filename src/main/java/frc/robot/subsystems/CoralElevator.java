@@ -88,8 +88,8 @@ public class CoralElevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // TODO: Need to use scale factors from ratio, etc. units need to be meters.
-    velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
-    position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
+    velocity = frontElevatorMotor.getVelocity().getValueAsDouble();
+    position = frontElevatorMotor.getPosition().getValueAsDouble();
 
     frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();

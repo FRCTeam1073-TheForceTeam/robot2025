@@ -25,6 +25,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Swerve module class one for each swerve module. 
  * 
@@ -36,7 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * 
  * ! ! ! ! ! NOTE ! ! ! ! ! ! !
 */
-public class SwerveModule extends DiagnosticsBase implements Sendable
+public class SwerveModule extends SubsystemBase implements Sendable
 {
     private SwerveModuleConfig cfg;
     private SwerveModuleIDConfig idcfg;
@@ -71,28 +72,6 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         driveVelocityVoltage = new VelocityVoltage(0).withSlot(0);
         steerPositionVoltage = new PositionVoltage(0).withSlot(0);
         configureHardware();
-    }
-
-    @Override
-    public boolean updateDiagnostics() {
-        // Check the CANCoder.
-        StatusCode error = steerEncoder.clearStickyFaults(1);
-        if (!error.isOK()) 
-        {
-           return setDiagnosticsFeedback(String.format(" Module %d, steerEncoder %d, error.", cfg.moduleNumber, idcfg.steerEncoderID), false);
-        }
-
-        MotorFault steerFault = new MotorFault(steerMotor,idcfg.steerMotorID);
-        if (steerFault.hasFaults()) {
-            return setDiagnosticsFeedback(steerFault.getFaults(), false);
-        }
-
-        MotorFault driveFault = new MotorFault(driveMotor, idcfg.driveMotorID);
-        if (driveFault.hasFaults()) {
-            return setDiagnosticsFeedback(driveFault.getFaults(), false);
-        }
-
-        return setDiagnosticsFeedback("OK", true);
     }
 
     // Sample a SwerveModulePosition object from the state of this module.
@@ -219,14 +198,12 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         if (!error.isOK()) 
         {
             System.err.print(String.format("Module %d STEER MOTOR ERROR: %s", cfg.moduleNumber, error.toString()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
 
         error = driveMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.5);
         if (!error.isOK()) 
         {
             System.err.println(String.format("Module %d DRIVE MOTOR ERROR: %s", cfg.moduleNumber, error.toString()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
 
 
@@ -258,7 +235,6 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         error = steerEncoder.getConfigurator().refresh(mgSenseCfg, 0.5);
         if (!error.isOK()) {
             System.err.println(String.format("ERROR: SwerveModule %d steerEncoder response: %s ", cfg.moduleNumber, error.getDescription()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
         // System.out.println(String.format("SwerveModule %d Magnet AbsoluteSensorRange: %s", cfg.moduleNumber, mgSenseCfg.AbsoluteSensorRange));
         // System.out.println(String.format("SwerveModule %d Magnet SensorDirection: %d",  cfg.moduleNumber, mgSenseCfg.SensorDirection));
@@ -276,7 +252,6 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         if (!error.isOK())
         {
             System.err.println(String.format("SwerveModule %d configSelectedFeedbackSensor failed: %s ", cfg.moduleNumber, error.getDescription()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
 
         driveConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -288,11 +263,10 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         steerMotorClosedLoopConfig.withKP(cfg.steerP); 
         steerMotorClosedLoopConfig.withKI(cfg.steerI); 
         steerMotorClosedLoopConfig.withKD(cfg.steerD); 
-        steerMotorClosedLoopConfig.withKV(cfg.steerF); 
+        steerMotorClosedLoopConfig.withKV(cfg.steerV); 
         error = steerMotor.getConfigurator().apply(steerMotorClosedLoopConfig, 0.5);
         if (!error.isOK()) {
             System.err.println(String.format("SwerveModule %d Steer Motor Configuration Error: %s", cfg.moduleNumber, error.getDescription()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
         
         // PID Loop settings for drive velocity control:
@@ -300,12 +274,12 @@ public class SwerveModule extends DiagnosticsBase implements Sendable
         driveMotorClosedLoopConfig.withKP(cfg.driveP);
         driveMotorClosedLoopConfig.withKI(cfg.driveI);
         driveMotorClosedLoopConfig.withKD(cfg.driveD);
-        driveMotorClosedLoopConfig.withKV(cfg.driveF);
+        driveMotorClosedLoopConfig.withKV(cfg.driveV);
+        driveMotorClosedLoopConfig.withKA(cfg.driveA);
 
         error = driveMotor.getConfigurator().apply(driveMotorClosedLoopConfig, 0.5);
         if (error.isOK()) {
             System.err.println(String.format("SwerveModule %d Drive Motor Configuration Error: %s", cfg.moduleNumber, error.getDescription()));
-            setDiagnosticsFeedback(error.getDescription(), false);
         }
 
         System.out.println(String.format("SwerveModule %d configured.", cfg.moduleNumber));

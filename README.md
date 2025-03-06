@@ -28,7 +28,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Elevator Motor left   |  19    |   Rio         |
 | Elevator Motor right  |  20    |   Rio         |
 | Endeffector Motor     |  21    |   Rio         |
-| LaserCAN              |  22    |   Rio         |
+| LaserCAN Coral        |  22    |   Rio         |
+| LaserCAN Reef         |  24    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
 | Collector Motor       |   ?    |   CANivore    |
@@ -56,7 +57,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |DPadDown          |Creep Backward                  |
 |DPadLeft          |Creep Left                      |
 |DPadRight         |Creep Right                     |
-|LeftBumper        |Parking break                   |
+|LeftBumper        |Parking brake                   |
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
@@ -77,14 +78,14 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |LeftJoystickX     |                          |
 |RightJoystickX    |                          |
 |PressLeftJoystick |Zero Elevator             |
-|PressRightJoystick|                          |
+|PressRightJoystick|Cancel Load Coral         |
 |DPadUp            |Elavtor Trough Level      |
 |DPadDown          |Elevator Branch Level 3   |
 |DPadLeft          |Elevaotr Branch Level 4   |
 |DPadRight         |Elevator Branch Level 2   |
 |LeftBumper        |Climber Up                |
 |RightBumper       |Climber Down              |
-|LeftTrigger       |Algae Remover Command     |
-|RightTrigger      |Cancel Load Coral         |
+|LeftTrigger       |Algae Remover             |
+|RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Coral Endeffector Teleop  |
 |Menu Button       |Zero Climber              |

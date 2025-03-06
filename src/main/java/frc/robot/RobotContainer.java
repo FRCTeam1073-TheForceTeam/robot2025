@@ -25,11 +25,11 @@ import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
-import frc.robot.commands.CorrectionAlign;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
+import frc.robot.commands.RemoveAlgae;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClimber;
@@ -62,6 +62,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final Climber m_climber = new Climber();
   private final Lidar m_lidar = new Lidar();
+  //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
 
@@ -82,8 +83,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
-  private final CorrectionAlign cmd_correctionAlign = new CorrectionAlign(m_drivetrain, 11, m_aprilTagFinder, new Transform2d(0.5, 0, new Rotation2d(0)));
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
+  private final RemoveAlgae cmd_removeAlgaeL2 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 2);
+  private final RemoveAlgae cmd_RemoveAlgaeL3 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 3);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
@@ -110,8 +112,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String score2L4 = "Score 2 L4";
   
   private static final String zeroClawAndLift = "Zero Claw And Lift";
-
-  private double autoDelay = 0;
 
   public RobotContainer() 
   {
@@ -143,8 +143,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
-
-    SmartDashboard.getNumber("Auto Delay", autoDelay);
 
     m_positionChooser.onChange(this::accept); // this is so we can reset the start position
 
@@ -180,16 +178,20 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.whileTrue(cmd_troughRaiseElevator);
 
-    Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightTrigger);
+    Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
 
     Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
       alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger correctionAlign = new Trigger(m_OI::getDriverViewButton);
-
-    Trigger lidarAlign = new Trigger(m_OI::getDriverLeftJoystickPress);
+    Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
+
+    /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
+      removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);
+
+    Trigger removeAlgaeL3 = new Trigger(m_OI::getOperatorRightTrigger);
+      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);*/
   }
 
   public void autonomousInit()
@@ -236,13 +238,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
+        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, autoDelay);
+        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       default:
         return null;
     }

@@ -6,13 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Lidar;
-import frc.robot.subsystems.Localizer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LidarAlign extends Command {
@@ -27,13 +24,13 @@ public class LidarAlign extends Command {
   double vx;
   int sign = 0;
   PIDController thetaController;
-  PIDController vxController;
+  PIDController xController;
   
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(0.9, 0, 0.01);
-    vxController = new PIDController(0.8, 0, 0.01);
+    thetaController = new PIDController(0.8, 0, 0.01);
+    xController = new PIDController(0.8, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -43,46 +40,23 @@ public class LidarAlign extends Command {
   @Override
   public void initialize() {
     thetaController.reset();
+    xController.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(lidar.getCovxy() < 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = 1;
-      if(lidar.getCovxy() > 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = -1;
-      if(lidar.getCovxy() == 0 && !lidar.getCovxyAtZero() && !lidar.getCovxyIsBad()) sign = 0;
-
-      thetaVelocity = MathUtil.clamp(lidar.getSqrtCovxy(), 0.25, 0.5);
-      thetaVelocity = sign * thetaVelocity;
-      // thetaVelocity = thetaController.calculate(drivetrain.getWrappedHeadingRadians(), drivetrain.getWrappedHeadingRadians() + angleToRotate);
-      // thetaVelocity = MathUtil.clamp(thetaVelocity, -2, 2);
-      // SmartDashboard.putNumber("LidarAlign theta velocity", thetaVelocity);
-      // drivetrain.setTargetChassisSpeeds(
-
-      //   ChassisSpeeds.fromFieldRelativeSpeeds(
-      //     0, 
-      //     0, 
-      //     thetaVelocity, 
-      //     Rotation2d.fromDegrees(drivetrain.getHeadingDegrees())));
-      xToDrive = lidar.getMeanX() - 0.4;
+    if(lidar.getAvgX() < 1.5 && Math.abs(lidar.getSlope()) < 5){
+      angleToRotate = -Math.atan(lidar.getSlope());
       if(xToDrive > 0){
-        vx = vxController.calculate(lidar.getMeanX(), lidar.getMeanX() + xToDrive);
-        if(vx < 0){
-          vx = MathUtil.clamp(vx, -2, -0.2);
-        }
-        if(vx > 0){
-          vx = MathUtil.clamp(vx, 0.2, 2);
-        }
-        if(lidar.getCovxyAtZero()){
-          thetaVelocity = 0;
-        }
-        drivetrain.setTargetChassisSpeeds(
-          new ChassisSpeeds(
-           vx, 
-           0, 
-           thetaVelocity));
+        //TODO: check if setpoint is correct
+        vx = xController.calculate(lidar.getAvgX(), 0.4);
+        vx = MathUtil.clamp(vx, 0.2, 2);
+      thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
+      drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
       }
   }
+}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -93,9 +67,12 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(lidar.getMeanX() <= 0.43 && lidar.getCovxyAtZero()){
+    if (lidar.getAvgX() <= 0.43 && Math.abs(angleToRotate) <= 0.01){ //TODO change values or add vaiable in smartdashboard
       return true;
     }
-      return false;
+    if (lidar.getAvgX() <= 0.43){
+      return true;
+    }
+    return false;
   }
 }

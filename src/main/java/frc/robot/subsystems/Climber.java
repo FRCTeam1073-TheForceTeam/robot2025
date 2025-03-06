@@ -38,8 +38,8 @@ public class Climber extends SubsystemBase
   private double commandedVelocity = 0;
   private boolean brakeMode = true;
 
-  public final double minPosition = -.262;
-  public final double maxPosition = .31;
+  public final double minPosition = -0.28;
+  public final double maxPosition = 0.4;
 
 
   /** Creates a new Climber. */
@@ -57,10 +57,10 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic() 
   {
-    velocity = motor.getVelocity().refresh().getValueAsDouble(); 
-    position = motor.getPosition().refresh().getValueAsDouble();
-    load = motor.getTorqueCurrent().refresh().getValueAsDouble();
-    absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    velocity = motor.getVelocity().getValueAsDouble(); 
+    position = motor.getPosition().getValueAsDouble();
+    load = motor.getTorqueCurrent().getValueAsDouble();
+    absolutePosition = encoder.getAbsolutePosition().getValueAsDouble();
     if(absolutePosition > maxPosition && commandedVelocity > 0){
       commandedVelocity = 0;
     }

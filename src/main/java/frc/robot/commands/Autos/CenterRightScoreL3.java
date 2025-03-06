@@ -27,8 +27,8 @@ public class CenterRightScoreL3
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
     {
-        Pose2d tag10Pose = map.getTagRelativePose(10, -1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, -1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
+        Pose2d tag10Pose = map.getTagRelativePose(10, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag21Pose = map.getTagRelativePose(21, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());

@@ -26,15 +26,15 @@ public class RightScore2L4
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
     {
-        Pose2d tag9RightPose = map.getTagRelativePose(9, 1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
-        Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(0.75, 0, new Rotation2d()));
+        Pose2d tag9RightPose = map.getTagRelativePose(9, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
-        Pose2d tag22RightPose = map.getTagRelativePose(22, 1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d tag22LeftPose = map.getTagRelativePose(22, -1, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
-        Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(2, -0.5, new Rotation2d(Math.PI)));
-        Pose2d tag12Pose = map.getTagRelativePose(12, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag22RightPose = map.getTagRelativePose(22, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag22LeftPose = map.getTagRelativePose(22, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag12Pose = map.getTagRelativePose(12, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
@@ -87,6 +87,7 @@ public class RightScore2L4
         
 
         return new SequentialCommandGroup(
+            // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
             new CoralElevatorToHeight(elevator, 4, true),
@@ -95,6 +96,8 @@ public class RightScore2L4
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)
             ),
+            // TODO: Consider using wait in stead of using load as wait.
+            // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
             new CoralElevatorToHeight(elevator, 4, true),

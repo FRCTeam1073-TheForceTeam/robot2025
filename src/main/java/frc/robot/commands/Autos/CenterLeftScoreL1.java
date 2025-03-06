@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Auto;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LidarAlign;
@@ -27,8 +28,8 @@ public class CenterLeftScoreL1
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
     {
-        Pose2d tag10Pose = map.getTagRelativePose(10, 0, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, 0, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
+        Pose2d tag10Pose = map.getTagRelativePose(10, 0, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag21Pose = map.getTagRelativePose(21, 0, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         
@@ -39,13 +40,13 @@ public class CenterLeftScoreL1
         Path path;
         if (isRed)
         {
-            segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), 1));
+            segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), 1.5));
 
             path = new Path(segments, tag10Pose.getRotation().getRadians());
         }
         else
         {
-            segments.add(new Segment(start, tag21, tag21Pose.getRotation().getRadians(), 1));
+            segments.add(new Segment(start, tag21, tag21Pose.getRotation().getRadians(), 1.5));
 
             path = new Path(segments, tag21Pose.getRotation().getRadians());
         }

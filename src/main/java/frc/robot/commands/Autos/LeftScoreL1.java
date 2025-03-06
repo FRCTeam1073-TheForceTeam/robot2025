@@ -28,14 +28,13 @@ public class LeftScoreL1
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
     {
-        // TODO: Intermediate pose moves *away* from loading station? I would expect small X (back off) and larger Y (slide toward loading)
-        Pose2d tag11Pose = map.getTagRelativePose(11, 0, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag11Pose = map.getTagRelativePose(11, 0, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
-        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag20Pose = map.getTagRelativePose(20, 0, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 

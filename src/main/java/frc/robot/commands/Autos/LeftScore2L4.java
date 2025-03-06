@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Auto;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LidarAlign;
@@ -28,15 +29,15 @@ public class LeftScore2L4
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
     {
-        Pose2d tag11LeftPose = map.getTagRelativePose(11, -1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d tag11RightPose = map.getTagRelativePose(11, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag11LeftPose = map.getTagRelativePose(11, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag11RightPose = map.getTagRelativePose(11, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
-        Pose2d tag20LeftPose = map.getTagRelativePose(20, -1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d tag20RightPose = map.getTagRelativePose(20, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(2, 0.5, new Rotation2d(Math.PI)));
-        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(0.6, 0, new Rotation2d()));
+        Pose2d tag20LeftPose = map.getTagRelativePose(20, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag20RightPose = map.getTagRelativePose(20, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 

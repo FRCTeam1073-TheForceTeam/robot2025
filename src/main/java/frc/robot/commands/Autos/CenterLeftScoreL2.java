@@ -27,8 +27,8 @@ public class CenterLeftScoreL2
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
     {
-        Pose2d tag10Pose = map.getTagRelativePose(10, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, 1, new Transform2d(0.375, 0, new Rotation2d(Math.PI)));
+        Pose2d tag10Pose = map.getTagRelativePose(10, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag21Pose = map.getTagRelativePose(21, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         
@@ -39,13 +39,13 @@ public class CenterLeftScoreL2
         Path path;
         if (isRed)
         {
-            segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), 1));
+            segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), 1.5));
 
             path = new Path(segments, tag10Pose.getRotation().getRadians());
         }
         else
         {
-            segments.add(new Segment(start, tag21, tag21Pose.getRotation().getRadians(), 1));
+            segments.add(new Segment(start, tag21, tag21Pose.getRotation().getRadians(), 1.5));
 
             path = new Path(segments, tag21Pose.getRotation().getRadians());
         }

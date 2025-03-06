@@ -87,6 +87,7 @@ public class RightScore2L4
         
 
         return new SequentialCommandGroup(
+            // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
             new CoralElevatorToHeight(elevator, 4, true),
@@ -95,6 +96,8 @@ public class RightScore2L4
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)
             ),
+            // TODO: Consider using wait in stead of using load as wait.
+            // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
             new CoralElevatorToHeight(elevator, 4, true),

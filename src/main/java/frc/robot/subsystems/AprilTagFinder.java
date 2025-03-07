@@ -45,7 +45,7 @@ public class AprilTagFinder extends SubsystemBase
 
   //Camera height: 0.2159m, x and y: 0.264m
   public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));
-  public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, 0, 0.79), new Rotation3d(0, Math.toRadians(15), 0));
+  public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, -0.127, 0.673), new Rotation3d(0, Math.toRadians(15), 0));
   public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
   
 

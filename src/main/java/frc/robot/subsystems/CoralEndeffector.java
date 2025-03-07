@@ -25,9 +25,10 @@ import frc.robot.subsystems.CANdleControl;
 /** Add your docs here. */
 public class CoralEndeffector extends SubsystemBase {
     private final String kCANbus = "rio";
-    private final double leftKP = 0.2;
-    private final double leftKD = 0.01;
+    private final double leftKP = 0.15;
+    private final double leftKD = 0.005;
     private final double leftKI = 0.0;
+    private final double leftKS = 0.1;
     private final double leftKV = 0.12; // Kraken.
 
     private final double minCoralDistance = 0.03;
@@ -166,6 +167,7 @@ public class CoralEndeffector extends SubsystemBase {
     motorClosedLoopConfig.withKI(leftKI);
     motorClosedLoopConfig.withKD(leftKD);
     motorClosedLoopConfig.withKV(leftKV);
+    motorClosedLoopConfig.withKS(leftKS);
 
     var error = motor.getConfigurator().apply(motorClosedLoopConfig, 0.5);
 

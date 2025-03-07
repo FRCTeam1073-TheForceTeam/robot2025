@@ -48,6 +48,6 @@ public class ZeroClimber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climber.getEncoderPosition() > -.01 && climber.getEncoderPosition() < .01;
+    return climber.getEncoderPosition() > -.04 && climber.getEncoderPosition() < .04;
   }
 }

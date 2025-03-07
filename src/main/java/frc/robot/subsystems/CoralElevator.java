@@ -44,7 +44,7 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKI = 0.15;
   private final double positionKV = 0.12; 
   private final double positionKA = 0.0;
-  private final double positionKS = 0.1;
+  private final double positionKS = 0.13;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 44.0;
@@ -113,13 +113,13 @@ public class CoralElevator extends SubsystemBase {
       frontElevatorMotor.setControl(frontPositionController.withPosition(commandedPosition).withSlot(1));
     }
 
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] position", position);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] commanded velocity", commandedVelocity);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] load", load);
+    SmartDashboard.putBoolean("Coral Elevator/At zero", isAtZero);
+    SmartDashboard.putBoolean("Coral Elevator/Brake mode", brakemode);
+    SmartDashboard.putNumber("Coral Elevator/Position", position);
+    SmartDashboard.putNumber("Coral Elevator/Velocity", velocity);
+    SmartDashboard.putNumber("Coral Elevator/Commanded velocity", commandedVelocity);
+    SmartDashboard.putBoolean("Coral Elevator/Hit hardstop", hitHardStop);
+    SmartDashboard.putNumber("Coral Elevator/Load", load);
   }
 
   public double getPosition(){// where motor is

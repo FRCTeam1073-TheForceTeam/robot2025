@@ -22,9 +22,9 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
-public class RightScore2L4 
+public class RightScore2Coral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, int branchLevel)  
     {
         Pose2d tag9RightPose = map.getTagRelativePose(9, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
@@ -90,7 +90,7 @@ public class RightScore2L4
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
-            new CoralElevatorToHeight(elevator, 4, true),
+            new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
@@ -100,7 +100,7 @@ public class RightScore2L4
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new CoralElevatorToHeight(elevator, 4, true),
+            new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),
             new ZeroElevator(elevator)
         );

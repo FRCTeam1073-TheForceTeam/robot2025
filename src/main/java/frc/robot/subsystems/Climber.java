@@ -69,9 +69,9 @@ public class Climber extends SubsystemBase
     }
     motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-    SmartDashboard.putNumber("[CLIMBER] commanded velocity",commandedVelocity);
-    SmartDashboard.putNumber("[CLIMBER] velocity",velocity);
-    SmartDashboard.putNumber("[CLIMBER] absolute position", absolutePosition);
+    SmartDashboard.putNumber("Climber/Commanded velocity",commandedVelocity);
+    SmartDashboard.putNumber("Climber/Velocity",velocity);
+    SmartDashboard.putNumber("Climber/Absolute position", absolutePosition);
   }
 
   public void setCommandedVelocity(double velocity)

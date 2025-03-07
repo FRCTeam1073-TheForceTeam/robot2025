@@ -30,11 +30,14 @@ public class CANdleObserver extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    candleControl.clearAnim();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     if (endeffector.getHasReef()){
       candleControl.setRGB(0, 255, 0, 8, 16);//elevator forward - green
     }

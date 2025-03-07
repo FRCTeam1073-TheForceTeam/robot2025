@@ -105,4 +105,6 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |Side of elevator - orange      |Climber is engaged                 |
 |Side of elevator - purple      |Climber is zeroed                  |
 |Side of elevator - grey        |Climber is between positions       |
-|All funnel & elevator - rainbow|Robot is disabled                  |
+|All funnel & elevator - blue   |Robot is disabled & blue alliance  |
+|All funnel & elevator - red    |Robot is disabled & red alliance   |
+|All funnel & elevator - white  |Robot is disabled & no  alliance   |

@@ -92,6 +92,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   private boolean isRed;
   private int level;
+  private boolean isRainbow = false;
 
   public boolean haveInitStartPos = false;
 
@@ -196,7 +197,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public void autonomousInit()
   {
-
+    m_CANdleControl.clearAnim();
   }
 
   public Command getAutonomousCommand() 
@@ -335,6 +336,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public boolean disabledPeriodic() 
   {
+    if(!isRainbow){
+      m_CANdleControl.setRainbow(56, 8);
+      isRainbow = true;
+    }
+    
     return findStartPos();
   }
 

@@ -89,3 +89,20 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Coral Endeffector Teleop  |
 |Menu Button       |Zero Climber              |
+
+## Robot LED codes
+
+| Light/Color                   | action                            |
+|-------------------------------|-----------------------------------|
+|Sides of funnel - light on     |Robot has coral                    |
+|Sides of funnel - light off    |Robot does not have coral          |
+|CANdle - green                 |Battery > 12 volts                 |
+|CANdle - yellow                |Battery > 10 volts                 |
+|CANdle - red                   |Battery <= 10 volts                |
+|Front of elevator - green      |Robot endeffector sees reef        |
+|Front of elevator - red        |Robot endeffector does not see reef|
+|Side of elevator - blue        |Climber is disengaged              |
+|Side of elevator - orange      |Climber is engaged                 |
+|Side of elevator - purple      |Climber is zeroed                  |
+|Side of elevator - grey        |Climber is between positions       |
+|All funnel & elevator - rainbow|Robot is disabled                  |

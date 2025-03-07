@@ -22,8 +22,6 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 public class CANdleControl extends SubsystemBase {
   CANdle m_candle;
 
-  private final int lenBling = 20;//TODO check values
-
   public CANdleControl() {
     m_candle = new CANdle(30); // creates a new CANdle with ID 0
     CANdleConfiguration config = new CANdleConfiguration();
@@ -32,7 +30,7 @@ public class CANdleControl extends SubsystemBase {
     m_candle.configAllSettings(config);
     m_candle.configLEDType(LEDStripType.GRB, 5);
     m_candle.setLEDs(255, 255, 255); // set the CANdle LEDs to white
-    m_candle.clearAnimation(0);
+    this.clearAnim();// CLEARS ANIMATIONS
   }
 
   @Override
@@ -60,5 +58,12 @@ public class CANdleControl extends SubsystemBase {
   public void setRainbow(int n, int s){
     RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, n, false, s);
     m_candle.animate(rainbowAnim);
+  }
+
+  /**
+   * clears current led animation
+   */
+  public void clearAnim(){
+    m_candle.clearAnimation(0);// CLEARS ANIMATIONS
   }
 }

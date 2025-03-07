@@ -15,7 +15,7 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
 /** Add your docs here. */
-public class AutoCenterRightStart 
+public class AutoCenterStart 
 {
     public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
                                      Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)
@@ -25,15 +25,15 @@ public class AutoCenterRightStart
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return CenterRightScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 1);
             case 2:
-               return CenterRightScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
             case 3:
-               return CenterRightScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
             case 4:
-               return CenterRightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
-               return CenterRightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             default:
                return new WaitCommand(0);
         }

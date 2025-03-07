@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Auto;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LidarAlign;
@@ -25,9 +24,9 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
-public class LeftScore2L4 
+public class LeftScore2Coral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, int branchLevel)  
     {
         Pose2d tag11LeftPose = map.getTagRelativePose(11, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag11RightPose = map.getTagRelativePose(11, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
@@ -94,7 +93,7 @@ public class LeftScore2L4
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
             // new LidarAlign(lidar, drivetrain),
-            new CoralElevatorToHeight(elevator, 4, true),
+            new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
@@ -105,7 +104,7 @@ public class LeftScore2L4
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
             // new LidarAlign(lidar, drivetrain),
-            new CoralElevatorToHeight(elevator, 4, true),
+            new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),
             new ZeroElevator(elevator)
         );

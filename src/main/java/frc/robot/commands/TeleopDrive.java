@@ -76,15 +76,23 @@ public class TeleopDrive extends Command
   {
     System.out.println("TeleopDrive: Init");
     super.initialize();
+    if (DriverStation.getAlliance().get() == Alliance.Red)
+    {
+      allianceSign = -1;
+    }
+    else
+    {
+      allianceSign = 1;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    leftY = m_OI.getDriverTranslateY();
-    leftX = m_OI.getDriverTranslateX();
-    rightX = m_OI.getDriverRotate();
+    leftY = -m_OI.getDriverTranslateY();
+    leftX = -m_OI.getDriverTranslateX();
+    rightX = -m_OI.getDriverRotate();
 
     SmartDashboard.putBoolean("Parking Brake", parked);
 
@@ -127,7 +135,7 @@ public class TeleopDrive extends Command
 
         vx = MathUtil.clamp((allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         vy = MathUtil.clamp((allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        w = MathUtil.clamp((-allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
+        w = MathUtil.clamp((rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
         if(fieldCentric)

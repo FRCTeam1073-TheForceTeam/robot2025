@@ -34,8 +34,7 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.commands.Autos.AutoCenterLeftStart;
-import frc.robot.commands.Autos.AutoCenterRightStart;
+import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.subsystems.AprilTagFinder;
@@ -100,8 +99,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String noPosition = "No Position";
   private static final String rightPosition = "Right Auto";
   private static final String leftPosition = "Left Auto";
-  private static final String centerLeftPosition = "Center Left Auto";
-  private static final String centerRightPosition = "Center Right Auto";
+  private static final String centerPosition = "Center Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String noLevelAuto = "No Level";
@@ -130,8 +128,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.setDefaultOption("No Position", noPosition);
     m_positionChooser.addOption("Right Position", rightPosition);
     m_positionChooser.addOption("Left Position", leftPosition);
-    m_positionChooser.addOption("Center Left Position", centerLeftPosition);
-    m_positionChooser.addOption("Center Right Position", centerRightPosition);
+    m_positionChooser.addOption("Center Position", centerPosition);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -242,10 +239,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
-      case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
-      case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
+      case centerPosition:
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       default:
         return null;
     }

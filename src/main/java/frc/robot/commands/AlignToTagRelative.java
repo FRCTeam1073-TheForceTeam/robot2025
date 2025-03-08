@@ -13,6 +13,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Localizer;
+import frc.robot.subsystems.MapDisplay;
+import frc.robot.subsystems.OI;
 import frc.robot.subsystems.AprilTagFinder;
 
 public class AlignToTagRelative extends Command 
@@ -20,9 +24,15 @@ public class AlignToTagRelative extends Command
   Drivetrain drivetrain;
   AprilTagFinder finder;
   int aprilTagID;
-  Transform2d offset;
+  OI oi;
+  Localizer localizer;
+  FieldMap fieldMap;
+  MapDisplay mapDisplay;
+  int slot = 0;
 
   Transform2d lastLocation; // Last location we've seen the tag in robot coordinates.
+  Transform2d offset;
+  Pose2d currentPose;
   PIDController xController;
   PIDController yController;
   PIDController thetaController;
@@ -40,13 +50,17 @@ public class AlignToTagRelative extends Command
   private final static double maximumRotationVelocity = 1.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagId, Transform2d offset) 
+  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.finder = finder;
-    this.aprilTagID = tagId;
-    this.offset = offset;
+    this.drivetrain = drivetrain;
+    this.localizer = localizer;
+    this.fieldMap = fieldMap;
+    this.mapDisplay = mapDisplay;
+    this.oi = oi;
+    this.aprilTagID = -1;
 
     xVelocity = 0;
     yVelocity = 0;
@@ -78,10 +92,41 @@ public class AlignToTagRelative extends Command
   @Override
   public void initialize() 
   {
+    double yOffset = 0.165;
+    double endEffectorOffset = 0.1905;
+
     xController.reset();
     yController.reset();
     thetaController.reset();
     missCounter = 1; // Need to see it to start...
+
+    currentPose = localizer.getPose();
+
+    if (oi.getDriverXButton())
+    {
+      slot = -1;
+      offset = new Transform2d(0, -yOffset + endEffectorOffset, new Rotation2d());
+    }
+    else if (oi.getDriverAButton())
+    {
+      slot = 0;
+      offset = new Transform2d(0, endEffectorOffset, new Rotation2d());
+    }
+    else if (oi.getDriverYButton())
+    {
+      slot = 1;
+      offset = new Transform2d(0, yOffset + endEffectorOffset, new Rotation2d());
+    }
+    slot = 0; //this is just a hack for testing
+
+    if (aprilTagID == -1)
+    {
+      if (slot != 2)
+      {
+        aprilTagID = fieldMap.getBestReefTagID(currentPose);
+      }
+    }
+    SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -150,6 +195,7 @@ public class AlignToTagRelative extends Command
     speeds.vxMetersPerSecond = 0.0;
     speeds.vyMetersPerSecond = 0.0;
     speeds.omegaRadiansPerSecond = 0.0;
+    aprilTagID = -1;
 
     drivetrain.setTargetChassisSpeeds(speeds);
   }

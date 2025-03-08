@@ -23,13 +23,13 @@ public class Rumbler extends SubsystemBase {
   SwerveModule bL;
   SwerveModule bR;
 
-  double frontLeftVolt;
-  double frontRightVolt;
-  double backLeftVolt;
-  double backRightVolt;
-  double avgVolt;
+  double frontLeftTorque;
+  double frontRightTorque;
+  double backLeftTorque;
+  double backRightTorque;
+  double avgTorque;
 
-  double voltGate = 0; //TODO: find out this number
+  double torqueGate = 20; //TODO: find out this number
   boolean lastRumbleOn = false;
 
   /** Creates a new Rumbler. */
@@ -52,23 +52,23 @@ public class Rumbler extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    frontLeftVolt = fL.getLoad();
-    frontRightVolt = fR.getLoad();
-    backLeftVolt = bL.getLoad();
-    backRightVolt = bL.getLoad();
+    frontLeftTorque = fL.getLoad();
+    frontRightTorque = fR.getLoad();
+    backLeftTorque = bL.getLoad();
+    backRightTorque = bL.getLoad();
 
-    avgVolt = (frontLeftVolt + frontRightVolt + backLeftVolt + backRightVolt) / 4;
+    avgTorque = (frontLeftTorque + frontRightTorque + backLeftTorque + backRightTorque) / 4;
 
-    if(avgVolt >= voltGate && !lastRumbleOn) {
+    if(avgTorque >= torqueGate && !lastRumbleOn) {
       rumble();
     }
-    else if(avgVolt < voltGate && lastRumbleOn) {
+    else if(avgTorque < torqueGate && lastRumbleOn) {
       stopRumble();
     }
 
-    SmartDashboard.putNumber("FL Velocity", frontLeftVolt);
-    SmartDashboard.putNumber("FR Velocity", frontRightVolt);
-    SmartDashboard.putNumber("BL Velocity", backLeftVolt);
-    SmartDashboard.putNumber("BR Velocity", backRightVolt);
+    SmartDashboard.putNumber("FL Velocity", frontLeftTorque);
+    SmartDashboard.putNumber("FR Velocity", frontRightTorque);
+    SmartDashboard.putNumber("BL Velocity", backLeftTorque);
+    SmartDashboard.putNumber("BR Velocity", backRightTorque);
   }
 }

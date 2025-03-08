@@ -185,12 +185,12 @@ public class TeleopDrive extends Command
 
 
     //TODO: we should test resetting odometry to see if it works
-    if(m_OI.getDriverMenuButton()){
-      Rotation2d zeroRotate = new Rotation2d();
-      Pose2d zero = new Pose2d(0.0, 0.0, zeroRotate);
-      drivetrain.resetOdometry(zero);
-      localizer.resetOrientation();
-    }
+    // if(m_OI.getDriverMenuButton()){
+    //   Rotation2d zeroRotate = new Rotation2d();
+    //   Pose2d zero = new Pose2d(0.0, 0.0, zeroRotate);
+    //   drivetrain.resetOdometry(zero);
+    //   localizer.resetOrientation();
+    // }
 
 
     SmartDashboard.putBoolean("Field Centric ", fieldCentric);

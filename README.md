@@ -61,18 +61,18 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
-|View Button       |Correction Align                |
-|Menu Button       |Reset Odometry                  |
+|View Button       |Lidar Align                     |
+|Menu Button       |Local Align (temp)              |
 
 
 ## Operator Controller
 
 |  Button/Joystick | Function/Command         |
 |------------------|--------------------------|
-|A                 |Load Coral                |
-|B                 |Score Coral               |
-|X                 |Disengage Climber         |
-|Y                 |Zero Climber              |
+|A                 |Disengage Climber         |
+|B                 |Zero Climber              |
+|X                 |Load Coral                |
+|Y                 |Score Coral               |
 |LeftJoystickY     |Coral Elevator            |
 |RightJoystickY    |                          |
 |LeftJoystickX     |                          |

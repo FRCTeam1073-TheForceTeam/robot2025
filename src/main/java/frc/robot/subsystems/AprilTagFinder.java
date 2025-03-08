@@ -15,6 +15,7 @@ import org.photonvision.PhotonUtils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,13 +27,15 @@ public class AprilTagFinder extends SubsystemBase
   public class VisionMeasurement
   {
     public Pose2d pose; // this is in field coordinates
+    public Transform2d relativePose; // this is in robot coordinates.
     public double timeStamp;
     public int tagID;
     public double range;
 
-    public VisionMeasurement(Pose2d pose, double timeStamp, int tagID, double range)
+    public VisionMeasurement(Pose2d pose, Transform2d relativePose, double timeStamp, int tagID, double range)
     {
       this.pose = pose;
+      this.relativePose = relativePose;
       this.timeStamp = timeStamp;
       this.tagID = tagID;
       this.range = range;
@@ -90,17 +93,23 @@ public class AprilTagFinder extends SubsystemBase
         for (PhotonTrackedTarget target : targets) {
           if (FieldMap.fieldMap.getTagPose(target.getFiducialId()).isPresent()){
             if (target.getPoseAmbiguity() != -1 && target.getPoseAmbiguity() < ambiguityThreshold){
-              Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+              var best = target.getBestCameraToTarget();
+              Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(best,
                                                   FieldMap.fieldMap.getTagPose(target.getFiducialId()).get(), 
                                                   camTransform3d.inverse());
               range = target.bestCameraToTarget.getTranslation().getNorm();
-              measurements.add(new VisionMeasurement(robotPose.toPose2d(), responseTimestamp, target.getFiducialId(), range));
+              var relativePose = toTransform2d(camTransform3d.plus(best));
+              measurements.add(new VisionMeasurement(robotPose.toPose2d(), relativePose, responseTimestamp, target.getFiducialId(), range));
             }
           }
         }
       }
     }
     return measurements;
+  }
+
+  public Transform2d toTransform2d(Transform3d t3d) {
+    return new Transform2d(t3d.getX(), t3d.getY(), t3d.getRotation().toRotation2d());
   }
 
   public Transform3d getRobotToFRCam() {

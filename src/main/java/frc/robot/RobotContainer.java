@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeCommand;
 import frc.robot.commands.AlignToTag;
+import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CancelLoadCoral;
 import frc.robot.commands.CANdleObserver;
 import frc.robot.commands.ClimberTeleop;

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
@@ -60,8 +61,12 @@ public class CenterScoreCoral
 
         return new SequentialCommandGroup(
             // TODO: Consider parallel load and drive.
-            new LoadCoral(endEffector),
-            new DrivePath(drivetrain, path, localizer),
+            // new LoadCoral(endEffector),
+            // new DrivePath(drivetrain, path, localizer),
+            new ParallelCommandGroup(
+                new LoadCoral(endEffector),
+                new DrivePath(drivetrain, path, localizer)
+            ),
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),

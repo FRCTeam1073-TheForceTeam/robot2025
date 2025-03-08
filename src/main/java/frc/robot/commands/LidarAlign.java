@@ -29,8 +29,8 @@ public class LidarAlign extends Command {
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(0.8, 0, 0.01);
-    xController = new PIDController(0.8, 0, 0.01);
+    thetaController = new PIDController(1.0, 0, 0.01);
+    xController = new PIDController(1.0, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -47,32 +47,21 @@ public class LidarAlign extends Command {
   @Override
   public void execute() {
 
-    // TODO: I would not duplicate exit conditions, etc. here. Just compute a response here and stop/exit using isFinished()
-    // The duplication makes it fragile to change the tunings.
-    if(lidar.getAvgX() < 1.5 && Math.abs(lidar.getSlope()) < 5){
-      angleToRotate = -Math.atan(lidar.getSlope());
-      if(lidar.getAvgX() > 0.43){
-        //TODO: check if setpoint is correct
-        vx = xController.calculate(lidar.getAvgX(), 0.4);
-        // TODO: I would use a lower clamp min to prevent oscillation. Just let it run to 0.05
-        // TODO: I would ue a lower maximum as well... this is alignment not speed racing... maybe 0.7 tops.
-        vx = MathUtil.clamp(vx, 0.2, 2);
-        // TODO: Check which heading source we're using here. getOdometryThetaRadians()?
-        // 
-      thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
-      if(thetaVelocity < 0){
-        // TODO: Clamp to much smaller extreme value 2 radians/second is crazy fast maybe 0.7 tops.
-        // TODO: Use a lower min clamp -0.03? to prevent oscillation.
-        thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.2);
-      }
-      else if(thetaVelocity > 0){
-        // TODO: Clamp to much smaller extreme value... see above.
-        // TODO: Use a lower min clamp ... see above. low maybe 0.03
-        thetaVelocity = MathUtil.clamp(thetaVelocity, 0.2, 2);
-      }
-      drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
-      }
-  }
+    angleToRotate = -Math.atan(lidar.getSlope());
+
+    vx = xController.calculate(lidar.getAvgX(), 0.4);
+
+    vx = MathUtil.clamp(vx, 0.1, 2);
+    thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
+
+    if(thetaVelocity < 0){
+      thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.05);
+    }
+    else if(thetaVelocity > 0){
+      thetaVelocity = MathUtil.clamp(thetaVelocity, 0.05, 2);
+    }
+    drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
+
 }
 
   // Called once the command ends or is interrupted.
@@ -87,7 +76,7 @@ public class LidarAlign extends Command {
     if (lidar.getAvgX() <= 0.42 && Math.abs(lidar.getSlope()) <= 0.05){ //TODO change values or add vaiable in smartdashboard
       return true;
     }
-    if (lidar.getAvgX() <= 0.42){
+    if (lidar.getAvgX() < 0.42){
       return true;
     }
     return false;

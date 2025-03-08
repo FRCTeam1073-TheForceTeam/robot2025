@@ -396,4 +396,8 @@ public class Drivetrain extends SubsystemBase
     modules[3].setDebugTranslate(power);
   }
 
+  public SwerveModule[] getModules() {
+    return modules;
+  }
+
 }

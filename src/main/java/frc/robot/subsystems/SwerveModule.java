@@ -341,6 +341,6 @@ public class SwerveModule extends SubsystemBase implements Sendable
     }
 
     public double getLoad() {
-        return driveMotor.getTorqueCurrent(true).getValueAsDouble();
+        return Math.abs(driveMotor.getTorqueCurrent(true).getValueAsDouble());
     }
 }

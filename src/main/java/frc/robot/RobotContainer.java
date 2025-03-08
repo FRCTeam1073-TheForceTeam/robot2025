@@ -275,6 +275,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public void disabledInit() 
   {
+    
+    m_CANdleControl.clearAnim();
     haveInitStartPos = false;
   }
 
@@ -338,19 +340,19 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public boolean disabledPeriodic() 
   {
-      if(DriverStation.getAlliance().isPresent())
-      {
-        DriverStation.Alliance alliance = DriverStation.getAlliance().get();
-        if(alliance == Alliance.Blue) {
-          m_CANdleControl.setRGB(0, 0, 255, 8, 56);
-        }
-        else if (alliance == Alliance.Red){
-          m_CANdleControl.setRGB(255, 0, 0, 8, 56);
-        }
-        else{
-          m_CANdleControl.setRGB(255, 255, 255, 8, 56);
-        }
-    }
+    if(DriverStation.getAlliance().isPresent())
+    {
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if(alliance == Alliance.Blue) {
+        m_CANdleControl.setRGB(0, 0, 255, 8, 56);
+      }
+      else if (alliance == Alliance.Red){
+        m_CANdleControl.setRGB(255, 0, 0, 8, 56);
+      }
+      else{
+        m_CANdleControl.setRGB(255, 255, 255, 8, 56);
+      }
+  }
     
     return findStartPos();
   }

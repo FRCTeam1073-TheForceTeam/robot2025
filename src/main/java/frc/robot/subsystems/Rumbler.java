@@ -29,8 +29,7 @@ public class Rumbler extends SubsystemBase {
   double backRightTorque;
   double avgTorque;
 
-  double torqueGate = 20; //TODO: find out this number
-  boolean lastRumbleOn = false;
+  double torqueGate = 50; 
 
   /** Creates a new Rumbler. */
   public Rumbler(Drivetrain drivetrain) {
@@ -51,7 +50,7 @@ public class Rumbler extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    //get the absolute value of the load from the drive motors
     frontLeftTorque = fL.getLoad();
     frontRightTorque = fR.getLoad();
     backLeftTorque = bL.getLoad();
@@ -59,16 +58,14 @@ public class Rumbler extends SubsystemBase {
 
     avgTorque = (frontLeftTorque + frontRightTorque + backLeftTorque + backRightTorque) / 4;
 
-    if(avgTorque >= torqueGate && !lastRumbleOn) {
+    //if above the torque gate rumble the contorller
+    if(avgTorque >= torqueGate) {
       rumble();
     }
-    else if(avgTorque < torqueGate && lastRumbleOn) {
+    else if(avgTorque < torqueGate) {
       stopRumble();
     }
 
-    SmartDashboard.putNumber("FL Velocity", frontLeftTorque);
-    SmartDashboard.putNumber("FR Velocity", frontRightTorque);
-    SmartDashboard.putNumber("BL Velocity", backLeftTorque);
-    SmartDashboard.putNumber("BR Velocity", backRightTorque);
+    SmartDashboard.putNumber("Avg Torque", avgTorque);
   }
 }

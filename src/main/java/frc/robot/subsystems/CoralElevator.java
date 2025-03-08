@@ -41,10 +41,10 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKP = 0.2;
   private final double positionKG = 0.1; //gravity
   private final double positionKD = 0.03;
-  private final double positionKI = 0.15;
+  private final double positionKI = 0.18;
   private final double positionKV = 0.12; 
   private final double positionKA = 0.0;
-  private final double positionKS = 0.13;
+  private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 44.0;
@@ -201,14 +201,14 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorClosedLoop1Config.withKG(positionKG);
 
     frontElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(25)
+        .withSupplyCurrentLimit(30)
         .withSupplyCurrentLowerTime(0.25);
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig, 0.5);
 
 
     var backElevatorMotorConfig = new TalonFXConfiguration();
     backElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(25)
+        .withSupplyCurrentLimit(30)
         .withSupplyCurrentLowerTime(0.25);
     backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig, 0.5);
      // Same config as other motor to start.

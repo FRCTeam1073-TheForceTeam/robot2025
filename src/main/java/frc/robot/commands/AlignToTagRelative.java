@@ -62,6 +62,8 @@ public class AlignToTagRelative extends Command
     this.oi = oi;
     this.aprilTagID = -1;
 
+    speeds = new ChassisSpeeds();
+
     xVelocity = 0;
     yVelocity = 0;
     wVelocity = 0;
@@ -102,22 +104,25 @@ public class AlignToTagRelative extends Command
 
     currentPose = localizer.getPose();
 
-    if (oi.getDriverXButton())
-    {
-      slot = -1;
-      offset = new Transform2d(0, -yOffset + endEffectorOffset, new Rotation2d());
-    }
-    else if (oi.getDriverAButton())
-    {
-      slot = 0;
-      offset = new Transform2d(0, endEffectorOffset, new Rotation2d());
-    }
-    else if (oi.getDriverYButton())
-    {
-      slot = 1;
-      offset = new Transform2d(0, yOffset + endEffectorOffset, new Rotation2d());
-    }
+    // temporary for testing the align
+    // if (oi.getDriverXButton())
+    // {
+    //   slot = -1;
+    //   offset = new Transform2d(0.45, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    // }
+    // else if (oi.getDriverAButton())
+    // {
+    //   slot = 0;
+    //   offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
+    // }
+    // else if (oi.getDriverYButton())
+    // {
+    //   slot = 1;
+    //   offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    // }
+
     slot = 0; //this is just a hack for testing
+    offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
 
     if (aprilTagID == -1)
     {
@@ -140,25 +145,33 @@ public class AlignToTagRelative extends Command
 
     // Scan for the tag we're aligning with:
     boolean found = false;
-    for (var tag : tags) {
-      if (tag.tagID == aprilTagID) {
-
-        /// Update last location of tag in robot coordinates with the offset...
-        lastLocation = tag.relativePose.plus(offset);
-        xError = Math.abs(lastLocation.getX());
-        yError = Math.abs(lastLocation.getX());
-        wError = Math.abs(lastLocation.getRotation().getRadians());
-
-        /// We didn't miss it, we have it.
-        if (missCounter > 0) missCounter--;
-        found = true;
+    if(tags != null) {
+      for (var tag : tags) {
+        if (tag.tagID == aprilTagID) {
+  
+          /// Update last location of tag in robot coordinates with the offset...
+          lastLocation = tag.relativePose.plus(offset).inverse();
+          xError = Math.abs(lastLocation.getX());
+          yError = Math.abs(lastLocation.getX());
+          wError = Math.abs(lastLocation.getRotation().getRadians());
+  
+          /// We didn't miss it, we have it.
+          if (missCounter > 0) missCounter--;
+          found = true;
+        }
       }
+      if (!found) missCounter++; // We missed seeing it this time, we're using old location?
+    }
+    else {
+      missCounter++;
     }
 
-    if (!found) missCounter++; // We missed seeing it this time, we're using old location?
+    if(lastLocation == null) {
+      return;
+    }
 
     // Within ~1/10th second.
-    if (missCounter < 6) {
+    if (missCounter < 10) {
       // We have the tag, align to the offset robot relative position (make the robot center 0,0,0 from the location)
       xVelocity = xController.calculate(lastLocation.getX(), 0);
       yVelocity = yController.calculate(lastLocation.getY(), 0);
@@ -205,7 +218,7 @@ public class AlignToTagRelative extends Command
   public boolean isFinished() {
 
     // We lost it for too long.
-    if (missCounter >= 6) return true;
+    if (missCounter >= 10) return true;
 
     // We're basically there.
     if (xError < 0.05 && yError < 0.03 && wError < 0.01)

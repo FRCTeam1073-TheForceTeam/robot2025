@@ -29,8 +29,8 @@ public class LidarAlign extends Command {
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(1.0, 0, 0.01);
-    xController = new PIDController(1.0, 0, 0.01);
+    thetaController = new PIDController(1.5, 0, 0.01);
+    xController = new PIDController(1.5, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -49,16 +49,16 @@ public class LidarAlign extends Command {
 
     angleToRotate = -Math.atan(lidar.getSlope());
 
-    vx = xController.calculate(lidar.getAvgX(), 0.4);
+    vx = -xController.calculate(lidar.getAvgX(), 0.4);
 
-    vx = MathUtil.clamp(vx, 0.1, 2);
+    vx = MathUtil.clamp(vx, 0, 2);
     thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
 
     if(thetaVelocity < 0){
-      thetaVelocity = MathUtil.clamp(thetaVelocity, -2, -0.05);
+      thetaVelocity = MathUtil.clamp(thetaVelocity, -2, 0);
     }
     else if(thetaVelocity > 0){
-      thetaVelocity = MathUtil.clamp(thetaVelocity, 0.05, 2);
+      thetaVelocity = MathUtil.clamp(thetaVelocity, 0, 2);
     }
     drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
 

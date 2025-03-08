@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LidarAlign;
@@ -70,6 +71,7 @@ public class CenterScoreCoral
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ScoreCoral(endEffector),
+            new WaitCommand(0.5),
             new ZeroElevator(elevator)
         );
     }

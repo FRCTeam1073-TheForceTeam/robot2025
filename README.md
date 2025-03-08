@@ -71,8 +71,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |------------------|--------------------------|
 |A                 |Load Coral                |
 |B                 |Score Coral               |
-|X                 |Disenage Climber          |
-|Y                 |Engage Climber            |
+|X                 |Disengage Climber         |
+|Y                 |Zero Climber              |
 |LeftJoystickY     |Coral Elevator            |
 |RightJoystickY    |                          |
 |LeftJoystickX     |                          |
@@ -88,7 +88,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |LeftTrigger       |Algae Remover             |
 |RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Coral Endeffector Teleop  |
-|Menu Button       |Zero Climber              |
+|Menu Button       |Engage Climber            |
 
 ## Robot LED codes
 

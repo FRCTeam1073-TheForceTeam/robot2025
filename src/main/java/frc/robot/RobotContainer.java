@@ -149,19 +149,19 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorYButton);
       disengageClimber.onTrue(cmd_disengageClimber);
-    Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorXButton);
       engageClimber.onTrue(cmd_engageClimber);
     Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
       zeroClimber.onTrue(cmd_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(cmd_zeroElevator);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
+    Trigger loadCoral = new Trigger(m_OI::getOperatorAButton);
       loadCoral.onTrue(cmd_loadCoral);
 
-    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorBButton);
       scoreCoral.onTrue(cmd_scoreCoral);
       
     Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);

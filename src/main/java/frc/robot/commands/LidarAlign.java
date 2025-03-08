@@ -84,10 +84,10 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (lidar.getAvgX() <= 0.43 && Math.abs(lidar.getSlope()) <= 0.05){ //TODO change values or add vaiable in smartdashboard
+    if (lidar.getAvgX() <= 0.42 && Math.abs(lidar.getSlope()) <= 0.05){ //TODO change values or add vaiable in smartdashboard
       return true;
     }
-    if (lidar.getAvgX() <= 0.43){
+    if (lidar.getAvgX() <= 0.42){
       return true;
     }
     return false;

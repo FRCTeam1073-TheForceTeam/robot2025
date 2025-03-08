@@ -69,10 +69,10 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 
 |  Button/Joystick | Function/Command         |
 |------------------|--------------------------|
-|A                 |Disenage Climber          |
-|B                 |Engage Climber            |
-|X                 |Load Coral                |
-|Y                 |Score Coral               |
+|A                 |Load Coral                |
+|B                 |Score Coral               |
+|X                 |Disenage Climber          |
+|Y                 |Engage Climber            |
 |LeftJoystickY     |Coral Elevator            |
 |RightJoystickY    |                          |
 |LeftJoystickX     |                          |

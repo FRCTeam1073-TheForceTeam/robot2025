@@ -152,7 +152,7 @@ public class TeleopDrive extends Command
         }
         else 
         {
-          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(-vx, -vy, w));
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
         }
       }
       else {
@@ -160,16 +160,16 @@ public class TeleopDrive extends Command
         ChassisSpeeds creepSpeeds = new ChassisSpeeds();
 
         if(dPadUp) {
-          creepSpeeds.vxMetersPerSecond = 0.25;
+          creepSpeeds.vxMetersPerSecond = 0.2;
         }
         if(dPadDown) {
-          creepSpeeds.vxMetersPerSecond = -0.25;
+          creepSpeeds.vxMetersPerSecond = -0.2;
         }
         if(dPadRight) {
-          creepSpeeds.vyMetersPerSecond = -0.25;
+          creepSpeeds.vyMetersPerSecond = -0.2;
         }
         if(dPadLeft) {
-          creepSpeeds.vyMetersPerSecond = 0.25;
+          creepSpeeds.vyMetersPerSecond = 0.2;
         }
         drivetrain.setTargetChassisSpeeds(creepSpeeds);
 

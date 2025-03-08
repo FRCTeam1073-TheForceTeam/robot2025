@@ -18,10 +18,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Rumbler extends SubsystemBase {
 
   Drivetrain drivetrain;
-  PowerDistribution fL;
-  PowerDistribution fR;
-  PowerDistribution bL;
-  PowerDistribution bR;
+  SwerveModule fL;
+  SwerveModule fR;
+  SwerveModule bL;
+  SwerveModule bR;
 
   double frontLeftVolt;
   double frontRightVolt;
@@ -35,10 +35,10 @@ public class Rumbler extends SubsystemBase {
   /** Creates a new Rumbler. */
   public Rumbler(Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
-    this.fL = new PowerDistribution(0, ModuleType.kCTRE);
-    this.fR = new PowerDistribution(1, ModuleType.kCTRE);
-    this.bL = new PowerDistribution(2, ModuleType.kCTRE);
-    this.bR = new PowerDistribution(3, ModuleType.kCTRE);
+    this.fL =  drivetrain.getModules()[0];
+    this.fR = drivetrain.getModules()[1];
+    this.bL = drivetrain.getModules()[2];
+    this.bR = drivetrain.getModules()[3];
   }
 
   public static void rumble() {
@@ -52,10 +52,10 @@ public class Rumbler extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    frontLeftVolt = fL.getVoltage();
-    frontRightVolt = fR.getVoltage();
-    backLeftVolt = bL.getVoltage();
-    backRightVolt = bL.getVoltage();
+    frontLeftVolt = fL.getLoad();
+    frontRightVolt = fR.getLoad();
+    backLeftVolt = bL.getLoad();
+    backRightVolt = bL.getLoad();
 
     avgVolt = (frontLeftVolt + frontRightVolt + backLeftVolt + backRightVolt) / 4;
 

@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Torque;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -337,5 +338,9 @@ public class SwerveModule extends SubsystemBase implements Sendable
     public void setDebugRotate(double power)
     {
         steerMotor.setControl(new DutyCycleOut(power));
+    }
+
+    public double getLoad() {
+        return driveMotor.getTorqueCurrent(true).getValueAsDouble();
     }
 }

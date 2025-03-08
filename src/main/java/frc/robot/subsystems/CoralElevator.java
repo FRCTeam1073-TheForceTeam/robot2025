@@ -39,7 +39,7 @@ public class CoralElevator extends SubsystemBase {
   private final double velocityKA = 0.01;
 
   private final double positionKP = 0.2;
-  private final double positionKG = 0.1; //gravity
+  private final double positionKG = 0.15; //gravity
   private final double positionKD = 0.03;
   private final double positionKI = 0.18;
   private final double positionKV = 0.12; 
@@ -47,7 +47,7 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 44.0;
+  private final double maxPosition = 44.75;
 
 
   private double position;

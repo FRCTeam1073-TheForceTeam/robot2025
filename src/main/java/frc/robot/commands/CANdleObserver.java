@@ -18,13 +18,16 @@ public class CANdleObserver extends Command {
   CoralEndeffector endeffector;
   Climber climber;
   OI oi;
-
+  int numPerStrip;
+  int numTotalLED;
 
   public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi) {
     candleControl = CandleControl;
     endeffector = Endeffector;
     climber = Climber;
     oi = Oi;
+    numPerStrip = candleControl.getStripLED();
+    numTotalLED = candleControl.getTotalLED();
     addRequirements(candleControl);
   }
 
@@ -39,17 +42,17 @@ public class CANdleObserver extends Command {
   public void execute() {
     
     if (endeffector.getHasReef()){
-      candleControl.setRGB(0, 255, 0, 8, 16);//elevator forward - green
+      candleControl.setRGB(0, 255, 0, 8, numPerStrip + 3);//elevator forward - green
     }
     else{
-      candleControl.setRGB(255, 0, 0, 8, 16);//elevator forward - red
+      candleControl.setRGB(255, 0, 0, 8, numPerStrip + 3);//elevator forward - red
     }
 
     if (endeffector.getHasCoral()){
-      candleControl.setRGB(255, 255, 255, 37, 29);//sides of funnel - light on
+      candleControl.setRGB(255, 255, 255, 37, numPerStrip * 2 + 3);//sides of funnel - light on
     }
     else{
-      candleControl.setRGB(0, 0, 0, 37, 29);//sides of funnel - light off
+      candleControl.setRGB(0, 0, 0, 37, numPerStrip * 2 + 3);//sides of funnel - light off
     }
 
     if (RobotController.getBatteryVoltage() > 12){
@@ -63,16 +66,16 @@ public class CANdleObserver extends Command {
     }
 
     if (climber.getIsDisengaged()){
-      candleControl.setRGB(0, 0, 255, 24, 13);//elevator side - blue
+      candleControl.setRGB(0, 0, 255, 24, numPerStrip);//elevator side - blue
     }
     else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, 24, 13);//elevator side - orange
+      candleControl.setRGB(245, 146, 0, 24, numPerStrip);//elevator side - orange
     }
     else if (climber.getIsAtZero()){
-      candleControl.setRGB(255, 0, 255, 24, 13);//elevator side - purple
+      candleControl.setRGB(255, 0, 255, 24, numPerStrip);//elevator side - purple
     }
     else{
-      candleControl.setRGB(128, 128, 128, 24, 13);//elevator side - grey
+      candleControl.setRGB(128, 128, 128, 24, numPerStrip);//elevator side - grey
     }
   }
 

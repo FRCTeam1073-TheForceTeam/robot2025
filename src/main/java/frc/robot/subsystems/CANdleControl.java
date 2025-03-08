@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.led.*;
-import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
@@ -21,6 +20,8 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
 public class CANdleControl extends SubsystemBase {
   CANdle m_candle;
+  int numTotalLED = 58;
+  int numPerStrip = 13;
 
   public CANdleControl() {
     m_candle = new CANdle(30); // creates a new CANdle with ID 0
@@ -48,6 +49,14 @@ public class CANdleControl extends SubsystemBase {
    */
   public void setRGB(int r, int g, int b, int q, int c){
     m_candle.setLEDs(r, g, b, 0, q, c);
+  }
+
+  public int getTotalLED(){
+    return numTotalLED;
+  }
+
+  public int getStripLED(){
+    return numPerStrip;
   }
 
   /**

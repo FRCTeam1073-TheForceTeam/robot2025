@@ -40,20 +40,24 @@ public class LeftScoreCoral
         }
 
         Pose2d tag11Pose = map.getTagRelativePose(11, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag11ApproachPose = map.getTagRelativePose(11, slot, new Transform2d(AutoConstants.scoreApproachOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Pose2d tag20Pose = map.getTagRelativePose(20, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
+        Pose2d tag20ApproachPose = map.getTagRelativePose(20, slot, new Transform2d(AutoConstants.scoreApproachOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag11 = new Point(tag11Pose.getX(), tag11Pose.getY());
+        Point tag11Approach = new Point(tag11ApproachPose.getX(), tag11ApproachPose.getY());
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
 
         Point tag20 = new Point(tag20Pose.getX(), tag20Pose.getY());
+        Point tag20Approach = new Point(tag20ApproachPose.getX(), tag20ApproachPose.getY());
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());
 
@@ -65,7 +69,8 @@ public class LeftScoreCoral
 
         if (isRed)
         {
-            segments1.add(new Segment(start, tag11, tag11Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(start, tag11Approach, tag11Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(tag11Approach, tag11, tag11Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag11, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(redI1, tag1, tag1Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
@@ -75,7 +80,8 @@ public class LeftScoreCoral
         }
         else
         {
-            segments1.add(new Segment(start, tag20, tag20Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(start, tag20Approach, tag20Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(tag20Approach, tag20, tag20Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag20, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(blueI1, tag13, tag13Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));

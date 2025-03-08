@@ -230,6 +230,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         break;
       case score2L4:
         level = 5;
+        break;
       default:
         level = -1;
         break;
@@ -344,13 +345,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     {
       DriverStation.Alliance alliance = DriverStation.getAlliance().get();
       if(alliance == Alliance.Blue) {
-        m_CANdleControl.setRGB(0, 0, 255, 8, 56);
+        m_CANdleControl.setRGB(0, 0, 255, 8, m_CANdleControl.getTotalLED() - 8);
       }
       else if (alliance == Alliance.Red){
-        m_CANdleControl.setRGB(255, 0, 0, 8, 56);
+        m_CANdleControl.setRGB(255, 0, 0, 8, m_CANdleControl.getTotalLED() - 8);
       }
       else{
-        m_CANdleControl.setRGB(255, 255, 255, 8, 56);
+        m_CANdleControl.setRGB(255, 255, 255, 8, m_CANdleControl.getTotalLED() - 8);
       }
   }
     

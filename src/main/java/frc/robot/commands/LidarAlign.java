@@ -29,8 +29,8 @@ public class LidarAlign extends Command {
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(1.5, 0, 0.01);
-    xController = new PIDController(1.5, 0, 0.01);
+    thetaController = new PIDController(1.7, 0, 0.01);
+    xController = new PIDController(1.7, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);

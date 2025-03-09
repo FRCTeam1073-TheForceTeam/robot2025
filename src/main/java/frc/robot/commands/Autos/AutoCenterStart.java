@@ -18,7 +18,7 @@ import frc.robot.subsystems.Localizer;
 public class AutoCenterStart 
 {
     public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
-                                     Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar)
+                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, boolean xversion)
     {
         switch (level)
         {
@@ -27,13 +27,17 @@ public class AutoCenterStart
             case 1: 
                return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 1);
             case 2:
-               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
+               if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
             case 3:
-               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
+               if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
             case 4:
-               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
-               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             default:
                return new WaitCommand(0);
         }

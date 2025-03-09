@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
@@ -98,8 +99,9 @@ public class RightScoreCoral
             ),
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
-            new ScoreCoral(endEffector),
-            new WaitCommand(0.5),
+            new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
+                                   new SequentialCommandGroup(new ScoreCoral(endEffector),
+                                                              new WaitCommand(0.5))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)

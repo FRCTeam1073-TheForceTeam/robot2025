@@ -27,7 +27,7 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
-public class CenterScoreCoral 
+public class CenterScoreCoralX 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, int branchLevel)  
     {
@@ -73,8 +73,10 @@ public class CenterScoreCoral
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
-                                   new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(0.5))),
+                                   new SequentialCommandGroup(new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
+                                                            new ScoreCoral(endEffector),
+                                                            new WaitCommand(0.5))),
+            new WaitCommand(0.5),
             new ZeroElevator(elevator)
         );
     }

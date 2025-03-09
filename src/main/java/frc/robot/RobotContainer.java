@@ -104,6 +104,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String rightPosition = "Right Auto";
   private static final String leftPosition = "Left Auto";
   private static final String centerPosition = "Center Auto";
+  private static final String centerPositionX = "Center Auto X";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String noLevelAuto = "No Level";
@@ -133,6 +134,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.addOption("Right Position", rightPosition);
     m_positionChooser.addOption("Left Position", leftPosition);
     m_positionChooser.addOption("Center Position", centerPosition);
+    m_positionChooser.addOption("Center Position X", centerPositionX);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -147,7 +149,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     SmartDashboard.putData("Level Chooser", m_levelChooser);
 
     m_positionChooser.onChange(this::accept); // this is so we can reset the start position
-
 
     configureBindings();
   }
@@ -248,7 +249,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, false);
+      case centerPositionX:
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, true);
       default:
         return null;
     }

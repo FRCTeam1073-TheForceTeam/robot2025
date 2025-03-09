@@ -254,12 +254,14 @@ public class Path
         
         // Compute leading position by moving along path direction 0.5 second from closest.
         Vector<N2> pp = path_pos.plus(seg.dir.times(0.5*seg.velocity)); // 1/2 second ahead of projected point.
+
+        // TODO: What does this even do?
         pp.set(0,0,pp.get(0,0));
         pp.set(1,0,pp.get(1,0));   
         
         // Project the computed position onto the path segment as well to stay on segment and hit endpoints exactly.
         Vector<N2> ppp = new Vector<N2>(N2.instance);  /// projected path position point.
-        double notused = distanceToSegment(seg.start.position, seg.end.position, pp, ppp);
+        double notused = distanceToSegment(seg.start.position, seg.end.position, pp, ppp); // Clamps ppp to be on segment versuib of pp
 
         Pose2d pathPoint = new Pose2d(new Translation2d(ppp.get(0, 0), ppp.get(1, 0)), new Rotation2d(seg.orientation));
 

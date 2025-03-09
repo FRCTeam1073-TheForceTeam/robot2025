@@ -7,7 +7,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LoadCoral;
@@ -39,14 +41,22 @@ public class RightScore2Coral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag9R = new Point(tag9RightPose.getX(), tag9RightPose.getY());
+        tag9R.blend_radius = AutoConstants.blendRaidus;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
+        redI1.blend_radius = AutoConstants.blendRaidus;
         Point tag1 = new Point(tag2Pose.getX(), tag2Pose.getY());
+        tag1.blend_radius = AutoConstants.blendRaidus;
         Point tag9L = new Point(tag9LeftPose.getX(), tag9LeftPose.getY());
+        tag9L.blend_radius = AutoConstants.blendRaidus;
 
         Point tag22R = new Point(tag22RightPose.getX(), tag22RightPose.getY());
+        tag22R.blend_radius = AutoConstants.blendRaidus;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
+        blueI1.blend_radius = AutoConstants.blendRaidus;
         Point tag13 = new Point(tag12Pose.getX(), tag12Pose.getY());
+        tag13.blend_radius = AutoConstants.blendRaidus;
         Point tag22L = new Point(tag22LeftPose.getX(), tag22LeftPose.getY());
+        tag22L.blend_radius = AutoConstants.blendRaidus;
 
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();
@@ -90,8 +100,9 @@ public class RightScore2Coral
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path1, localizer),
-            new CoralElevatorToHeight(elevator, branchLevel, true),
-            new ScoreCoral(endEffector),
+                        new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
+                                   new SequentialCommandGroup(new ScoreCoral(endEffector),
+                                       new WaitCommand(0.5))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)
@@ -100,8 +111,9 @@ public class RightScore2Coral
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new CoralElevatorToHeight(elevator, branchLevel, true),
-            new ScoreCoral(endEffector),
+            new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
+            new SequentialCommandGroup(new ScoreCoral(endEffector),
+                new WaitCommand(0.5))),
             new ZeroElevator(elevator)
         );
     }     

@@ -343,15 +343,18 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   {
     if(DriverStation.getAlliance().isPresent())
     {
+      int candleNum = m_CANdleControl.getCandleNum();
+      int numLED = m_CANdleControl.getTotalLED();
+
       DriverStation.Alliance alliance = DriverStation.getAlliance().get();
       if(alliance == Alliance.Blue) {
-        m_CANdleControl.setRGB(0, 0, 255, 8, m_CANdleControl.getTotalLED() - 8);
+        m_CANdleControl.setRGB(0, 0, 255, candleNum, numLED);
       }
       else if (alliance == Alliance.Red){
-        m_CANdleControl.setRGB(255, 0, 0, 8, m_CANdleControl.getTotalLED() - 8);
+        m_CANdleControl.setRGB(255, 0, 0, candleNum, numLED);
       }
       else{
-        m_CANdleControl.setRGB(255, 255, 255, 8, m_CANdleControl.getTotalLED() - 8);
+        m_CANdleControl.setRGB(255, 255, 255, candleNum, numLED);
       }
   }
     

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANdleControl;
 import frc.robot.subsystems.Climber;
@@ -20,6 +21,7 @@ public class CANdleObserver extends Command {
   OI oi;
   int numPerStrip;
   int numTotalLED;
+  int candleNum;
 
   public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi) {
     candleControl = CandleControl;
@@ -28,6 +30,7 @@ public class CANdleObserver extends Command {
     oi = Oi;
     numPerStrip = candleControl.getStripLED();
     numTotalLED = candleControl.getTotalLED();
+    candleNum = candleControl.getCandleNum();
     addRequirements(candleControl);
   }
 
@@ -42,41 +45,46 @@ public class CANdleObserver extends Command {
   public void execute() {
     
     if (endeffector.getHasReef()){
-      candleControl.setRGB(0, 255, 0, 8, numPerStrip + 3);//elevator forward - green
+      candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
     }
     else{
-      candleControl.setRGB(255, 0, 0, 8, numPerStrip + 3);//elevator forward - red
+      candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
     }
 
     if (endeffector.getHasCoral()){
-      candleControl.setRGB(255, 255, 255, 37, numPerStrip * 2 + 3);//sides of funnel - light on
+      candleControl.setRGB(255, 255, 255, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light on
     }
     else{
-      candleControl.setRGB(0, 0, 0, 37, numPerStrip * 2 + 3);//sides of funnel - light off
+      candleControl.setRGB(0, 0, 0, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light off
     }
 
     if (RobotController.getBatteryVoltage() > 12){
-      candleControl.setRGB(0, 255, 0, 0, 8);//CANdle - green
+      candleControl.setRGB(0, 255, 0, 0, candleNum);//CANdle - green
     }
     else if(RobotController.getBatteryVoltage() > 10){
-      candleControl.setRGB(128, 128, 0, 0, 8);//CANdle - yellow
+      candleControl.setRGB(128, 128, 0, 0, candleNum);//CANdle - yellow
     }
     else{
-      candleControl.setRGB(255, 0, 0, 0, 8);//CANdle - red
+      candleControl.setRGB(255, 0, 0, 0, candleNum);//CANdle - red
     }
 
     if (climber.getIsDisengaged()){
-      candleControl.setRGB(0, 0, 255, 24, numPerStrip);//elevator side - blue
+      candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - blue
     }
     else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, 24, numPerStrip);//elevator side - orange
+      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange //TODO: not working
     }
     else if (climber.getIsAtZero()){
-      candleControl.setRGB(255, 0, 255, 24, numPerStrip);//elevator side - purple
+      candleControl.setRGB(255, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple //TODO: not working
     }
     else{
-      candleControl.setRGB(128, 128, 128, 24, numPerStrip);//elevator side - grey
+      candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - grey
     }
+
+    SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());
+    SmartDashboard.putBoolean("is Engaged", climber.getIsEngaged());
+    SmartDashboard.putBoolean("is zero", climber.getIsAtZero());
+
   }
 
   // Called once the command ends or is interrupted.

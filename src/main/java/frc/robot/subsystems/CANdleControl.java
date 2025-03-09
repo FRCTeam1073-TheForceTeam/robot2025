@@ -22,6 +22,7 @@ public class CANdleControl extends SubsystemBase {
   CANdle m_candle;
   int numTotalLED = 58;
   int numPerStrip = 13;
+  int candleNum = 8;
 
   public CANdleControl() {
     m_candle = new CANdle(30); // creates a new CANdle with ID 0
@@ -57,6 +58,10 @@ public class CANdleControl extends SubsystemBase {
 
   public int getStripLED(){
     return numPerStrip;
+  }
+
+  public int getCandleNum() {
+    return candleNum;
   }
 
   /**

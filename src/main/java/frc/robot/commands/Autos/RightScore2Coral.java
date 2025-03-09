@@ -41,14 +41,22 @@ public class RightScore2Coral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag9R = new Point(tag9RightPose.getX(), tag9RightPose.getY());
+        tag9R.blend_radius = AutoConstants.blendRaidus;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
+        redI1.blend_radius = AutoConstants.blendRaidus;
         Point tag1 = new Point(tag2Pose.getX(), tag2Pose.getY());
+        tag1.blend_radius = AutoConstants.blendRaidus;
         Point tag9L = new Point(tag9LeftPose.getX(), tag9LeftPose.getY());
+        tag9L.blend_radius = AutoConstants.blendRaidus;
 
         Point tag22R = new Point(tag22RightPose.getX(), tag22RightPose.getY());
+        tag22R.blend_radius = AutoConstants.blendRaidus;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
+        blueI1.blend_radius = AutoConstants.blendRaidus;
         Point tag13 = new Point(tag12Pose.getX(), tag12Pose.getY());
+        tag13.blend_radius = AutoConstants.blendRaidus;
         Point tag22L = new Point(tag22LeftPose.getX(), tag22LeftPose.getY());
+        tag22L.blend_radius = AutoConstants.blendRaidus;
 
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();

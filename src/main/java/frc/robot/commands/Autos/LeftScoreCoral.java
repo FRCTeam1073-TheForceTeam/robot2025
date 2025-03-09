@@ -53,16 +53,22 @@ public class LeftScoreCoral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag11 = new Point(tag11Pose.getX(), tag11Pose.getY());
-        tag11.blend_radius = 0.15;
+        tag11.blend_radius = AutoConstants.blendRaidus;
         Point tag11Approach = new Point(tag11ApproachPose.getX(), tag11ApproachPose.getY());
+        tag11Approach.blend_radius = AutoConstants.blendRaidus;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
+        redI1.blend_radius = AutoConstants.blendRaidus;
         Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
+        tag1.blend_radius = AutoConstants.blendRaidus;
 
         Point tag20 = new Point(tag20Pose.getX(), tag20Pose.getY());
-        tag20.blend_radius = 0.15;
+        tag20.blend_radius = AutoConstants.blendRaidus;
         Point tag20Approach = new Point(tag20ApproachPose.getX(), tag20ApproachPose.getY());
+        tag20Approach.blend_radius = AutoConstants.blendRaidus;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
+        blueI1.blend_radius = AutoConstants.blendRaidus;
         Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());
+        tag13.blend_radius = AutoConstants.blendRaidus;
 
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();

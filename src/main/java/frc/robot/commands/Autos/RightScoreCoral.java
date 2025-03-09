@@ -53,11 +53,13 @@ public class RightScoreCoral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag9 = new Point(tag9Pose.getX(), tag9Pose.getY());
+        tag9.blend_radius = 0.15;
         Point tag9Approach = new Point(tag9ApproachPose.getX(), tag9ApproachPose.getY());
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         Point tag2 = new Point(tag2Pose.getX(), tag2Pose.getY());
 
         Point tag22 = new Point(tag22Pose.getX(), tag22Pose.getY());
+        tag22.blend_radius = 0.15;
         Point tag22Approach = new Point(tag22ApproachPose.getX(), tag22ApproachPose.getY());
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         Point tag12 = new Point(tag12Pose.getX(), tag12Pose.getY());

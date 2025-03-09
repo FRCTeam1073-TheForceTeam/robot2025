@@ -53,11 +53,13 @@ public class LeftScoreCoral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag11 = new Point(tag11Pose.getX(), tag11Pose.getY());
+        tag11.blend_radius = 0.15;
         Point tag11Approach = new Point(tag11ApproachPose.getX(), tag11ApproachPose.getY());
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
 
         Point tag20 = new Point(tag20Pose.getX(), tag20Pose.getY());
+        tag20.blend_radius = 0.15;
         Point tag20Approach = new Point(tag20ApproachPose.getX(), tag20ApproachPose.getY());
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());

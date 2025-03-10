@@ -115,7 +115,8 @@ public class CoralElevator extends SubsystemBase {
 
     SmartDashboard.putBoolean("Coral Elevator/At zero", isAtZero);
     SmartDashboard.putBoolean("Coral Elevator/Brake mode", brakemode);
-    SmartDashboard.putNumber("Coral Elevator/Position", position);
+    SmartDashboard.putNumber("Coral Elevator/Position (raw encoder)", position);
+    SmartDashboard.putNumber("Coral Elevator/Position (meters)", getMeters());
     SmartDashboard.putNumber("Coral Elevator/Velocity", velocity);
     SmartDashboard.putNumber("Coral Elevator/Commanded velocity", commandedVelocity);
     SmartDashboard.putBoolean("Coral Elevator/Hit hardstop", hitHardStop);
@@ -124,6 +125,10 @@ public class CoralElevator extends SubsystemBase {
 
   public double getPosition(){// where motor is
     return position;
+  }
+
+  public double getEncoderUnits(double meters) {
+    return (28.5353 * meters) - 9.832;
   }
 
   public void setZero(){
@@ -141,7 +146,7 @@ public class CoralElevator extends SubsystemBase {
   public void setPosition(double position) {
     //this method is for mode control to hold motor positions
     velocityMode = false;
-    commandedPosition = position;
+    commandedPosition = getEncoderUnits(position);
   }
 
   public boolean isCoralElevatorAtBottom(){
@@ -159,6 +164,14 @@ public class CoralElevator extends SubsystemBase {
 
   public boolean getIsAtZero(){
     return isAtZero;
+  }
+
+  public double getMeters() {
+    return ((position + 9.832) / 28.353); // 5:1 gear rotatio turns the pulley 0.17635 meters
+  }
+
+  public double getMeters(double encoderValue) {
+    return ((encoderValue + 9.832) / 28.353);
   }
 
   public void setBrakeMode(boolean mode){

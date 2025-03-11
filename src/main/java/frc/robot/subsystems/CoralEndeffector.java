@@ -19,15 +19,15 @@ import au.grapplerobotics.ConfigurationFailedException;
 import edu.wpi.first.epilogue.logging.LazyBackend;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CANdleControl;
 
 
 /** Add your docs here. */
 public class CoralEndeffector extends SubsystemBase {
     private final String kCANbus = "rio";
-    private final double leftKP = 0.2;
-    private final double leftKD = 0.0;
+    private final double leftKP = 0.15;
+    private final double leftKD = 0.005;
     private final double leftKI = 0.0;
+    private final double leftKS = 0.1;
     private final double leftKV = 0.12; // Kraken.
 
     private final double minCoralDistance = 0.03;
@@ -45,13 +45,12 @@ public class CoralEndeffector extends SubsystemBase {
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
-    private CANdleControl candle;
    
     // LaserCAN Sensor:
     private LaserCan laserCANCoral;
     private LaserCan laserCANReef;
 
-    public CoralEndeffector(CANdleControl candleControl) {
+    public CoralEndeffector() {
         hasCoral = false;
         motor = new TalonFX(21, kCANbus);
         
@@ -60,7 +59,6 @@ public class CoralEndeffector extends SubsystemBase {
         // Sensor setup:
         laserCANCoral = new LaserCan(22);
         laserCANReef = new LaserCan(24);
-        candle = candleControl;
 
         configureHardware();
     }
@@ -69,8 +67,8 @@ public class CoralEndeffector extends SubsystemBase {
     public void periodic() {
 
         // TODO: Scale factors.
-        velocity = motor.getVelocity().refresh().getValueAsDouble();
-        position = motor.getPosition().refresh().getValueAsDouble();
+        velocity = motor.getVelocity().getValueAsDouble();
+        position = motor.getPosition().getValueAsDouble();
 
         load = motor.getTorqueCurrent().getValueAsDouble();
         
@@ -100,23 +98,16 @@ public class CoralEndeffector extends SubsystemBase {
             hasReef = false;
         }
 
-        if (hasReef){
-            candle.setRGB(0, 255, 0, 0, 8); //set candle to green
-        }
-
-        else{
-            candle.setRGB(255, 0, 0, 0, 8); //set candle to red
-        }
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-        SmartDashboard.putNumber("[CORAL End Effector] Coral Distance", coralDistance);
-        SmartDashboard.putBoolean("[CORAL End Effector] Has Coral", hasCoral);
-        SmartDashboard.putNumber("[CORAL End Effector] velocity", velocity);
-        SmartDashboard.putNumber("[CORAL End Effector] command", commandedVelocity);
-        SmartDashboard.putNumber("[CORAL End Effector] load", load);
-        SmartDashboard.putNumber("[CORAL End Effector] Reef Distance", reefDistance);
-        SmartDashboard.putBoolean("[CORAL End Effector] Has Reef", hasReef);
+        SmartDashboard.putNumber("Coral End Effector/Coral Distance", coralDistance);
+        SmartDashboard.putBoolean("Coral End Effector/Has Coral", hasCoral);
+        SmartDashboard.putNumber("Coral End Effector/ velocity", velocity);
+        SmartDashboard.putNumber("Coral End Effector/command", commandedVelocity);
+        SmartDashboard.putNumber("Coral End Effector/load", load);
+        SmartDashboard.putNumber("Coral End Effector/Reef Distance", reefDistance);
+        SmartDashboard.putBoolean("Coral End Effector/ Has Reef", hasReef);
     
     }
     
@@ -166,6 +157,7 @@ public class CoralEndeffector extends SubsystemBase {
     motorClosedLoopConfig.withKI(leftKI);
     motorClosedLoopConfig.withKD(leftKD);
     motorClosedLoopConfig.withKV(leftKV);
+    motorClosedLoopConfig.withKS(leftKS);
 
     var error = motor.getConfigurator().apply(motorClosedLoopConfig, 0.5);
 

@@ -76,15 +76,23 @@ public class TeleopDrive extends Command
   {
     System.out.println("TeleopDrive: Init");
     super.initialize();
+    if (DriverStation.getAlliance().get() == Alliance.Red)
+    {
+      allianceSign = -1;
+    }
+    else
+    {
+      allianceSign = 1;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    leftY = m_OI.getDriverTranslateY();
-    leftX = m_OI.getDriverTranslateX();
-    rightX = m_OI.getDriverRotate();
+    leftY = -m_OI.getDriverTranslateY();
+    leftX = -m_OI.getDriverTranslateX();
+    rightX = -m_OI.getDriverRotate();
 
     SmartDashboard.putBoolean("Parking Brake", parked);
 
@@ -127,7 +135,7 @@ public class TeleopDrive extends Command
 
         vx = MathUtil.clamp((allianceSign * leftY * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
         vy = MathUtil.clamp((allianceSign * leftX * maximumLinearVelocity / 25 ) * mult1 * mult2, -maximumLinearVelocity, maximumLinearVelocity);
-        w = MathUtil.clamp((-allianceSign * rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
+        w = MathUtil.clamp((rightX * maximumRotationVelocity / 25) * mult1 * mult2, -maximumRotationVelocity, maximumRotationVelocity);
 
         SmartDashboard.putNumber("TeleopDrive/vx", vx);
         if(fieldCentric)
@@ -144,7 +152,7 @@ public class TeleopDrive extends Command
         }
         else 
         {
-          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(-vx, -vy, w));
+          drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, vy, w));
         }
       }
       else {
@@ -152,16 +160,16 @@ public class TeleopDrive extends Command
         ChassisSpeeds creepSpeeds = new ChassisSpeeds();
 
         if(dPadUp) {
-          creepSpeeds.vxMetersPerSecond = 0.45;
+          creepSpeeds.vxMetersPerSecond = 0.2;
         }
         if(dPadDown) {
-          creepSpeeds.vxMetersPerSecond = -0.45;
+          creepSpeeds.vxMetersPerSecond = -0.2;
         }
         if(dPadRight) {
-          creepSpeeds.vyMetersPerSecond = -0.45;
+          creepSpeeds.vyMetersPerSecond = -0.2;
         }
         if(dPadLeft) {
-          creepSpeeds.vyMetersPerSecond = 0.45;
+          creepSpeeds.vyMetersPerSecond = 0.2;
         }
         drivetrain.setTargetChassisSpeeds(creepSpeeds);
 
@@ -177,12 +185,12 @@ public class TeleopDrive extends Command
 
 
     //TODO: we should test resetting odometry to see if it works
-    if(m_OI.getDriverMenuButton()){
-      Rotation2d zeroRotate = new Rotation2d();
-      Pose2d zero = new Pose2d(0.0, 0.0, zeroRotate);
-      drivetrain.resetOdometry(zero);
-      localizer.resetOrientation();
-    }
+    // if(m_OI.getDriverMenuButton()){
+    //   Rotation2d zeroRotate = new Rotation2d();
+    //   Pose2d zero = new Pose2d(0.0, 0.0, zeroRotate);
+    //   drivetrain.resetOdometry(zero);
+    //   localizer.resetOrientation();
+    // }
 
 
     SmartDashboard.putBoolean("Field Centric ", fieldCentric);

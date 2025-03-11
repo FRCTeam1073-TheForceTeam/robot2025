@@ -146,8 +146,6 @@ public class DrivePath extends Command
     // Create (field-centric) chassis speeds:
     ChassisSpeeds fcSpeeds = new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
 
-    // SmartDashboard.putNumber("Trajectory Time", currentTime);
-
     SmartDashboard.putNumber("DrivePath/TrajFBVx", pathFeedback.velocity.get(0,0));
     SmartDashboard.putNumber("DrivePath/TrajFBVy", pathFeedback.velocity.get(1,0));
     SmartDashboard.putNumber("DrivePath/MaxVelocity", maxVelocity);
@@ -167,7 +165,6 @@ public class DrivePath extends Command
                     Rotation2d.fromDegrees(localizer.getPose().getRotation().getDegrees()) // gets fused heading
                 )
             );
-    //drivetrain.setTargetChassisSpeeds(fcSpeeds);
   }
 
   // Called once the command ends or is interrupted.

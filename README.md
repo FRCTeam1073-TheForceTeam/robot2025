@@ -28,7 +28,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Elevator Motor left   |  19    |   Rio         |
 | Elevator Motor right  |  20    |   Rio         |
 | Endeffector Motor     |  21    |   Rio         |
-| LaserCAN              |  22    |   Rio         |
+| LaserCAN Coral        |  22    |   Rio         |
+| LaserCAN Reef         |  24    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
 | Collector Motor       |   ?    |   CANivore    |
@@ -60,16 +61,16 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
-|View Button       |Correction Align                |
-|Menu Button       |Reset Odometry                  |
+|View Button       |Lidar Align                     |
+|Menu Button       |Local Align (temp)              |
 
 
 ## Operator Controller
 
 |  Button/Joystick | Function/Command         |
 |------------------|--------------------------|
-|A                 |Disenage Climber          |
-|B                 |Engage Climber            |
+|A                 |Disengage Climber         |
+|B                 |Zero Climber              |
 |X                 |Load Coral                |
 |Y                 |Score Coral               |
 |LeftJoystickY     |Coral Elevator            |
@@ -84,7 +85,26 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |DPadRight         |Elevator Branch Level 2   |
 |LeftBumper        |Climber Up                |
 |RightBumper       |Climber Down              |
-|LeftTrigger       |Algae Remover L2          |
-|RightTrigger      |Algae Remover L3          |
+|LeftTrigger       |Algae Remover             |
+|RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Coral Endeffector Teleop  |
-|Menu Button       |Zero Climber              |
+|Menu Button       |Engage Climber            |
+
+## Robot LED codes
+
+| Light/Color                   | action                            |
+|-------------------------------|-----------------------------------|
+|Sides of funnel - light on     |Robot has coral                    |
+|Sides of funnel - light off    |Robot does not have coral          |
+|CANdle - green                 |Battery > 12 volts                 |
+|CANdle - yellow                |Battery > 10 volts                 |
+|CANdle - red                   |Battery <= 10 volts                |
+|Front of elevator - green      |Robot endeffector sees reef        |
+|Front of elevator - red        |Robot endeffector does not see reef|
+|Side of elevator - blue        |Climber is disengaged              |
+|Side of elevator - orange      |Climber is engaged                 |
+|Side of elevator - purple      |Climber is zeroed                  |
+|Side of elevator - grey        |Climber is between positions       |
+|All funnel & elevator - blue   |Robot is disabled & blue alliance  |
+|All funnel & elevator - red    |Robot is disabled & red alliance   |
+|All funnel & elevator - white  |Robot is disabled & no  alliance   |

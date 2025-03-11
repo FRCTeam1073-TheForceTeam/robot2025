@@ -19,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeCommand;
 import frc.robot.commands.AlignToTag;
+import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CancelLoadCoral;
+import frc.robot.commands.CANdleObserver;
 import frc.robot.commands.ClimberTeleop;
 import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
@@ -33,8 +35,7 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.commands.Autos.AutoCenterLeftStart;
-import frc.robot.commands.Autos.AutoCenterRightStart;
+import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
 import frc.robot.subsystems.AprilTagFinder;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -60,10 +62,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
   private final Climber m_climber = new Climber();
-  // private final Lidar m_lidar = new Lidar();
-  private final Lidar m_lidar = null; // Disabled temporarily.
+  private final Lidar m_lidar = new Lidar();
+  //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
-  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector(m_CANdleControl);
+  private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
+  private final Rumbler m_rumbler = new Rumbler(m_drivetrain);
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -82,15 +85,17 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
+  private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final RemoveAlgae cmd_removeAlgaeL2 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 2);
   private final RemoveAlgae cmd_RemoveAlgaeL3 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 3);
-
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
   private boolean isRed;
   private int level;
+  private boolean isRainbow = false;
 
   public boolean haveInitStartPos = false;
 
@@ -98,8 +103,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String noPosition = "No Position";
   private static final String rightPosition = "Right Auto";
   private static final String leftPosition = "Left Auto";
-  private static final String centerLeftPosition = "Center Left Auto";
-  private static final String centerRightPosition = "Center Right Auto";
+  private static final String centerPosition = "Center Auto";
+  private static final String centerPositionX = "Center Auto X";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String noLevelAuto = "No Level";
@@ -118,6 +123,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, cmd_coralElevatorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -127,8 +133,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.setDefaultOption("No Position", noPosition);
     m_positionChooser.addOption("Right Position", rightPosition);
     m_positionChooser.addOption("Left Position", leftPosition);
-    m_positionChooser.addOption("Center Left Position", centerLeftPosition);
-    m_positionChooser.addOption("Center Right Position", centerRightPosition);
+    m_positionChooser.addOption("Center Position", centerPosition);
+    m_positionChooser.addOption("Center Position X", centerPositionX);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
@@ -144,16 +150,15 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     m_positionChooser.onChange(this::accept); // this is so we can reset the start position
 
-
     configureBindings();
   }
 
   private void configureBindings() {
     Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
       disengageClimber.onTrue(cmd_disengageClimber);
-    Trigger engageClimber = new Trigger(m_OI::getOperatorBButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorMenuButton);
       engageClimber.onTrue(cmd_engageClimber);
-    Trigger zeroClimber = new Trigger(m_OI::getOperatorMenuButton);
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorBButton);
       zeroClimber.onTrue(cmd_zeroClimber);
     Trigger zeroElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
       zeroElevator.onTrue(cmd_zeroElevator);
@@ -185,16 +190,19 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
-    Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
+    /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
       removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);
 
     Trigger removeAlgaeL3 = new Trigger(m_OI::getOperatorRightTrigger);
-      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);
+      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);*/
+
+    Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
+      localAlign.whileTrue(cmd_localAlign);
   }
 
   public void autonomousInit()
   {
-
+    m_CANdleControl.clearAnim();
   }
 
   public Command getAutonomousCommand() 
@@ -223,6 +231,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         break;
       case score2L4:
         level = 5;
+        break;
       default:
         level = -1;
         break;
@@ -239,10 +248,10 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
-      case centerLeftPosition:
-        return AutoCenterLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
-      case centerRightPosition:
-        return AutoCenterRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
+      case centerPosition:
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, false);
+      case centerPositionX:
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, true);
       default:
         return null;
     }
@@ -270,6 +279,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public void disabledInit() 
   {
+    
+    m_CANdleControl.clearAnim();
     haveInitStartPos = false;
   }
 
@@ -333,6 +344,23 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public boolean disabledPeriodic() 
   {
+    if(DriverStation.getAlliance().isPresent())
+    {
+      int totalLED = m_CANdleControl.getTotalLED();
+      int candleNum = m_CANdleControl.getCandleNum();
+
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if(alliance == Alliance.Blue) {
+        m_CANdleControl.setRGB(0, 0, 255, candleNum, totalLED);
+      }
+      else if (alliance == Alliance.Red){
+        m_CANdleControl.setRGB(255, 0, 0, candleNum, totalLED);
+      }
+      else{
+        m_CANdleControl.setRGB(255, 255, 255, candleNum, totalLED);
+      }
+  }
+    
     return findStartPos();
   }
 

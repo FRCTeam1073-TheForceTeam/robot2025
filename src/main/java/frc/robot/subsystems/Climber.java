@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase
   private double commandedVelocity = 0;
   private boolean brakeMode = true;
 
-  public final double minPosition = -0.28;
+  public final double minPosition = -0.31;
   public final double maxPosition = 0.4;
 
 
@@ -57,10 +57,10 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic() 
   {
-    velocity = motor.getVelocity().refresh().getValueAsDouble(); 
-    position = motor.getPosition().refresh().getValueAsDouble();
-    load = motor.getTorqueCurrent().refresh().getValueAsDouble();
-    absolutePosition = encoder.getAbsolutePosition().refresh().getValueAsDouble();
+    velocity = motor.getVelocity().getValueAsDouble(); 
+    position = motor.getPosition().getValueAsDouble();
+    load = motor.getTorqueCurrent().getValueAsDouble();
+    absolutePosition = encoder.getAbsolutePosition().getValueAsDouble();
     if(absolutePosition > maxPosition && commandedVelocity > 0){
       commandedVelocity = 0;
     }
@@ -69,9 +69,9 @@ public class Climber extends SubsystemBase
     }
     motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
-    SmartDashboard.putNumber("[CLIMBER] commanded velocity",commandedVelocity);
-    SmartDashboard.putNumber("[CLIMBER] velocity",velocity);
-    SmartDashboard.putNumber("[CLIMBER] absolute position", absolutePosition);
+    SmartDashboard.putNumber("Climber/Commanded velocity",commandedVelocity);
+    SmartDashboard.putNumber("Climber/Velocity",velocity);
+    SmartDashboard.putNumber("Climber/Absolute position", absolutePosition);
   }
 
   public void setCommandedVelocity(double velocity)
@@ -97,6 +97,18 @@ public class Climber extends SubsystemBase
   public double getEncoderPosition()
   {
     return absolutePosition;
+  }
+
+  public boolean getIsAtZero(){
+    return Math.abs(getEncoderPosition()) < 0.01;
+  }
+
+  public boolean getIsDisengaged(){
+    return Math.abs(getEncoderPosition() - maxPosition) < 0.04;
+  }
+
+  public boolean getIsEngaged(){
+    return Math.abs(getEncoderPosition() - minPosition) < 0.01;
   }
 
   public double getMinPosition(){

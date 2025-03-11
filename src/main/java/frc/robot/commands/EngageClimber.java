@@ -27,7 +27,7 @@ public class EngageClimber extends Command
   @Override
   public void execute() 
   {
-    climber.setCommandedVelocity(-10);
+    climber.setCommandedVelocity(-20);
   }
 
   @Override

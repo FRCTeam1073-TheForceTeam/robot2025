@@ -39,15 +39,15 @@ public class CoralElevator extends SubsystemBase {
   private final double velocityKA = 0.01;
 
   private final double positionKP = 0.2;
-  private final double positionKG = 0.1; //gravity
+  private final double positionKG = 0.15; //gravity
   private final double positionKD = 0.03;
-  private final double positionKI = 0.15;
+  private final double positionKI = 0.18;
   private final double positionKV = 0.12; 
   private final double positionKA = 0.0;
-  private final double positionKS = 0.1;
+  private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 44.0;
+  private final double maxPosition = 44.75;
 
 
   private double position;
@@ -88,8 +88,8 @@ public class CoralElevator extends SubsystemBase {
 
     // This method will be called once per scheduler run
     // TODO: Need to use scale factors from ratio, etc. units need to be meters.
-    velocity = frontElevatorMotor.getVelocity().refresh().getValueAsDouble();
-    position = frontElevatorMotor.getPosition().refresh().getValueAsDouble();
+    velocity = frontElevatorMotor.getVelocity().getValueAsDouble();
+    position = frontElevatorMotor.getPosition().getValueAsDouble();
 
     frontLoad = frontElevatorMotor.getTorqueCurrent().getValueAsDouble();
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
@@ -113,13 +113,13 @@ public class CoralElevator extends SubsystemBase {
       frontElevatorMotor.setControl(frontPositionController.withPosition(commandedPosition).withSlot(1));
     }
 
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] at zero", isAtZero);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] brake mode", brakemode);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] position", position);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] velocity", velocity);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] commanded velocity", commandedVelocity);
-    SmartDashboard.putBoolean("[CORAL ELEVATOR] hit hardstop", hitHardStop);
-    SmartDashboard.putNumber("[CORAL ELEVATOR] load", load);
+    SmartDashboard.putBoolean("Coral Elevator/At zero", isAtZero);
+    SmartDashboard.putBoolean("Coral Elevator/Brake mode", brakemode);
+    SmartDashboard.putNumber("Coral Elevator/Position", position);
+    SmartDashboard.putNumber("Coral Elevator/Velocity", velocity);
+    SmartDashboard.putNumber("Coral Elevator/Commanded velocity", commandedVelocity);
+    SmartDashboard.putBoolean("Coral Elevator/Hit hardstop", hitHardStop);
+    SmartDashboard.putNumber("Coral Elevator/Load", load);
   }
 
   public double getPosition(){// where motor is
@@ -200,9 +200,16 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorClosedLoop1Config.withKS(positionKS);
     frontElevatorMotorClosedLoop1Config.withKG(positionKG);
 
+    frontElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(30)
+        .withSupplyCurrentLowerTime(0.25);
     frontElevatorMotor.getConfigurator().apply(frontElevatorMotorConfig, 0.5);
 
+
     var backElevatorMotorConfig = new TalonFXConfiguration();
+    backElevatorMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(30)
+        .withSupplyCurrentLowerTime(0.25);
     backElevatorMotor.getConfigurator().apply(backElevatorMotorConfig, 0.5);
      // Same config as other motor to start.
 
@@ -210,13 +217,13 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     backElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-    frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                            .withSupplyCurrentLimit(25)
-                            .withSupplyCurrentLowerTime(0.25);
+    // CurrentLimitsConfigs frontElevatorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    // frontElevatorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+    //                         .withSupplyCurrentLimit(25)
+    //                         .withSupplyCurrentLowerTime(0.25);
 
-    frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
-    backElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
+    // frontElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
+    // backElevatorMotor.getConfigurator().apply(frontElevatorCurrentLimitsConfigs);
 
     backElevatorMotor.setControl(new Follower(frontElevatorMotor.getDeviceID(), true));
 

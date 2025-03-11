@@ -24,15 +24,15 @@ public class AutoRightStart
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-                return RightScoreL1.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+                return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 1);
             case 2:
-                return RightScoreL2.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+                return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
             case 3:
-                return RightScoreL3.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+                return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
             case 4:
-                return RightScoreL4.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar);
+                return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
-                return RightScore2L4.create(isRed, drivetrain, map, localizer, endEffector, elevator);
+                return RightScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, 4);
             default:
                 return new WaitCommand(0);
         }

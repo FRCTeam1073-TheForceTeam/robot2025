@@ -47,7 +47,7 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 44.75;
+  private final double maxPosition = 1.92;
 
 
   private double position;
@@ -103,7 +103,7 @@ public class CoralElevator extends SubsystemBase {
       if (commandedVelocity < 0.0) commandedVelocity = 0.0; // Velocity hard-limit at bottom of travel can only go up from here.
     }
 
-    if (position > maxPosition && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
+    if (position > getEncoderUnits(maxPosition) && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
 
     if(velocityMode) {
       frontElevatorMotor.setControl(frontElevatorMotorVelocityVoltage.withVelocity(commandedVelocity).withSlot(0));
@@ -146,7 +146,7 @@ public class CoralElevator extends SubsystemBase {
   public void setPosition(double position) {
     //this method is for mode control to hold motor positions
     velocityMode = false;
-    commandedPosition = getEncoderUnits(position);
+    commandedPosition = getEncoderUnits(position); //position in meters commanded position in encoder units
   }
 
   public boolean isCoralElevatorAtBottom(){

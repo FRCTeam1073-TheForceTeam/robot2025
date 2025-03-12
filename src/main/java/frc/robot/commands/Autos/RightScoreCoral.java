@@ -53,22 +53,22 @@ public class RightScoreCoral
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
         Point tag9 = new Point(tag9Pose.getX(), tag9Pose.getY());
-        tag9.blend_radius = AutoConstants.blendRaidus;
+        tag9.blend_radius = AutoConstants.blendRadius;
         Point tag9Approach = new Point(tag9ApproachPose.getX(), tag9ApproachPose.getY());
-        tag9Approach.blend_radius = AutoConstants.blendRaidus;
+        tag9Approach.blend_radius = AutoConstants.blendRadius;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
-        redI1.blend_radius = AutoConstants.blendRaidus;
+        redI1.blend_radius = AutoConstants.blendRadius;
         Point tag2 = new Point(tag2Pose.getX(), tag2Pose.getY());
-        tag2.blend_radius = AutoConstants.blendRaidus;
+        tag2.blend_radius = AutoConstants.blendRadius;
 
         Point tag22 = new Point(tag22Pose.getX(), tag22Pose.getY());
-        tag22.blend_radius = AutoConstants.blendRaidus;
+        tag22.blend_radius = AutoConstants.blendRadius;
         Point tag22Approach = new Point(tag22ApproachPose.getX(), tag22ApproachPose.getY());
-        tag22Approach.blend_radius = AutoConstants.blendRaidus;
+        tag22Approach.blend_radius = AutoConstants.blendRadius;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
-        blueI1.blend_radius = AutoConstants.blendRaidus;
+        blueI1.blend_radius = AutoConstants.blendRadius;
         Point tag12 = new Point(tag12Pose.getX(), tag12Pose.getY());
-        tag12.blend_radius = AutoConstants.blendRaidus;
+        tag12.blend_radius = AutoConstants.blendRadius;
 
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();

@@ -6,7 +6,7 @@ public class AutoConstants {
     public static final double scoreApproachOffsetX = 0.75;
 
 
-    public static final double blendRaidus = 0.15;
+    public static final double blendRadius = 0.15;
 
     // Loading X offset from tag.
     public static final double loadOffsetX = 0.33;

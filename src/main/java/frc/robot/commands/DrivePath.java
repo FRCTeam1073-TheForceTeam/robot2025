@@ -127,14 +127,14 @@ public class DrivePath extends Command
     if (currentSegmentIndex >= path.segments.size() - 1)
     {
       // Last point is meant to be a bit different:
-      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX()) + 0.3 * pathFeedback.velocity.get(0,0);
-      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY()) + 0.3 * pathFeedback.velocity.get(1,0);
+      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX());
+      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY());
       thetaVelocity = thetaController.calculate(robotPose.getRotation().getRadians(), path.finalOrientation);
     }
     else
     {
-      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX()) + 0.3 * pathFeedback.velocity.get(0,0);
-      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY()) + 0.3 * pathFeedback.velocity.get(1,0);
+      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX());
+      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY());
       thetaVelocity = thetaController.calculate(robotPose.getRotation().getRadians(), path.getPathOrientation(currentSegmentIndex, robotPose)); 
     }
     

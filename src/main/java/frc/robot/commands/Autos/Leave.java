@@ -33,7 +33,7 @@ public class Leave
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point end = new Point(localizer.getPose().getX() + 1.0 * allianceSign, localizer.getPose().getY());
-        end.blend_radius = AutoConstants.blendRaidus;
+        end.blend_radius = AutoConstants.blendRadius;
 
         ArrayList<Segment> segments = new ArrayList<Segment>();
 

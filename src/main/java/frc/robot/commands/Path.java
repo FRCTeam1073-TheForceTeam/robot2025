@@ -1,7 +1,6 @@
 
 package frc.robot.commands;
 import java.util.ArrayList;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -96,14 +95,10 @@ public class Path
     public static class PathFeedback {
         Vector<N2> velocity;
         Pose2d pose;
-        double orientation_weight = 1.0;
-        double translation_weight = 1.0;
 
-        public PathFeedback(Vector<N2> velocity, Pose2d pose, double ow, double tw) {
+        public PathFeedback(Vector<N2> velocity, Pose2d pose) {
             this.velocity = velocity;
             this.pose = pose;
-            this.orientation_weight = ow;
-            this.translation_weight = tw;
         }
     }
 
@@ -145,7 +140,7 @@ public class Path
      * @param projection - Output of closest point on the segment if non-null.
      * @return
      */
-    public double distanceToSegment(Vector<N2> start, Vector<N2> end, Vector<N2> p, Vector<N2> projection) {
+    public double distanceToSegment(Vector<N2> start, Vector<N2> end, Vector<N2> p, Vector<N2> projection, Vector<N2> direction) {
         double length = end.minus(start).norm();
 
         if (length < 0.001)  
@@ -154,6 +149,11 @@ public class Path
                 // Degenerate case the projection point is basically at "start".
                 projection.set(0,0, start.get(0,0));
                 projection.set(1,0,start.get(1,0));
+            }
+            if (direction != null)
+            {
+                direction.set(0,0, start.get(0,0));
+                direction.set(1,0,start.get(1,0));
             }
             return (p.minus(start)).norm(); // Degenerate case
         } 
@@ -174,6 +174,12 @@ public class Path
             {
                 projection.set(0,0,proj.get(0,0));
                 projection.set(1,0, proj.get(1,0));
+            }
+            if (direction != null)
+            {
+                var tempD = dir.unit();
+                direction.set(0, 0, tempD.get(0, 0));
+                direction.set(1, 0, tempD.get(1, 0));
             }
             return p.minus(proj).norm();
         }
@@ -199,7 +205,7 @@ public class Path
         for (int segmentIndex = 0; segmentIndex < segments.size(); ++segmentIndex) {
             Segment seg = segments.get(segmentIndex);
 
-            double segDist = distanceToSegment(seg.start.position, seg.end.position, pos, null);
+            double segDist = distanceToSegment(seg.start.position, seg.end.position, pos, null, null);
             if (segDist < closestDistance) {
                 closestIndex = segmentIndex;
                 closestDistance = segDist;
@@ -231,41 +237,44 @@ public class Path
         // Scale the response based on how close we are to the path. If we are far
         // we don't go along path, if we are close we go along the path.
         Vector<N2> path_pos = new Vector<N2>(N2.instance);
+        Vector<N2> path_dir = new Vector<N2>(N2.instance);
         // Compute projection of current position onto path segment and the offset from the path segment.
-        double path_offset = distanceToSegment(seg.start.position, seg.end.position, pos, path_pos);
+        double path_offset = distanceToSegment(seg.start.position, seg.end.position, pos, path_pos, path_dir);
         SmartDashboard.putNumber("Path/path_offset", path_offset);
 
         if (path_offset < seg.width) 
         {
             proportion = path_offset / seg.width; /// 0 when we're dead-on, 1 when were at the offset.
             // Drive along the path and towards the path in proportion to error:
-            Vp = (path_pos.minus(pos).times(proportion * transverseVelocity)).plus(seg.dir.times((1.0 - proportion) * seg.velocity));
+            Vp = path_dir.times(proportion * seg.velocity);
             SmartDashboard.putNumber("Path/proportion", proportion);
         } 
         else
         {
-            proportion = -1;
+            proportion = 0;
             SmartDashboard.putNumber("Path/proportion", proportion);
             // Drive only toward the path to get back on it.
-            Vp = path_pos.minus(pos).div(path_offset).times(transverseVelocity);
+            // Vp = path_pos.minus(pos).div(path_offset).times(transverseVelocity);
+            Vp.fill(0);
         }
 
         // Set our leading position
         
         // Compute leading position by moving along path direction 0.5 second from closest.
-        Vector<N2> pp = path_pos.plus(seg.dir.times(0.5*seg.velocity)); // 1/2 second ahead of projected point.
+        // Vector<N2> pp = path_pos.plus(seg.dir.times(0.5*seg.velocity)); // 1/2 second ahead of projected point.
+        Vector<N2> pp = path_pos.plus(Vp.times(0.02));
 
         // TODO: What does this even do?
-        pp.set(0,0,pp.get(0,0));
-        pp.set(1,0,pp.get(1,0));   
+        // pp.set(0,0,pp.get(0,0));
+        // pp.set(1,0,pp.get(1,0));   
         
         // Project the computed position onto the path segment as well to stay on segment and hit endpoints exactly.
         Vector<N2> ppp = new Vector<N2>(N2.instance);  /// projected path position point.
-        double notused = distanceToSegment(seg.start.position, seg.end.position, pp, ppp); // Clamps ppp to be on segment versuib of pp
+        distanceToSegment(seg.start.position, seg.end.position, pp, ppp, null); // Clamps ppp to be on segment versuib of pp
 
         Pose2d pathPoint = new Pose2d(new Translation2d(ppp.get(0, 0), ppp.get(1, 0)), new Rotation2d(seg.orientation));
 
-        return new PathFeedback(Vp, pathPoint, seg.orientation_weight, seg.translation_weight);
+        return new PathFeedback(Vp, pathPoint);
     }
 
     /**

@@ -188,9 +188,9 @@ public class OI extends SubsystemBase
     return (driverController.getPOV() == 90);
   }
 
-  public boolean getDriverPaddles()
+  public boolean getDriverAlignButtons()
   {
-    return getDriverAButton() || getDriverBButton() || getDriverXButton() || getDriverYButton();
+    return getDriverAButton() || getDriverViewButton() || getDriverXButton() || getDriverYButton();
   }
 
   public boolean getDriverLeftJoystickPress(){

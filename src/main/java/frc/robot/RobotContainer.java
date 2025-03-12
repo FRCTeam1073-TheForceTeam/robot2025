@@ -183,11 +183,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
-
-    Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
+    
+    Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
       alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
+    Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
     /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);

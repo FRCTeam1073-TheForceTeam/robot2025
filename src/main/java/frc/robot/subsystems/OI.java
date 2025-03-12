@@ -7,10 +7,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+// Free drive controller buttons: press left joystick, press right joystick
+// Free operator controller buttons: Right joystick y, left joystick x, right joystick x
+// Index of Buttons: 
 public class OI extends SubsystemBase
 {
   // Declares our controller variable
@@ -112,12 +115,6 @@ public class OI extends SubsystemBase
     return getDriverRightX();
   }
 
-  /** Returns a specified button from the driver controller */
-  public boolean getDriverRawButton(int i) 
-  {
-    return driverController.getRawButton(i);
-  }
-
   public double getDriverRightTrigger()
   {
     return driverController.getRawAxis(3);
@@ -128,11 +125,6 @@ public class OI extends SubsystemBase
     return driverController.getRawAxis(2);
   }
 
-  // public boolean getFieldCentricToggle()
-  // {
-  //   return fieldCentricDebouncer.calculate(driverController.getRawButton(7));
-  // }
-
   public boolean getDriverLeftBumper(){
     return parkingBrakeDebouncer.calculate(driverController.getRawButton(5));
   }
@@ -141,31 +133,41 @@ public class OI extends SubsystemBase
     return fieldCentricDebouncer.calculate(driverController.getRawButton(6));
   }
 
-  public boolean getDriverMenuButton(){
-    return menuDriverButtonDebouncer.calculate(driverController.getRawButton(8));
+  /** Returns a specified button from the driver controller */
+  public boolean getDriverRawButton(int i) 
+  {
+    return driverController.getRawButton(i);
   }
+
+  // public boolean getFieldCentricToggle()
+  // {
+  //   return fieldCentricDebouncer.calculate(driverController.getRawButton(7));
+  // }
 
   public boolean getDriverAButton(){
     return aDriverButtonDebouncer.calculate(driverController.getRawButton(1));
-  }
-
-  public boolean getDriverViewButton(){
-    return viewDriverButtonDebouncer.calculate(driverController.getRawButton(7));
   }
 
   public boolean getDriverBButton(){
     return bDriverButtonDebouncer.calculate(driverController.getRawButton(2));
   }
 
-  public boolean getDriverYButton()
-  {
-    
-    return yDriverButtonDebouncer.calculate(driverController.getRawButton(4));
-  }
-
   public boolean getDriverXButton()
   {
     return xDriverButtonDebouncer.calculate(driverController.getRawButton(3));
+  }
+
+  public boolean getDriverYButton()
+  {
+    return yDriverButtonDebouncer.calculate(driverController.getRawButton(4));
+  }
+
+  public boolean getDriverMenuButton(){
+    return menuDriverButtonDebouncer.calculate(driverController.getRawButton(8));
+  }
+
+  public boolean getDriverViewButton(){
+    return viewDriverButtonDebouncer.calculate(driverController.getRawButton(7));
   }
 
   public boolean getDriverDPadUp()
@@ -195,6 +197,14 @@ public class OI extends SubsystemBase
 
   public boolean getDriverLeftJoystickPress(){
     return getDriverRawButton(9);
+  }
+
+  public static void rumble() {
+    OI.driverController.setRumble(RumbleType.kBothRumble, 1);
+  }
+
+  public static void stopRumble() {
+    OI.driverController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void zeroOperatorController() {
@@ -239,6 +249,14 @@ public class OI extends SubsystemBase
     return -1.0 * MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
   }
 
+  public boolean getOperatorRightBumper(){
+    return getOperatorRawButton(6);
+  }
+
+  public boolean getOperatorLeftBumper(){
+    return getOperatorRawButton(5);
+  }
+
   /** Returns a specified button from the operator controller */
   public boolean getOperatorRawButton(int i) {
     return operatorController.getRawButton(i);
@@ -248,6 +266,10 @@ public class OI extends SubsystemBase
     return getOperatorRawButton(1);
   }
 
+  public boolean getOperatorBButton(){
+    return getOperatorRawButton(2);
+  }
+
   public boolean getOperatorXButton(){
     return getOperatorRawButton(3);
   }
@@ -255,14 +277,6 @@ public class OI extends SubsystemBase
   public boolean getOperatorYButton(){
     return getOperatorRawButton(4);
   }
-
-  public boolean getOperatorBButton(){
-    return getOperatorRawButton(2);
-  }
-/* 
-  public double getOperatorRightTrigger(){
-    return MathUtil.clamp(operatorController.getRawAxis(3), 0, 1);
-  }*/
 
   public double getOperatorRightTrigger(){
     return MathUtil.clamp( operatorController.getRawAxis(3), 0, 1);
@@ -279,14 +293,6 @@ public class OI extends SubsystemBase
   public boolean getOperatorMenuButton() {
     return menuOperatorButtonDebouncer.calculate(operatorController.getRawButton(8));
 
-  }
-
-  public boolean getOperatorRightBumper(){
-    return getOperatorRawButton(6);
-  }
-
-  public boolean getOperatorLeftBumper(){
-    return getOperatorRawButton(5);
   }
 
   public boolean getOperatorDPadUp(){

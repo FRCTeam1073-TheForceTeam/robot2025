@@ -48,7 +48,7 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.Rumbler;
+// import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -66,7 +66,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final Rumbler m_rumbler = new Rumbler(m_drivetrain);
+  // private final Rumbler m_rumbler = new Rumbler(m_drivetrain);
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);

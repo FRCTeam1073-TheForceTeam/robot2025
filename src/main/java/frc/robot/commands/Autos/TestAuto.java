@@ -2,22 +2,25 @@ package frc.robot.commands.Autos;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.Path;
 import frc.robot.commands.Path.*;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 
 public class TestAuto 
 {
-    public static Command create(Drivetrain drivetrain, Localizer localizer)
+    public static Command create(Drivetrain drivetrain, Localizer localizer, FieldMap map)
     {
-        Point start = new Point(10, 6);
-        Point point1 = new Point(15.1, 7); 
-        Point point2 = new Point(15, 2);
-        Point point3 = new Point(11, 2);
+        Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
+        Point point1 = new Point(map.getTagRelativePose(20, 0, new Transform2d(2, 0, new Rotation2d())).getX(), map.getTagRelativePose(20, 0, new Transform2d(2, 0, new Rotation2d())).getY()); 
+        Point point2 = new Point(map.getTagRelativePose(18, 0, new Transform2d(2, 0, new Rotation2d())).getX(), map.getTagRelativePose(18, 0, new Transform2d(2, 0, new Rotation2d())).getY());
+        Point point3 = new Point(map.getTagRelativePose(22, 0, new Transform2d(2, 0, new Rotation2d())).getX(), map.getTagRelativePose(22, 0, new Transform2d(2, 0, new Rotation2d())).getY());
 
         ArrayList<Segment> segments = new ArrayList<Segment>();
         segments.add(new Segment(start, point1, 0, 2));

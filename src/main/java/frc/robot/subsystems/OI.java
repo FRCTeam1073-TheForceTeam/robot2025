@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Free drive controller buttons: press left joystick, press right joystick
 // Free operator controller buttons: Right joystick y, left joystick x, right joystick x
-// Index of Buttons: 
+
 public class OI extends SubsystemBase
 {
   public enum BUTTONS{

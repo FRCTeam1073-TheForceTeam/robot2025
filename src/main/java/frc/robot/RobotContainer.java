@@ -48,7 +48,6 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-// import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange

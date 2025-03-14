@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -246,7 +245,7 @@ public class Path
         {
             proportion = path_offset / seg.width; /// 0 when we're dead-on, 1 when were at the offset.
             // Drive along the path and towards the path in proportion to error:
-            Vp = path_dir.times(proportion * seg.velocity);
+            Vp = path_dir.times((1.0 - proportion) * seg.velocity);
             SmartDashboard.putNumber("Path/proportion", proportion);
         } 
         else
@@ -262,7 +261,7 @@ public class Path
         
         // Compute leading position by moving along path direction 0.5 second from closest.
         // Vector<N2> pp = path_pos.plus(seg.dir.times(0.5*seg.velocity)); // 1/2 second ahead of projected point.
-        Vector<N2> pp = path_pos.plus(Vp.times(0.02));
+        Vector<N2> pp = path_pos.plus(Vp.times(0.2));
 
         // TODO: What does this even do?
         // pp.set(0,0,pp.get(0,0));
@@ -272,7 +271,10 @@ public class Path
         Vector<N2> ppp = new Vector<N2>(N2.instance);  /// projected path position point.
         distanceToSegment(seg.start.position, seg.end.position, pp, ppp, null); // Clamps ppp to be on segment versuib of pp
 
-        Pose2d pathPoint = new Pose2d(new Translation2d(ppp.get(0, 0), ppp.get(1, 0)), new Rotation2d(seg.orientation));
+        Pose2d pathPoint = new Pose2d(ppp.get(0, 0), ppp.get(1, 0), new Rotation2d(seg.orientation));
+
+        SmartDashboard.putNumber("Path/ProjectionX", ppp.get(0, 0));
+        SmartDashboard.putNumber("Path/ProjectionY", ppp.get(1, 0));
 
         return new PathFeedback(Vp, pathPoint);
     }

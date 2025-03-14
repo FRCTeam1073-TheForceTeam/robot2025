@@ -4,19 +4,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.SwerveModule;
 
 public class TeleopDrive extends Command 
 {
@@ -51,6 +52,19 @@ public class TeleopDrive extends Command
   private double vy;
   private double w;
   private double allianceSign = 1; // this is handled by setting the odometry orientation for each alliance
+  private SwerveModule fL;
+  private SwerveModule fR;
+  private SwerveModule bL;
+  private SwerveModule bR;
+
+  double frontLeftTorque;
+  double frontRightTorque;
+  double backLeftTorque;
+  double backRightTorque;
+  double avgTorque;
+
+  double torqueGate = 50; 
+
 
 
   /** Creates a new Teleop. */
@@ -68,6 +82,12 @@ public class TeleopDrive extends Command
     aprilTagFinder = finder;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
+
+    this.drivetrain = drivetrain;
+    this.fL =  drivetrain.getModules()[0];
+    this.fR = drivetrain.getModules()[1];
+    this.bL = drivetrain.getModules()[2];
+    this.bR = drivetrain.getModules()[3];
   }
 
   // Called when the command is initially scheduled.
@@ -173,7 +193,25 @@ public class TeleopDrive extends Command
         }
         drivetrain.setTargetChassisSpeeds(creepSpeeds);
 
-      } 
+      }
+      
+      //get the absolute value of the load from the drive motors
+      frontLeftTorque = fL.getLoad();
+      frontRightTorque = fR.getLoad();
+      backLeftTorque = bL.getLoad();
+      backRightTorque = bL.getLoad();
+
+      avgTorque = (frontLeftTorque + frontRightTorque + backLeftTorque + backRightTorque) / 4;
+
+      //if above the torque gate rumble the contorller
+      if(avgTorque >= torqueGate) {
+        m_OI.rumble();
+      }
+      else if(avgTorque < torqueGate) {
+       m_OI.stopRumble();
+      }
+
+      SmartDashboard.putNumber("Avg Torque", avgTorque);
     }
 
     

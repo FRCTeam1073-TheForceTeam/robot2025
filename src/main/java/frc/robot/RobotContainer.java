@@ -48,7 +48,6 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -66,7 +65,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final Rumbler m_rumbler = new Rumbler(m_drivetrain);
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -183,11 +181,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
-
-    Trigger alignToTag = new Trigger(m_OI::getDriverPaddles);
+    
+    Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
       alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverViewButton);
+    Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
     /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);

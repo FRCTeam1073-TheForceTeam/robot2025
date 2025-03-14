@@ -65,7 +65,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  // private final Rumbler m_rumbler = new Rumbler(m_drivetrain);
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);

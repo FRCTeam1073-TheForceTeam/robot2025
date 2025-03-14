@@ -20,8 +20,7 @@ public class OI extends SubsystemBase
     A(1),
     B(2),
     X(3),
-    Y(4),
-    //TODO Fix Joysticks
+    Y(4), 
     LeftJoystickY(1),
     LeftJoystickX(0),
     RightJoystickY(5),
@@ -34,8 +33,7 @@ public class OI extends SubsystemBase
     // DPadDown,
     // DPadRight,
     LeftBumper(5),
-    RightBumper(6),
-    //TODO Fix Triggers
+    RightBumper(6), 
     LeftTrigger(2),
     RightTrigger(3),
     ViewButton(7),
@@ -173,11 +171,6 @@ public class OI extends SubsystemBase
   {
     return driverController.getRawButton(i);
   }
-
-  // public boolean getFieldCentricToggle()
-  // {
-  //   return fieldCentricDebouncer.calculate(driverController.getRawButton(7));
-  // }
 
   public boolean getDriverAButton(){
     return aDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.A.getButtonVal()));

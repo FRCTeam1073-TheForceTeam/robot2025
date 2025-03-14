@@ -100,7 +100,7 @@ public class Climber extends SubsystemBase
   }
 
   public boolean getIsAtZero(){
-    return Math.abs(getEncoderPosition()) < 0.01;
+    return Math.abs(getEncoderPosition()) < 0.05;
   }
 
   public boolean getIsDisengaged(){

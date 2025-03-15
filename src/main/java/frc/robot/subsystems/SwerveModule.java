@@ -50,6 +50,7 @@ public class SwerveModule extends SubsystemBase implements Sendable
     private double targetSteerRotations = 0.0;
     private double targetDriveVelocity = 0.0;
     private double targetDriveVelocityRotations = 0.0;
+    private double steerVelocity;
     private final String kCANbus = "CANivore";
 
 
@@ -151,12 +152,18 @@ public class SwerveModule extends SubsystemBase implements Sendable
         // /* Azimuth turn rate multiplied by coupling ratio provides back-out rps */
         // double driveRateBackOut = azimuthTurnRps * m_couplingRatioDriveRotorToCANcoder;
         // velocityToSet -= driveRateBackOut;
+        
+        //alpha is a multilier based on the speed of steer velocity to offset the coupling in the wheel speed when turning
+        double alpha = 0.25;
+        // //multiply the alpha and steer velocity and then add it to drive velocity in order to offset
+        double driveOffset = getSteerVelocity() * alpha;
+        driveVelocity += driveOffset;
 
         setDriveVelocity(driveVelocity);
         setSteerRotations(steerRotations);
     }
 
-    // Sets the velocity for the drive motors in meters per second.
+    // Sets the velocity for the drive motor(s in meters per second.
     public void setDriveVelocity(double driveVelocity)
     {
         //line below is Debug only
@@ -342,5 +349,10 @@ public class SwerveModule extends SubsystemBase implements Sendable
 
     public double getLoad() {
         return Math.abs(driveMotor.getTorqueCurrent(true).getValueAsDouble());
+    }
+
+    public double getSteerVelocity(){
+        steerEncoder.getVelocity().refresh();
+        return steerEncoder.getVelocity().getValueAsDouble();
     }
 }

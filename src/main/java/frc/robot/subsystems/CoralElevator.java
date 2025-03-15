@@ -48,6 +48,7 @@ public class CoralElevator extends SubsystemBase {
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 1.92;
+  private final double minPosition = 0.3467; //WINDHAM
 
 
   private double position;
@@ -101,6 +102,9 @@ public class CoralElevator extends SubsystemBase {
     if (isAtZero){
       setZero();
       if (commandedVelocity < 0.0) commandedVelocity = 0.0; // Velocity hard-limit at bottom of travel can only go up from here.
+      if(commandedPosition <= minPosition){
+        commandedPosition = position;
+      }
     }
 
     if (position > getEncoderUnits(maxPosition) && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
@@ -160,10 +164,6 @@ public class CoralElevator extends SubsystemBase {
 
   public boolean getBrakeMode(){
     return brakemode;
-  }
-
-  public boolean getIsAtZero(){
-    return isAtZero;
   }
 
   public double getMeters() {

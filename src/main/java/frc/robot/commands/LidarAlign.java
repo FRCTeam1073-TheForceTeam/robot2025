@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Lidar;
@@ -25,13 +27,16 @@ public class LidarAlign extends Command {
   int sign = 0;
   PIDController thetaController;
   PIDController xController;
+  LinearFilter filter;
+  double angleOffset = (-2.0 * Math.PI)/180;
   
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(1.7, 0, 0.01);
-    xController = new PIDController(1.7, 0, 0.01);
+    thetaController = new PIDController(1.9, 0, 0.01);
+    xController = new PIDController(1, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
+    filter = LinearFilter.singlePoleIIR(0.1, 0.02);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -47,22 +52,23 @@ public class LidarAlign extends Command {
   @Override
   public void execute() {
 
-    angleToRotate = -Math.atan(lidar.getSlope());
+    angleToRotate = filter.calculate(-Math.atan(lidar.getSlope()));
 
     vx = -xController.calculate(lidar.getAvgX(), 0.4);
 
-    vx = MathUtil.clamp(vx, 0, 2);
-    thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
+    vx = MathUtil.clamp(vx, 0, 3);
+    thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate + angleOffset);
 
     if(thetaVelocity < 0){
-      thetaVelocity = MathUtil.clamp(thetaVelocity, -2, 0);
+      thetaVelocity = MathUtil.clamp(thetaVelocity, -3, 0);
     }
     else if(thetaVelocity > 0){
-      thetaVelocity = MathUtil.clamp(thetaVelocity, 0, 2);
+      thetaVelocity = MathUtil.clamp(thetaVelocity, 0, 3);
     }
     drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
+    SmartDashboard.putNumber("Lidar/Angle", angleToRotate + angleOffset);
 
-}
+  }
 
   // Called once the command ends or is interrupted.
   @Override

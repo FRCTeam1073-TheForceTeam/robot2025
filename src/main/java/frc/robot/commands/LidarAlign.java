@@ -33,7 +33,7 @@ public class LidarAlign extends Command {
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
     this.drivetrain = drivetrain;
-    thetaController = new PIDController(1.9, 0, 0.01);
+    thetaController = new PIDController(1.7, 0, 0.015);
     xController = new PIDController(1, 0, 0.01);
     thetaController.enableContinuousInput(-Math.PI/2, Math.PI/2);
     filter = LinearFilter.singlePoleIIR(0.1, 0.02);
@@ -56,7 +56,7 @@ public class LidarAlign extends Command {
 
     vx = -xController.calculate(lidar.getAvgX(), 0.4);
 
-    vx = MathUtil.clamp(vx, 0, 3);
+    vx = MathUtil.clamp(vx, 0, 2);
     thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate + angleOffset);
 
     if(thetaVelocity < 0){

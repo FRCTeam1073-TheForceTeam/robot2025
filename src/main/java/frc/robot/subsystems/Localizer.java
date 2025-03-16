@@ -201,7 +201,7 @@ public class Localizer extends SubsystemBase
     private boolean measurementStable()
     {
         double linearSpeed = Math.sqrt(Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2) + 
-                                    Math.pow(driveTrain.getChassisSpeeds().vxMetersPerSecond, 2));
+                                    Math.pow(driveTrain.getChassisSpeeds().vyMetersPerSecond, 2));
         double angularSpeed = Math.abs(driveTrain.getChassisSpeeds().omegaRadiansPerSecond);
         if (linearSpeed <= linearSpeedThreshold && angularSpeed <= angularSpeedThreshold)
         {

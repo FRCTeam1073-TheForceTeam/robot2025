@@ -55,18 +55,18 @@ public class RightScoreCoral
         Point tag9 = new Point(tag9Pose.getX(), tag9Pose.getY());
         tag9.blend_radius = AutoConstants.blendRadius;
         Point tag9Approach = new Point(tag9ApproachPose.getX(), tag9ApproachPose.getY());
-        tag9Approach.blend_radius = AutoConstants.blendRadius;
+        // tag9Approach.blend_radius = AutoConstants.blendRadius;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
-        redI1.blend_radius = AutoConstants.blendRadius;
+        // redI1.blend_radius = AutoConstants.blendRadius;
         Point tag2 = new Point(tag2Pose.getX(), tag2Pose.getY());
         tag2.blend_radius = AutoConstants.blendRadius;
 
         Point tag22 = new Point(tag22Pose.getX(), tag22Pose.getY());
         tag22.blend_radius = AutoConstants.blendRadius;
         Point tag22Approach = new Point(tag22ApproachPose.getX(), tag22ApproachPose.getY());
-        tag22Approach.blend_radius = AutoConstants.blendRadius;
+        // tag22Approach.blend_radius = AutoConstants.blendRadius;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
-        blueI1.blend_radius = AutoConstants.blendRadius;
+        // blueI1.blend_radius = AutoConstants.blendRadius;
         Point tag12 = new Point(tag12Pose.getX(), tag12Pose.getY());
         tag12.blend_radius = AutoConstants.blendRadius;
 
@@ -78,7 +78,7 @@ public class RightScoreCoral
 
         if (isRed)
         {
-            segments1.add(new Segment(start, tag9Approach, tag9Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(start, tag9Approach, tag9ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
             segments1.add(new Segment(tag9Approach, tag9, tag9Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag9, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
@@ -89,7 +89,7 @@ public class RightScoreCoral
         }
         else
         {
-            segments1.add(new Segment(start, tag22Approach, tag22Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(start, tag22Approach, tag22ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
             segments1.add(new Segment(tag22Approach, tag22, tag22Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag22, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));

@@ -117,7 +117,7 @@ public class AprilTagFinder extends SubsystemBase
   }
 
   public Transform3d getRobotToFLCam() {
-    return fCCamTransform3d;
+    return fLCamTransform3d;
   }
 
   public Transform3d getRobotToFCCam() {

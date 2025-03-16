@@ -69,7 +69,7 @@ public class CoralElevatorToHeight extends Command {
   @Override
   public boolean isFinished() {
     if(terminate) {
-      return Math.abs(elevator.getMeters() - targetHeight) < 0.361;
+      return Math.abs(elevator.getMeters() - targetHeight) < 0.02;
     }
     else {
       return false;

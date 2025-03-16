@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
-//import frc.robot.commands.CreepToReef;
+import frc.robot.commands.CreepToReef;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
@@ -77,7 +77,7 @@ public class CenterScoreCoralX
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(
-                                    //new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
+                                    new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
                                                             new ScoreCoral(endEffector),
                                                             new WaitCommand(0.5))),
             new WaitCommand(0.5),

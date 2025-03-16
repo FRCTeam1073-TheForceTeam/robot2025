@@ -109,6 +109,11 @@ public class CoralEndeffector extends SubsystemBase {
     
     }
     
+    // TODO: Update when openMV is implemented
+    public boolean getHasReef(){
+        return true;
+    }
+
     public void setCoralFed(boolean fed){
         coralFed = fed;
     }

@@ -44,12 +44,12 @@ public class CANdleObserver extends Command {
   @Override
   public void execute() {
     
-    // if (endeffector.getHasReef()){
-    //   candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
-    // }
-    // else{
-    //   candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
-    // }
+    if (endeffector.getHasReef()){
+      candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
+    }
+    else{
+      candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
+    }
 
     if (endeffector.getHasCoral()){
       candleControl.setRGB(255, 255, 255, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light on

@@ -31,7 +31,7 @@ public class CoralEndeffector extends SubsystemBase {
     private final double leftKV = 0.12; // Kraken.
 
     private final double minCoralDistance = 0.03;
-    private final double minReefDistance = 0.45;
+    private final double maxFedDistance = 0.1;
 
     private double velocity;
     private double position;
@@ -39,9 +39,11 @@ public class CoralEndeffector extends SubsystemBase {
     private double commandedVelocity;
     private double coralDistance;
     private boolean hasCoral = false;
+    private boolean coralFed = false;
+    private boolean lastCoralFed = false;
 
-    private double reefDistance;
-    private boolean hasReef = false;
+    private double funnelDistance;
+    private boolean ConfigurationFailedException = false;
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
@@ -83,21 +85,16 @@ public class CoralEndeffector extends SubsystemBase {
             hasCoral = false;
         }
 
-        // Read the reef sensor.
-        LaserCan.Measurement reef_measurement = laserCANReef.getMeasurement();
-        if (reef_measurement != null && reef_measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-            reefDistance = reef_measurement.distance_mm * 0.001; // mm's
-            if (reefDistance < minReefDistance){
-                hasReef = true;
+        // Read the funnel sensor.
+        // TODO: set to short range
+        LaserCan.Measurement funnel_measurement = laserCANReef.getMeasurement();
+        if (funnel_measurement != null && funnel_measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+            funnelDistance = funnel_measurement.distance_mm * 0.001; // mm's
+            if (funnelDistance > maxFedDistance && lastCoralFed){
+                coralFed = true;
             }
-            else {
-                hasReef = false;
-            }
-        } else {
-            reefDistance = 999.0;
-            hasReef = false;
+            lastCoralFed = funnelDistance <= maxFedDistance;
         }
-
         // Send motor command:
         motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
 
@@ -106,12 +103,21 @@ public class CoralEndeffector extends SubsystemBase {
         SmartDashboard.putNumber("Coral End Effector/ velocity", velocity);
         SmartDashboard.putNumber("Coral End Effector/command", commandedVelocity);
         SmartDashboard.putNumber("Coral End Effector/load", load);
-        SmartDashboard.putNumber("Coral End Effector/Reef Distance", reefDistance);
-        SmartDashboard.putBoolean("Coral End Effector/ Has Reef", hasReef);
+        SmartDashboard.putNumber("Coral End Effector/Reef Distance", funnelDistance);
+        SmartDashboard.putBoolean("Coral End Effector/Coral Fed", coralFed);
+        SmartDashboard.putBoolean("Coral End Effector/Last Coral Fed", lastCoralFed);
     
     }
     
-    
+    // TODO: Update when openMV is implemented
+    public boolean getHasReef(){
+        return true;
+    }
+
+    public void setCoralFed(boolean fed){
+        coralFed = fed;
+    }
+
     public double getPosition(){
         return position;
     }
@@ -137,12 +143,12 @@ public class CoralEndeffector extends SubsystemBase {
         return hasCoral;
     }
 
-    public double getReefDistance() {
-        return reefDistance;
+    public double getFunnelDistance() {
+        return funnelDistance;
     }
 
-    public boolean getHasReef() {
-        return hasReef;
+    public boolean getCoralFed() {
+        return coralFed;
     }
 
 

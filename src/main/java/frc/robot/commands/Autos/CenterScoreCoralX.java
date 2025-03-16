@@ -76,7 +76,8 @@ public class CenterScoreCoralX
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
-                                   new SequentialCommandGroup(new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
+                                   new SequentialCommandGroup(
+                                    new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
                                                             new ScoreCoral(endEffector),
                                                             new WaitCommand(0.5))),
             new WaitCommand(0.5),

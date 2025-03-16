@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class LoadCoral extends Command {
+public class AutoLoadCoral extends Command {
+  /** Creates a new AutoLoadCoral. */
   CoralEndeffector endeffector;
-  /** Creates a new LoadCoral. */
-  public LoadCoral(CoralEndeffector coralEndeffector) {
+  public AutoLoadCoral(CoralEndeffector coralEndeffector) {
     endeffector = coralEndeffector;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(endeffector);
+    addRequirements(coralEndeffector);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +24,12 @@ public class LoadCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(endeffector.getCoralFed() && !endeffector.getHasCoral()){
       endeffector.setVelocity(10);
+    }
+    else{
+      endeffector.setVelocity(0);
+    }
   }
 
   // Called once the command ends or is interrupted.

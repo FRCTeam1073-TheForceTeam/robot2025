@@ -32,21 +32,13 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | LaserCAN Reef         |  24    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
-| Collector Motor       |   ?    |   CANivore    |
-| Lift Motor            |   ?    |   CANivore    |
-| Extend Motor          |   ?    |   CANivore    |
-| Top Shooter Motor     |   ?    |   CANivore    |
-| Bottom Shooter Motor  |   ?    |   CANivore    |
-| Leader Feeder Motor   |   ?    |   CANivore    |
-| Follower Feeder Motor |   ?    |   CANivore    |
-| Pivot Motor           |   ?    |   CANivore    |
 
 ## Driver Controller
 
 |  Button/Joystick | Function/Command               |
 |------------------|--------------------------------|
 |A/P3              |AlignToTag Center               |
-|B/P1              |Align To Source                 |
+|B/P1              |Lidar Align                     |
 |X/P4              |AlignToTag Left                 |
 |Y/P2              |AlignToTag Right                |
 |LeftJoystick      |Translation                     |
@@ -61,7 +53,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightBumper       |Field-centric/robot-centric     |
 |LeftTrigger       |Increase speed                  |
 |RightTrigger      |Increase speed                  |
-|View Button       |Lidar Align                     |
+|View Button       |Align To Source                 |
 |Menu Button       |Local Align (temp)              |
 
 

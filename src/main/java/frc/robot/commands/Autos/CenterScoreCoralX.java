@@ -41,7 +41,7 @@ public class CenterScoreCoralX
             slot = -1;
         }
         Pose2d tag10Pose = map.getTagRelativePose(10, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, -0.05, new Rotation2d(Math.PI))); // -0.05 y offset is specific to week 2
+        Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI))); // -0.05 y offset is specific to week 2
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
         tag10.blend_radius = AutoConstants.blendRadius;

@@ -123,7 +123,7 @@ public class AlignToTag extends Command
     {
       slot = 1;
     }
-    else if (oi.getDriverBButton())
+    else if (oi.getDriverViewButton())
     {
       slot = 2;
     }

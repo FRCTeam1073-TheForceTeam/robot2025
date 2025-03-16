@@ -72,10 +72,10 @@ public class CANdleObserver extends Command {
       candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - blue
     }
     else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange //TODO: not working
+      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange
     }
     else if (climber.getIsAtZero()){
-      candleControl.setRGB(255, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple //TODO: not working
+      candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple
     }
     else{
       candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - grey

@@ -7,12 +7,48 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// Free drive controller buttons: press left joystick, press right joystick
+// Free operator controller buttons: Right joystick y, left joystick x, right joystick x
 
 public class OI extends SubsystemBase
 {
+  public enum BUTTONS{
+    A(1),
+    B(2),
+    X(3),
+    Y(4), 
+    LeftJoystickY(1),
+    LeftJoystickX(0),
+    RightJoystickY(5),
+    RightJoystickX(4),
+    LeftJoystickPress(9),
+    RightJoystickPress(10),
+    //TODO Fix DPad
+    // DPadUp(),
+    // DPadLeft,
+    // DPadDown,
+    // DPadRight,
+    LeftBumper(5),
+    RightBumper(6), 
+    LeftTrigger(2),
+    RightTrigger(3),
+    ViewButton(7),
+    MenuButton(8);
+
+    private int buttonValue;
+
+    BUTTONS(int buttonValue){
+      this.buttonValue = buttonValue;
+    }
+    public int getButtonVal(){
+      return buttonValue;
+    }
+  }
+
   // Declares our controller variable
   public static Joystick driverController;
   public static Joystick operatorController;
@@ -79,22 +115,22 @@ public class OI extends SubsystemBase
   public double getDriverLeftX() 
   {
     // "Clamping" the value makes sure that it's still between 1 and -1 even if we have added an offset to it
-    return MathUtil.clamp(driverController.getRawAxis(0) - LEFT_X_ZERO, -1, 1);
+    return MathUtil.clamp(driverController.getRawAxis(BUTTONS.LeftJoystickX.getButtonVal()) - LEFT_X_ZERO, -1, 1);
   }
 
   public double getDriverLeftY() 
   {
-    return MathUtil.clamp(driverController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
+    return MathUtil.clamp(driverController.getRawAxis(BUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getDriverRightX() 
   {
-    return MathUtil.clamp(driverController.getRawAxis(4) - RIGHT_X_ZERO, -1, 1);
+    return MathUtil.clamp(driverController.getRawAxis(BUTTONS.RightJoystickX.getButtonVal()) - RIGHT_X_ZERO, -1, 1);
   }
 
   public double getDriverRightY() 
   {
-    return MathUtil.clamp(driverController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
+    return MathUtil.clamp(driverController.getRawAxis(BUTTONS.RightJoystickY.getButtonVal()) - RIGHT_Y_ZERO, -1, 1);
   }
 
   public double getDriverTranslateX()
@@ -112,60 +148,54 @@ public class OI extends SubsystemBase
     return getDriverRightX();
   }
 
+  public double getDriverRightTrigger()
+  {
+    return driverController.getRawAxis(BUTTONS.RightTrigger.getButtonVal());
+  }
+
+  public double getDriverLeftTrigger()
+  {
+    return driverController.getRawAxis(BUTTONS.LeftTrigger.getButtonVal());
+  }
+
+  public boolean getDriverLeftBumper(){
+    return parkingBrakeDebouncer.calculate(driverController.getRawButton(BUTTONS.LeftBumper.getButtonVal()));
+  }
+
+  public boolean getDriverRightBumper(){
+    return fieldCentricDebouncer.calculate(driverController.getRawButton(BUTTONS.RightBumper.getButtonVal()));
+  }
+
   /** Returns a specified button from the driver controller */
   public boolean getDriverRawButton(int i) 
   {
     return driverController.getRawButton(i);
   }
 
-  public double getDriverRightTrigger()
-  {
-    return driverController.getRawAxis(3);
-  }
-
-  public double getDriverLeftTrigger()
-  {
-    return driverController.getRawAxis(2);
-  }
-
-  // public boolean getFieldCentricToggle()
-  // {
-  //   return fieldCentricDebouncer.calculate(driverController.getRawButton(7));
-  // }
-
-  public boolean getDriverLeftBumper(){
-    return parkingBrakeDebouncer.calculate(driverController.getRawButton(5));
-  }
-
-  public boolean getDriverRightBumper(){
-    return fieldCentricDebouncer.calculate(driverController.getRawButton(6));
-  }
-
-  public boolean getDriverMenuButton(){
-    return menuDriverButtonDebouncer.calculate(driverController.getRawButton(8));
-  }
-
   public boolean getDriverAButton(){
-    return aDriverButtonDebouncer.calculate(driverController.getRawButton(1));
-  }
-
-  public boolean getDriverViewButton(){
-    return viewDriverButtonDebouncer.calculate(driverController.getRawButton(7));
+    return aDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.A.getButtonVal()));
   }
 
   public boolean getDriverBButton(){
-    return bDriverButtonDebouncer.calculate(driverController.getRawButton(2));
-  }
-
-  public boolean getDriverYButton()
-  {
-    
-    return yDriverButtonDebouncer.calculate(driverController.getRawButton(4));
+    return bDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.B.getButtonVal()));
   }
 
   public boolean getDriverXButton()
   {
-    return xDriverButtonDebouncer.calculate(driverController.getRawButton(3));
+    return xDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.X.getButtonVal()));
+  }
+
+  public boolean getDriverYButton()
+  {
+    return yDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.Y.getButtonVal()));
+  }
+
+  public boolean getDriverMenuButton(){
+    return menuDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.MenuButton.getButtonVal()));
+  }
+
+  public boolean getDriverViewButton(){
+    return viewDriverButtonDebouncer.calculate(driverController.getRawButton(BUTTONS.ViewButton.getButtonVal()));
   }
 
   public boolean getDriverDPadUp()
@@ -188,13 +218,22 @@ public class OI extends SubsystemBase
     return (driverController.getPOV() == 90);
   }
 
-  public boolean getDriverPaddles()
+  //TODO William-What is this?????
+  public boolean getDriverAlignButtons()
   {
-    return getDriverAButton() || getDriverBButton() || getDriverXButton() || getDriverYButton();
+    return getDriverAButton() || getDriverViewButton() || getDriverXButton() || getDriverYButton();
   }
 
   public boolean getDriverLeftJoystickPress(){
-    return getDriverRawButton(9);
+    return getDriverRawButton(BUTTONS.LeftJoystickPress.getButtonVal());
+  }
+
+  public static void rumble() {
+    OI.driverController.setRumble(RumbleType.kBothRumble, 1);
+  }
+
+  public static void stopRumble() {
+    OI.driverController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void zeroOperatorController() {
@@ -211,32 +250,40 @@ public class OI extends SubsystemBase
 
   /** The following methods return quality-controlled values from the operator controller */
   public double getOperatorLeftX() {
-    if(Math.abs(operatorController.getRawAxis(0)) < 0.1){
+    if(Math.abs(operatorController.getRawAxis(BUTTONS.LeftJoystickX.getButtonVal())) < 0.1){
       return 0.0;
     }
     // "Clamping" the value makes sure that it's still between 1 and -1 even if we have added an offset to it
-    return MathUtil.clamp(operatorController.getRawAxis(0) - LEFT_X_ZERO, -1, 1);
+    return MathUtil.clamp(operatorController.getRawAxis(BUTTONS.LeftJoystickX.getButtonVal()) - LEFT_X_ZERO, -1, 1);
   }
 
   public double getOperatorLeftY() {
-    if(Math.abs(operatorController.getRawAxis(1)) < 0.1){
+    if(Math.abs(operatorController.getRawAxis(BUTTONS.LeftJoystickY.getButtonVal())) < 0.1){
       return 0.0;
     }
-    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(1) - LEFT_Y_ZERO, -1, 1);
+    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(BUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
   }
 
   public double getOperatorRightX() {
-    if(Math.abs(operatorController.getRawAxis(4)) < 0.1){
+    if(Math.abs(operatorController.getRawAxis(BUTTONS.RightJoystickX.getButtonVal())) < 0.1){
       return 0.0;
     }
-    return MathUtil.clamp(operatorController.getRawAxis(4) - RIGHT_X_ZERO, -1, 1);
+    return MathUtil.clamp(operatorController.getRawAxis(BUTTONS.RightJoystickX.getButtonVal()) - RIGHT_X_ZERO, -1, 1);
   }
 
   public double getOperatorRightY() {
-    if(Math.abs(operatorController.getRawAxis(5)) < 0.1){
+    if(Math.abs(operatorController.getRawAxis(BUTTONS.RightJoystickY.getButtonVal())) < 0.1){
       return 0.0;
     }
-    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(5) - RIGHT_Y_ZERO, -1, 1);
+    return -1.0 * MathUtil.clamp(operatorController.getRawAxis(BUTTONS.RightJoystickY.getButtonVal()) - RIGHT_Y_ZERO, -1, 1);
+  }
+
+  public boolean getOperatorRightBumper(){
+    return getOperatorRawButton(BUTTONS.RightBumper.getButtonVal());
+  }
+
+  public boolean getOperatorLeftBumper(){
+    return getOperatorRawButton(BUTTONS.LeftBumper.getButtonVal());
   }
 
   /** Returns a specified button from the operator controller */
@@ -245,48 +292,36 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorAButton(){
-    return getOperatorRawButton(1);
-  }
-
-  public boolean getOperatorXButton(){
-    return getOperatorRawButton(3);
-  }
-
-  public boolean getOperatorYButton(){
-    return getOperatorRawButton(4);
+    return getOperatorRawButton(BUTTONS.A.getButtonVal());
   }
 
   public boolean getOperatorBButton(){
-    return getOperatorRawButton(2);
+    return getOperatorRawButton(BUTTONS.B.getButtonVal());
   }
-/* 
-  public double getOperatorRightTrigger(){
-    return MathUtil.clamp(operatorController.getRawAxis(3), 0, 1);
-  }*/
+
+  public boolean getOperatorXButton(){
+    return getOperatorRawButton(BUTTONS.X.getButtonVal());
+  }
+
+  public boolean getOperatorYButton(){
+    return getOperatorRawButton(BUTTONS.Y.getButtonVal());
+  }
 
   public double getOperatorRightTrigger(){
-    return MathUtil.clamp( operatorController.getRawAxis(3), 0, 1);
+    return MathUtil.clamp( operatorController.getRawAxis(BUTTONS.RightTrigger.getButtonVal()), 0, 1);
   }
 
   public double getOperatorLeftTrigger(){
-    return MathUtil.clamp( operatorController.getRawAxis(2), 0, 1);
+    return MathUtil.clamp( operatorController.getRawAxis(BUTTONS.LeftTrigger.getButtonVal()), 0, 1);
   }
 
   public boolean getOperatorViewButton() {
-    return getOperatorRawButton(7);
+    return getOperatorRawButton(BUTTONS.ViewButton.getButtonVal());
   }
 
   public boolean getOperatorMenuButton() {
-    return menuOperatorButtonDebouncer.calculate(operatorController.getRawButton(8));
+    return menuOperatorButtonDebouncer.calculate(operatorController.getRawButton(BUTTONS.MenuButton.getButtonVal()));
 
-  }
-
-  public boolean getOperatorRightBumper(){
-    return getOperatorRawButton(6);
-  }
-
-  public boolean getOperatorLeftBumper(){
-    return getOperatorRawButton(5);
   }
 
   public boolean getOperatorDPadUp(){
@@ -306,11 +341,11 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorLeftJoystickPress(){
-    return getOperatorRawButton(9);
+    return getOperatorRawButton(BUTTONS.LeftJoystickPress.getButtonVal());
   }
 
   public boolean getOperatorRightJoystickPress(){
-    return getOperatorRawButton(10);
+    return getOperatorRawButton(BUTTONS.RightJoystickPress.getButtonVal());
   }
 
   @Override

@@ -81,8 +81,8 @@ public class OpenMVCAN extends SubsystemBase {
    *    - Class 6 Range Data, Index is range slot.
    *         - Provides 16bit range data + quality for a range sensor.
    */
-  public OpenMVCAN(int deviceId_) {
-    deviceId = deviceId_;
+  public OpenMVCAN(int deviceId) {
+    this.deviceId = deviceId;
     openmv = new CAN(deviceId, 173, 10);
     recvData = new CANData();
     tracks = new ArrayList<Track>();

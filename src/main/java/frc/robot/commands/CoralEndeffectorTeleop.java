@@ -31,7 +31,11 @@ public class CoralEndeffectorTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(oi.getOperatorRightTrigger() > .2){
+    // auto loads coral if coral fed
+    if(endeffector.getCoralFed() && !endeffector.getHasCoral()){
+      endeffector.setVelocity(10);
+    }
+    else if(oi.getOperatorRightTrigger() > .2){
       endeffector.setVelocity(oi.getOperatorRightTrigger() * 20);
     }
     

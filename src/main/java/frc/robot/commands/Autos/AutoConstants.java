@@ -23,5 +23,5 @@ public class AutoConstants {
     public static final double stowingElevatorVelocity = 2.0;
 
     // Open-space driving with stowed elevator velocity:
-    public static final double stowedDrivingVelocity = 2.5;
+    public static final double stowedDrivingVelocity = 2;
 }

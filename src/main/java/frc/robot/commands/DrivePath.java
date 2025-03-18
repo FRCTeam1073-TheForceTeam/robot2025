@@ -157,6 +157,11 @@ public class DrivePath extends Command
     SmartDashboard.putString("DrivePath/SegmentIndex", String.format("Segment Index: %d", currentSegmentIndex));
     SmartDashboard.putNumber("DrivePath/SegmentsSize", path.segments.size());
 
+    SmartDashboard.putNumber("DrivePath/Error", Math.sqrt(
+                                                Math.pow(path.segments.get(currentSegmentIndex).end.position.get(0, 0) - robotPose.getX(), 2) + 
+                                                Math.pow(path.segments.get(currentSegmentIndex).end.position.get(1, 0) - robotPose.getY(), 2)
+    ));    
+
     // Controlled drive command with weights from our path segment feedback, set our two channels of schema output/w weights.
     drivetrain.setTargetChassisSpeeds(
                 ChassisSpeeds.fromFieldRelativeSpeeds(

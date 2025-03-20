@@ -26,6 +26,7 @@ public class AprilTagFinder extends SubsystemBase
 {
   public class VisionMeasurement
   {
+    
     public Pose2d pose; // this is in field coordinates
     public Transform2d relativePose; // this is in robot coordinates.
     public double timeStamp;
@@ -42,6 +43,7 @@ public class AprilTagFinder extends SubsystemBase
     }
   }
 
+  ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<VisionMeasurement>();
   public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");  
   public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
   public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
@@ -56,12 +58,6 @@ public class AprilTagFinder extends SubsystemBase
   double ambiguityThreshold = 0.28; // TODO: verify this number
 
   public ArrayList<VisionMeasurement> getAllMeasurements() {
-    ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
-    visionMeasurements.addAll(getCamMeasurements(frontLeftCam, fLCamTransform3d));
-    visionMeasurements.addAll(getCamMeasurements(frontCenterCam, fCCamTransform3d));
-    visionMeasurements.addAll(getCamMeasurements(frontRightCam, fRCamTransform3d));
-    visionMeasurements.addAll(getCamMeasurements(rearCam, rCamTransform3d));
-
     return visionMeasurements;
   }
 
@@ -80,17 +76,17 @@ public class AprilTagFinder extends SubsystemBase
 
   public ArrayList<VisionMeasurement> getCamMeasurements(PhotonCamera camera, Transform3d camTransform3d) {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
-    ArrayList<PhotonPipelineResult> results = new ArrayList<>(camera.getAllUnreadResults());
-    ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
+    var results = camera.getAllUnreadResults();
+    //ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
 
     for (PhotonPipelineResult result : results){
         if (result.hasTargets()){
-          targets.addAll(result.getTargets());
+          //targets.addAll(result.getTargets());
         
         var responseTimestamp = Timer.getFPGATimestamp() - result.metadata.getLatencyMillis() / 1000.0;
         double range = 0;
 
-        for (PhotonTrackedTarget target : targets) {
+        for (PhotonTrackedTarget target : result.getTargets()) {
           if (FieldMap.fieldMap.getTagPose(target.getFiducialId()).isPresent()){
             if (target.getPoseAmbiguity() != -1 && target.getPoseAmbiguity() < ambiguityThreshold){
               var best = target.getBestCameraToTarget();
@@ -130,7 +126,12 @@ public class AprilTagFinder extends SubsystemBase
 
   @Override
   public void periodic() 
-  {   
+  {
+    visionMeasurements.clear();
+    visionMeasurements.addAll(getCamMeasurements(frontLeftCam, fLCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(frontCenterCam, fCCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(frontRightCam, fRCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(rearCam, rCamTransform3d));
   }
 
 }

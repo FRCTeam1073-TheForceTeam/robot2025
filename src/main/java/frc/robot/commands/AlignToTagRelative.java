@@ -53,9 +53,9 @@ public class AlignToTagRelative extends Command
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
-    this.finder = finder;
-    this.drivetrain = drivetrain;
+    this.finder = finder; 
     this.aprilTagID = tagID;
+    this.slot = slot;
 
     speeds = new ChassisSpeeds();
 
@@ -89,6 +89,8 @@ public class AlignToTagRelative extends Command
   @Override
   public void initialize() 
   {
+    SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
+    
     double yOffset = 0.165;
     double endEffectorOffset = 0.1905;
 
@@ -97,7 +99,6 @@ public class AlignToTagRelative extends Command
     thetaController.reset();
     missCounter = 1; // Need to see it to start...
 
-    slot = 0; //this is just a hack for testing
     if (slot == 0)
     {
       offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
@@ -111,6 +112,9 @@ public class AlignToTagRelative extends Command
       offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
     }
     
+    xError = 10;
+    yError = 10;
+    wError = 10;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -120,37 +124,55 @@ public class AlignToTagRelative extends Command
     // Drive on vision measurements.
     // Look for the tag in the currently tracked set:
     var tags = finder.getAllMeasurements();
+    SmartDashboard.putNumber("AlignToTagRelative/Tags", tags.size());
+    boolean found = false;
+    for(int i = 0; i < tags.size(); i++){
+      if (tags.get(i).tagID == aprilTagID) {
+  
+        /// Update last location of tag in robot coordinates with the offset...
+        lastLocation = tags.get(i).relativePose.plus(offset).inverse();
+        xError = Math.abs(lastLocation.getX());
+        yError = Math.abs(lastLocation.getX());
+        wError = Math.abs(lastLocation.getRotation().getRadians());
+
+        /// We didn't miss it, we have it.
+        if (missCounter > 0) missCounter = 0;
+        found = true;
+      }
+    }
     
 
     // Scan for the tag we're aligning with:
-    boolean found = false;
-    if(tags != null) {
-      for (var tag : tags) {
-        if (tag.tagID == aprilTagID) {
+    //boolean found = false;
+    //if(tags != null) {
+      // for (var tag : tags) {
+      //   if (tag.tagID == aprilTagID) {
   
-          /// Update last location of tag in robot coordinates with the offset...
-          lastLocation = tag.relativePose.plus(offset).inverse();
-          xError = Math.abs(lastLocation.getX());
-          yError = Math.abs(lastLocation.getX());
-          wError = Math.abs(lastLocation.getRotation().getRadians());
+      //     /// Update last location of tag in robot coordinates with the offset...
+      //     lastLocation = tag.relativePose.plus(offset).inverse();
+      //     xError = Math.abs(lastLocation.getX());
+      //     yError = Math.abs(lastLocation.getX());
+      //     wError = Math.abs(lastLocation.getRotation().getRadians());
   
-          /// We didn't miss it, we have it.
-          if (missCounter > 0) missCounter--;
-          found = true;
-        }
-      }
+      //     /// We didn't miss it, we have it.
+      //     if (missCounter > 0) missCounter--;
+      //     found = true;
+      //   }
+      // }
       if (!found) missCounter++; // We missed seeing it this time, we're using old location?
-    }
-    else {
-      missCounter++;
-    }
+    //}
+    // else {
+    //   missCounter++;
+    // }
+
+    SmartDashboard.putNumber("AlignToTagRelative/MissCounter", missCounter);
 
     if(lastLocation == null) {
       return;
     }
 
     // Within ~1/10th second.
-    if (missCounter < 12) {
+    if (missCounter < 90) {
       // We have the tag, align to the offset robot relative position (make the robot center 0,0,0 from the location)
       xVelocity = xController.calculate(lastLocation.getX(), 0);
       yVelocity = yController.calculate(lastLocation.getY(), 0);
@@ -174,10 +196,10 @@ public class AlignToTagRelative extends Command
     drivetrain.setTargetChassisSpeeds(speeds);
 
     SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
-    SmartDashboard.putNumber("AlignToTagRelative/MissCounter", missCounter);
     SmartDashboard.putNumber("AlignToTagRelative/ErrorX", xError);
     SmartDashboard.putNumber("AlignToTagRelative/ErrorY", yError);
     SmartDashboard.putNumber("AlignToTagRelative/OmegaError", wError);
+
   }
 
   // Called once the command ends or is interrupted.
@@ -187,9 +209,10 @@ public class AlignToTagRelative extends Command
     speeds.vxMetersPerSecond = 0.0;
     speeds.vyMetersPerSecond = 0.0;
     speeds.omegaRadiansPerSecond = 0.0;
-    aprilTagID = -1;
+    //aprilTagID = -1;
 
     drivetrain.setTargetChassisSpeeds(speeds);
+    lastLocation = null;
   }
 
   // Returns true when the command should end.
@@ -197,7 +220,7 @@ public class AlignToTagRelative extends Command
   public boolean isFinished() {
 
     // We lost it for too long.
-    if (missCounter >= 12) return true;
+    if (missCounter >= 90) return true;
 
     // We're basically there.
     if (xError < 0.05 && yError < 0.03 && wError < 0.01)

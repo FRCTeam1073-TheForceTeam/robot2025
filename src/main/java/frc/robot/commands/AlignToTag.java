@@ -158,6 +158,8 @@ public class AlignToTag extends Command
     yVelocity = MathUtil.clamp(yVelocity, -maximumLinearVelocity, maximumLinearVelocity);
     wVelocity = MathUtil.clamp(wVelocity, -maximumRotationVelocity, maximumRotationVelocity);
 
+    SmartDashboard.putNumber("AlignToTag/error", Math.sqrt(Math.pow(targetPose.minus(currentPose).getX(), 2) + Math.pow(targetPose.minus(currentPose).getY(), 2)));
+
     drivetrain.setTargetChassisSpeeds(
       ChassisSpeeds.fromFieldRelativeSpeeds (xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
     );

@@ -172,7 +172,7 @@ public class AlignToTagRelative extends Command
     }
 
     // Within ~1/10th second.
-    if (missCounter < 90) {
+    if (missCounter < 12) {
       // We have the tag, align to the offset robot relative position (make the robot center 0,0,0 from the location)
       xVelocity = xController.calculate(lastLocation.getX(), 0);
       yVelocity = yController.calculate(lastLocation.getY(), 0);
@@ -220,7 +220,7 @@ public class AlignToTagRelative extends Command
   public boolean isFinished() {
 
     // We lost it for too long.
-    if (missCounter >= 90) return true;
+    if (missCounter >= 12) return true;
 
     // We're basically there.
     if (xError < 0.05 && yError < 0.03 && wError < 0.01)

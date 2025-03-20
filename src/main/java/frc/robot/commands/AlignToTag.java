@@ -38,6 +38,7 @@ public class AlignToTag extends Command
   double wVelocity;
   int slot;
   boolean isRed;
+  boolean terminate = false;
 
   // private final static double maximumLinearVelocity = 3.5;   // Meters/second
   // private final static double maximumRotationVelocity = 4.0; // Radians/second
@@ -45,7 +46,7 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 4.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi, boolean terminate) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
@@ -53,6 +54,7 @@ public class AlignToTag extends Command
     this.fieldMap = fieldMap;
     this.mapDisplay = mapDisplay;
     this.oi = oi;
+    this.terminate = terminate;
     xVelocity = 0;
     yVelocity = 0;
     wVelocity = 0;
@@ -167,11 +169,15 @@ public class AlignToTag extends Command
   {
     aprilTagID = -1;
     targetPose = null;
+    System.out.println("Terminated Global Align");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(terminate){
+      return Math.abs(localizer.getPose().getX() - targetPose.getX()) < 0.55;
+    }
     return false;
   }
 }

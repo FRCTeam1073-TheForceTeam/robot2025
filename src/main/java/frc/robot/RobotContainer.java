@@ -86,7 +86,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
-  // private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_localizer, m_fieldMap, m_MapDisplay);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 22, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
@@ -192,8 +192,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
-    // Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
-    //   localAlign.whileTrue(cmd_localAlign);
+    Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
+      localAlign.whileTrue(cmd_localAlign);
   }
 
   public void autonomousInit()

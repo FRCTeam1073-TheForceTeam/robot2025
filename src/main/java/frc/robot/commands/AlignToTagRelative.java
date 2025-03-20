@@ -24,7 +24,6 @@ public class AlignToTagRelative extends Command
   Drivetrain drivetrain;
   AprilTagFinder finder;
   int aprilTagID;
-  OI oi;
   Localizer localizer;
   FieldMap fieldMap;
   MapDisplay mapDisplay;
@@ -50,17 +49,13 @@ public class AlignToTagRelative extends Command
   private final static double maximumRotationVelocity = 1.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
+  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.finder = finder;
     this.drivetrain = drivetrain;
-    this.localizer = localizer;
-    this.fieldMap = fieldMap;
-    this.mapDisplay = mapDisplay;
-    this.oi = oi;
-    this.aprilTagID = -1;
+    this.aprilTagID = tagID;
 
     speeds = new ChassisSpeeds();
 
@@ -102,36 +97,20 @@ public class AlignToTagRelative extends Command
     thetaController.reset();
     missCounter = 1; // Need to see it to start...
 
-    currentPose = localizer.getPose();
-
-    // temporary for testing the align
-    // if (oi.getDriverXButton())
-    // {
-    //   slot = -1;
-    //   offset = new Transform2d(0.45, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-    // else if (oi.getDriverAButton())
-    // {
-    //   slot = 0;
-    //   offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-    // else if (oi.getDriverYButton())
-    // {
-    //   slot = 1;
-    //   offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-
     slot = 0; //this is just a hack for testing
-    offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
-
-    if (aprilTagID == -1)
+    if (slot == 0)
     {
-      if (slot != 2)
-      {
-        aprilTagID = fieldMap.getBestReefTagID(currentPose);
-      }
+      offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
     }
-    SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
+    else if (slot == -1)
+    {
+      offset = new Transform2d(0.45, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    }
+    else if (slot == 1)
+    {
+      offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -194,11 +173,11 @@ public class AlignToTagRelative extends Command
 
     drivetrain.setTargetChassisSpeeds(speeds);
 
-    SmartDashboard.putNumber("AlignToTag/TagId", aprilTagID);
-    SmartDashboard.putNumber("AlignToTag/MissCounter", missCounter);
-    SmartDashboard.putNumber("AlignToTag/X", lastLocation.getX());
-    SmartDashboard.putNumber("AlignToTag/Y", lastLocation.getY());
-    SmartDashboard.putNumber("AlignToTag/Omega", lastLocation.getRotation().getRadians());
+    SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
+    SmartDashboard.putNumber("AlignToTagRelative/MissCounter", missCounter);
+    SmartDashboard.putNumber("AlignToTagRelative/ErrorX", xError);
+    SmartDashboard.putNumber("AlignToTagRelative/ErrorY", yError);
+    SmartDashboard.putNumber("AlignToTagRelative/OmegaError", wError);
   }
 
   // Called once the command ends or is interrupted.

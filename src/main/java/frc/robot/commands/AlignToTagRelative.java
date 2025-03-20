@@ -45,8 +45,8 @@ public class AlignToTagRelative extends Command
   ChassisSpeeds speeds;
 
 
-  private final static double maximumLinearVelocity = 1.0;   // Meters/second
-  private final static double maximumRotationVelocity = 1.0; // Radians/second
+  private final static double maximumLinearVelocity = 1.5;   // Meters/second
+  private final static double maximumRotationVelocity = 1.5; // Radians/second
 
   /** Creates a new alignToTag. */
   public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagID, int slot) 
@@ -64,19 +64,19 @@ public class AlignToTagRelative extends Command
     wVelocity = 0;
 
     xController = new PIDController(
-      1.5, 
+      2.5, 
       0.0, 
       0.03
     );
 
     yController = new PIDController(
-      1.5, 
+      2.5, 
       0.0, 
       0.03
     );
 
     thetaController = new PIDController(
-      1.875, 
+      2.0, 
       0.0,
       0.03
     );

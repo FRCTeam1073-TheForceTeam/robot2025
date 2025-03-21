@@ -46,7 +46,7 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 4.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi, boolean terminate) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi, boolean terminate, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
@@ -58,7 +58,7 @@ public class AlignToTag extends Command
     xVelocity = 0;
     yVelocity = 0;
     wVelocity = 0;
-    slot = -1;
+    this.slot = slot;
 
     xController = new PIDController(
       1.5, 

@@ -31,6 +31,7 @@ import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.RemoveAlgae;
 import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClimber;
@@ -78,7 +79,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_OI, true);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_OI, true, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
@@ -186,11 +187,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
     
-    Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
-      alignToTag.whileTrue(cmd_alignToTag);
+    // Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
+    //   alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
-      lidarAlign.whileTrue(cmd_lidarAlign);
+    // Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
+    //   lidarAlign.whileTrue(cmd_lidarAlign);
+    Trigger smartAlign = new Trigger(m_OI::getDriverAlignButtons);
+    smartAlign.whileTrue(SmartAlign.create(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, m_OI));
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);

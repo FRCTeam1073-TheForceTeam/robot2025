@@ -5,8 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
@@ -18,10 +21,32 @@ import frc.robot.subsystems.OI;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SmartAlign extends SequentialCommandGroup {
-  public static Command create(Drivetrain drivetrain, Localizer localizer, int slot, Lidar lidar, AprilTagFinder aprilTagFinder, FieldMap fieldMap, MapDisplay mapDisplay, OI oi){
-    return new SequentialCommandGroup(
-      new AlignToTagRelative(drivetrain, aprilTagFinder, slot, localizer, fieldMap, mapDisplay, oi),
-      new LidarAlign(lidar, drivetrain)
+  public static Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator elevator, Lidar lidar, AprilTagFinder aprilTagFinder, OI oi){
+    int tag = fieldMap.getBestReefTagID(localizer.getPose());
+    int slot = 0;
+    if (oi.getDriverXButton())
+    {
+      slot = -1;
+    }
+    else if (oi.getDriverAButton())
+    {
+      slot = 0;
+    }
+    else if (oi.getDriverYButton())
+    {
+      slot = 1;
+    }
+    else if (oi.getDriverViewButton())
+    {
+      slot = 2;
+    }
+    return 
+    new ParallelRaceGroup(
+      new CoralElevatorToHeight(elevator, 1, false),
+      new SequentialCommandGroup(
+        new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, oi, true, slot),
+        new AlignToTagRelative(drivetrain, aprilTagFinder, tag, slot),
+        new LidarAlign(lidar, drivetrain))
     );
   }
 }

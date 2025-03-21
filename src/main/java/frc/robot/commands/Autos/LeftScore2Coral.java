@@ -81,14 +81,14 @@ public class LeftScore2Coral
         if (isRed)
         {
             segments1.add(new Segment(start, tag11LApproach, tag11LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            // segments1.add(new Segment(tag11LApproach, tag11L, tag11LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(tag11LApproach, tag11L, tag11LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag11L, redI1, tag1Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(redI1, tag1, tag1Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
             segments3.add(new Segment(tag1, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments1.add(new Segment(redI1, tag11RApproach, tag11RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            // segments1.add(new Segment(tag11RApproach, tag11R, tag11RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments3.add(new Segment(redI1, tag11RApproach, tag11RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            // segments3.add(new Segment(tag11RApproach, tag11R, tag11RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             path1 = new Path(segments1, tag11LeftPose.getRotation().getRadians());
             path2 = new Path(segments2, tag1Pose.getRotation().getRadians());
@@ -97,7 +97,7 @@ public class LeftScore2Coral
         else
         {
             segments1.add(new Segment(start, tag20LApproach, tag20LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            // segments1.add(new Segment(tag20LApproach, tag20L, tag20LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments1.add(new Segment(tag20LApproach, tag20L, tag20LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag20L, blueI1, tag13Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(blueI1, tag13, tag13Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
@@ -117,7 +117,7 @@ public class LeftScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
-            new AlignToTagRelative(drivetrain, finder, 20, -1),
+            // new AlignToTagRelative(drivetrain, finder, 20, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

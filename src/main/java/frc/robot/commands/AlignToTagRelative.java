@@ -101,15 +101,15 @@ public class AlignToTagRelative extends Command
 
     if (slot == 0)
     {
-      offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
+      offset = new Transform2d(0.4, endEffectorOffset, new Rotation2d(Math.PI));
     }
     else if (slot == -1)
     {
-      offset = new Transform2d(0.45, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+      offset = new Transform2d(0.4, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
     }
     else if (slot == 1)
     {
-      offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+      offset = new Transform2d(0.4, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
     }
     
     xError = 10;

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
-import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
 import frc.robot.commands.ScoreCoral;
@@ -118,7 +117,7 @@ public class RightScore2Coral
                 new DrivePath(drivetrain, path1, localizer)
             ),
             // new AlignToTagRelative(drivetrain, finder, 22, 1),
-            new LidarAlign(lidar, drivetrain),
+            // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

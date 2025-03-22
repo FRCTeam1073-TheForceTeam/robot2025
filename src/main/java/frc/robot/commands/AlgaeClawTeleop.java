@@ -11,8 +11,6 @@ import frc.robot.subsystems.OI;
 public class AlgaeClawTeleop extends Command {
   AlgaeClaw algaeClaw;
   OI oi;
-  double algaeCollectorVel;
-  double EndeffectorRotatorVel;
 
   public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI Oi) {
     algaeClaw = AlgaeClaw;
@@ -27,7 +25,15 @@ public class AlgaeClawTeleop extends Command {
 
   @Override
   public void execute() {
-    
+    if(oi.getIntakeAlgae()){
+      algaeClaw.setAlgaeCollectorVel(.1);//TODO change velocities
+    }
+    else if(oi.getScoreAlgae()){
+      algaeClaw.setAlgaeCollectorVel(-.1);//TODO change velocities
+    }
+    else{
+      algaeClaw.setAlgaeCollectorVel(0);
+    }
   }
 
   @Override

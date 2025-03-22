@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,6 +39,7 @@ import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.commands.Autos.TestAuto;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralElevator;
@@ -86,10 +86,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
-  private final RemoveAlgae cmd_removeAlgaeL2 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 2);
-  private final RemoveAlgae cmd_RemoveAlgaeL3 = new RemoveAlgae(m_coralElevator, m_coralEndeffector, m_drivetrain, 3);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
-  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 22, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final Dummy cmd_dummy = new Dummy();
 
@@ -107,6 +105,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String leftPosition = "Left Auto";
   private static final String centerPosition = "Center Auto";
   private static final String centerPositionX = "Center Auto X";
+  private static final String testAuto = "Test Auto";
   
   private final SendableChooser<String> m_levelChooser = new SendableChooser<>();
   private static final String noLevelAuto = "No Level";
@@ -138,6 +137,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_positionChooser.addOption("Center Position", centerPosition);
     m_positionChooser.addOption("Center Position X", centerPositionX);
     m_positionChooser.addOption("Zero Claw and Lift", zeroClawAndLift);
+    m_positionChooser.addOption("Test Auto", testAuto);
 
     m_levelChooser.setDefaultOption("No Level", noLevelAuto);
     m_levelChooser.addOption("Leave", leave);
@@ -247,13 +247,15 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
       case centerPosition:
         return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, false);
       case centerPositionX:
         return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, true);
+      case testAuto:
+        return TestAuto.create(m_drivetrain, m_localizer, m_fieldMap);
       default:
         return null;
     }

@@ -52,14 +52,14 @@ public class DrivePath extends Command
     this.localizer = localizer;
 
     xController = new PIDController(
-      1.1, 
-      0.0, 
+      4.8, 
+      0, 
       0.01
     );
 
     yController = new PIDController(
-      1.1, 
-      0.0, 
+      4.8, 
+      0, 
       0.01
     );
 
@@ -127,14 +127,14 @@ public class DrivePath extends Command
     if (currentSegmentIndex >= path.segments.size() - 1)
     {
       // Last point is meant to be a bit different:
-      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX()) + 0.3 * pathFeedback.velocity.get(0,0);
-      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY()) + 0.3 * pathFeedback.velocity.get(1,0);
+      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX());
+      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY());
       thetaVelocity = thetaController.calculate(robotPose.getRotation().getRadians(), path.finalOrientation);
     }
     else
     {
-      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX()) + 0.3 * pathFeedback.velocity.get(0,0);
-      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY()) + 0.3 * pathFeedback.velocity.get(1,0);
+      xVelocity = xController.calculate(robotPose.getX(), pathFeedback.pose.getX());
+      yVelocity = yController.calculate(robotPose.getY(), pathFeedback.pose.getY());
       thetaVelocity = thetaController.calculate(robotPose.getRotation().getRadians(), path.getPathOrientation(currentSegmentIndex, robotPose)); 
     }
     
@@ -143,18 +143,24 @@ public class DrivePath extends Command
     yVelocity = MathUtil.clamp(yVelocity, -maxVelocity, maxVelocity);
     thetaVelocity = MathUtil.clamp(thetaVelocity, -maxAngularVelocity, maxAngularVelocity);
 
-    // Create (field-centric) chassis speeds:
-    ChassisSpeeds fcSpeeds = new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
+    SmartDashboard.putNumber("DrivePath/TargetX", path.segments.get(currentSegmentIndex).end.position.get(0, 0));
+    SmartDashboard.putNumber("DrivePath/TargetY", path.segments.get(currentSegmentIndex).end.position.get(1, 0));
+    SmartDashboard.putNumber("DrivePath/TargetTheta", path.segments.get(currentSegmentIndex).orientation);
 
     SmartDashboard.putNumber("DrivePath/TrajFBVx", pathFeedback.velocity.get(0,0));
     SmartDashboard.putNumber("DrivePath/TrajFBVy", pathFeedback.velocity.get(1,0));
     SmartDashboard.putNumber("DrivePath/MaxVelocity", maxVelocity);
 
-    SmartDashboard.putNumber("DrivePath/TrajVx", fcSpeeds.vxMetersPerSecond);
-    SmartDashboard.putNumber("DrivePath/TrajVy", fcSpeeds.vyMetersPerSecond);
-    SmartDashboard.putNumber("DrivePath/TrajW", fcSpeeds.omegaRadiansPerSecond);
-    SmartDashboard.putString("DrivePath/Status", String.format("Segment Index: %d", currentSegmentIndex));
+    SmartDashboard.putNumber("DrivePath/CommandedVx", xVelocity);
+    SmartDashboard.putNumber("DrivePath/CommandedVy", yVelocity);
+    SmartDashboard.putNumber("DrivePath/CommandedW", thetaVelocity);
+    SmartDashboard.putString("DrivePath/SegmentIndex", String.format("Segment Index: %d", currentSegmentIndex));
     SmartDashboard.putNumber("DrivePath/SegmentsSize", path.segments.size());
+
+    SmartDashboard.putNumber("DrivePath/Error", Math.sqrt(
+                                                Math.pow(path.segments.get(currentSegmentIndex).end.position.get(0, 0) - robotPose.getX(), 2) + 
+                                                Math.pow(path.segments.get(currentSegmentIndex).end.position.get(1, 0) - robotPose.getY(), 2)
+    ));    
 
     // Controlled drive command with weights from our path segment feedback, set our two channels of schema output/w weights.
     drivetrain.setTargetChassisSpeeds(

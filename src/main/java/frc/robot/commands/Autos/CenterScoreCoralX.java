@@ -44,9 +44,9 @@ public class CenterScoreCoralX
         Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI))); // -0.05 y offset is specific to week 2
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
-        tag10.blend_radius = AutoConstants.blendRaidus;
+        tag10.blend_radius = AutoConstants.blendRadius;
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
-        tag21.blend_radius = AutoConstants.blendRaidus;
+        tag21.blend_radius = AutoConstants.blendRadius;
 
 
         ArrayList<Segment> segments = new ArrayList<Segment>();

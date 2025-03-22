@@ -39,10 +39,8 @@ public class AlignToTag extends Command
   int slot;
   boolean isRed;
 
-  // private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  // private final static double maximumRotationVelocity = 4.0; // Radians/second
-  private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  private final static double maximumRotationVelocity = 4.0; // Radians/second
+  private final static double maximumLinearVelocity = 3.0;   // Meters/second
+  private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
   public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
@@ -155,6 +153,8 @@ public class AlignToTag extends Command
     xVelocity = MathUtil.clamp(xVelocity, -maximumLinearVelocity, maximumLinearVelocity);
     yVelocity = MathUtil.clamp(yVelocity, -maximumLinearVelocity, maximumLinearVelocity);
     wVelocity = MathUtil.clamp(wVelocity, -maximumRotationVelocity, maximumRotationVelocity);
+
+    SmartDashboard.putNumber("AlignToTag/error", Math.sqrt(Math.pow(targetPose.minus(currentPose).getX(), 2) + Math.pow(targetPose.minus(currentPose).getY(), 2)));
 
     drivetrain.setTargetChassisSpeeds(
       ChassisSpeeds.fromFieldRelativeSpeeds (xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())

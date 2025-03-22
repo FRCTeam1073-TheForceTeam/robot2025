@@ -78,40 +78,43 @@ public class RightScore2Coral
         Path path3;
 
         int localTagID;
+        int localTagID2;
 
         if (isRed)
         {
             segments1.add(new Segment(start, tag9LApproach, tag9LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            segments1.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            // segments1.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag9L, redI1, tag2Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
-            segments3.add(new Segment(tag2, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments3.add(new Segment(redI1, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            // segments3.add(new Segment(tag2, redI1, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments3.add(new Segment(tag2, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
             // segments3.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             path1 = new Path(segments1, tag9LeftPose.getRotation().getRadians());
             path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag8RightApproachPose.getRotation().getRadians());
             localTagID = 8;
+            localTagID2 = 9;
         }
         else
         {
             segments1.add(new Segment(start, tag22LApproach, tag22LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            segments1.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            // segments1.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag22L, blueI1, tag12Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
             segments2.add(new Segment(blueI1, tag12, tag12Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
-            segments3.add(new Segment(tag12, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments3.add(new Segment(blueI1, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            // segments3.add(new Segment(tag12, blueI1, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments3.add(new Segment(tag12, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
             // segments3.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             path1 = new Path(segments1, tag22LeftPose.getRotation().getRadians());
             path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag17RightApproachPose.getRotation().getRadians());
             localTagID = 17;
+            localTagID2 = 22;
         }
         
 
@@ -120,8 +123,7 @@ public class RightScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
-            // new AlignToTagRelative(drivetrain, finder, 22, 1),
-            // new LidarAlign(lidar, drivetrain),
+            new AlignToTagRelative(drivetrain, finder, localTagID2, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

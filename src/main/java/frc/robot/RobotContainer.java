@@ -28,6 +28,7 @@ import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
+import frc.robot.commands.Dummy;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
@@ -94,6 +95,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
+  private final Dummy cmd_dummy = new Dummy();
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -158,43 +160,41 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorDisengageButton);
       disengageClimber.onTrue(cmd_disengageClimber);
-    Trigger engageClimber = new Trigger(m_OI::getOperatorMenuButton);
-      engageClimber.onTrue(cmd_engageClimber);
-    Trigger zeroClimber = new Trigger(m_OI::getOperatorBButton);
-      zeroClimber.onTrue(cmd_zeroClimber);
-    Trigger zeroElevator = new Trigger(m_OI::getOperatorViewButton);
-      zeroElevator.onTrue(cmd_zeroElevator);
-    Trigger stowElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
-      stowElevator.onTrue(cmd_stowElevator);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorEngageButton);
+      engageClimber.onTrue(cmd_engageClimber);
+
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorZeroButton);
+      zeroClimber.onTrue(cmd_zeroClimber);
+
+    Trigger loadCoral = new Trigger(m_OI::getOperatorLoadCoral);
       loadCoral.onTrue(cmd_loadCoral);
 
-    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorScoreCoral);
       scoreCoral.onTrue(cmd_scoreCoral);
       
-    Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2Button);
       elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
-    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3Button);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
     
-    Trigger elevatorL4 = new Trigger(m_OI::getOperatorDPadLeft);
+    Trigger elevatorL4 = new Trigger(m_OI::getOperatorL4Button);
       elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
-    Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
+    Trigger troughScore = new Trigger(m_OI::getOperatorL1Button);
       troughScore.whileTrue(cmd_troughRaiseElevator);
-
-    Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
-      cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
     
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
       alignToTag.whileTrue(cmd_alignToTag);
 
     Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
+
+    Trigger dummyButton = new Trigger(m_OI::getDummyButton);
+      dummyButton.whileTrue(cmd_dummy);
 
     /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
       removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);

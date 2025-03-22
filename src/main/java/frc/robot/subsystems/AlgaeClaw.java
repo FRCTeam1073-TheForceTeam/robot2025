@@ -50,8 +50,8 @@ public class AlgaeClaw extends SubsystemBase {
   private final double endeffectorRotateMotorKV = 0.12;
 
   public AlgaeClaw() {
-    algaeCollectMotor = new TalonFX(0);//TODO find device IDs
-    endeffectorRotateMotor = new TalonFX(0);
+    algaeCollectMotor = new TalonFX(25);//TODO find device IDs
+    endeffectorRotateMotor = new TalonFX(26);
 
     algaeCollectMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     endeffectorRotateMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);

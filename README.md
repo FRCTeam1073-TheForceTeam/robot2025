@@ -5,7 +5,7 @@ TBD
 
 Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is back right.
 
-##Module CAN IDs
+## Module CAN IDs
 | Device                | CAN ID |      BUS      |
 | --------------------- | ------ | ------------- |
 | Swerve #0 Encoder     |   1    |   CANivore    |
@@ -30,6 +30,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Endeffector Motor     |  21    |   Rio         |
 | LaserCAN Coral        |  22    |   Rio         |
 | LaserCAN Reef         |  24    |   Rio         |
+| Algae Collect Motor   |  25    |   Rio         |
+| EndeffectorRotateMotor|  26    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
 

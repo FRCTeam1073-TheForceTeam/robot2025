@@ -12,6 +12,7 @@ public class AlgaeCommand extends Command {
   /** Creates a new AlgaeCommand. */
   CoralEndeffector endeffector;
   double velocity;
+  
   public AlgaeCommand(CoralEndeffector Endeffector, double vel) {
     endeffector = Endeffector;
     velocity = vel;

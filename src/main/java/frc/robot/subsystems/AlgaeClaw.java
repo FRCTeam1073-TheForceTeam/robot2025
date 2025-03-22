@@ -38,7 +38,7 @@ public class AlgaeClaw extends SubsystemBase {
   private MotionMagicVoltage endeffectorRotateMotorPositionVoltage;
 
   private final double endeffectorRotateMinPos = 0;//TODO set min and max positions
-  private final double endeffectorRotateMaxPos = 5;
+  private final double endeffectorRotateMaxPos = 28.476;
 
   private final double algaeCollectMotorKP = 0.15; //TODO change these values
   private final double algaeCollectMotorKI = 0;
@@ -167,7 +167,7 @@ public class AlgaeClaw extends SubsystemBase {
   public void configureHardware()
   {
     var motorConfig = new TalonFXConfiguration();
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     algaeCollectMotor.getConfigurator().apply(motorConfig);
     endeffectorRotateMotor.getConfigurator().apply(motorConfig);
 

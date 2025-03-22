@@ -180,7 +180,7 @@ public class AlignToTagRelative extends Command
       speeds.omegaRadiansPerSecond = 0.0;
     }
 
-    drivetrain.setTargetChassisSpeeds(speeds);
+    drivetrain.setTargetChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation()));
 
     SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
     SmartDashboard.putNumber("AlignToTagRelative/ErrorX", xError);

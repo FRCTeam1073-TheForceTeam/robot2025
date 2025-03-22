@@ -2,7 +2,7 @@ package frc.robot.commands.Autos;
 
 public class AutoConstants {
     // Scoring X offset from tag.
-    public static final double scoreOffsetX = 0.42;
+    public static final double scoreOffsetX = 0.4;
     public static final double scoreApproachOffsetX = 0.8;
 
     public static final double scoreApproachOffsetY = 0.15;

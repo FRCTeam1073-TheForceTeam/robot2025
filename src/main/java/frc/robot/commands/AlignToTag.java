@@ -40,10 +40,8 @@ public class AlignToTag extends Command
   boolean isRed;
   boolean terminate = false;
 
-  // private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  // private final static double maximumRotationVelocity = 4.0; // Radians/second
-  private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  private final static double maximumRotationVelocity = 4.0; // Radians/second
+  private final static double maximumLinearVelocity = 3.0;   // Meters/second
+  private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
   public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi, boolean terminate, int slot) 

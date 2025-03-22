@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LoadCoral;
@@ -18,15 +19,17 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ZeroElevator;
+import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
 public class RightScore2Coral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, int branchLevel)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AprilTagFinder finder, Lidar lidar, int branchLevel)  
     {
         Pose2d tag9RightPose = map.getTagRelativePose(9, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
@@ -83,8 +86,8 @@ public class RightScore2Coral
             segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
             segments3.add(new Segment(tag2, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments1.add(new Segment(redI1, tag9LApproach, tag9LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            segments1.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            segments3.add(new Segment(redI1, tag9LApproach, tag9LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            // segments3.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             path1 = new Path(segments1, tag9RightPose.getRotation().getRadians());
             path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
@@ -100,7 +103,7 @@ public class RightScore2Coral
 
             segments3.add(new Segment(tag12, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             segments3.add(new Segment(blueI1, tag22LApproach, tag22LeftApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-            segments3.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+            // segments3.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             path1 = new Path(segments1, tag22RightPose.getRotation().getRadians());
             path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
@@ -113,6 +116,8 @@ public class RightScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
+            // new AlignToTagRelative(drivetrain, finder, 22, 1),
+            // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
@@ -125,6 +130,7 @@ public class RightScore2Coral
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
+            new AlignToTagRelative(drivetrain, finder, 22, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

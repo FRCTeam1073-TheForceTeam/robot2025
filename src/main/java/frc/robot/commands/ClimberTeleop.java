@@ -34,6 +34,9 @@ public class ClimberTeleop extends Command
     else if (oi.getOperatorRightBumper()){
       velocity = -10;
     }
+    else{
+      velocity = 0;
+    }
     
     climber.setCommandedVelocity(velocity);
   }

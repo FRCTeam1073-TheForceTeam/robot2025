@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.OI;
@@ -33,6 +34,16 @@ public class ClimberTeleop extends Command
       velocity = -10;
     }
     else{
+      if(!oi.getOperatorAButton() && !oi.getOperatorBButton() && !oi.getOperatorMenuButton()){
+        if(!climber.getIsAtZero()){
+          velocity = -climber.getMotorPosition();
+          if(velocity < 0){
+            MathUtil.clamp(velocity, -10, -5);
+          } else if(velocity > 0){
+            MathUtil.clamp(velocity, 5, 10);
+          }
+        }
+      }
       velocity = 0;
     }
     climber.setCommandedVelocity(velocity);

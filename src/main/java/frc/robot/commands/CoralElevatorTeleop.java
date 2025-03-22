@@ -33,11 +33,11 @@ public class CoralElevatorTeleop extends Command {
   public void execute() {
     velocity = oi.getOperatorLeftY() * 12.0;//TODO change controls
     elevator.setVelocity(velocity);
-    // if(Math.abs(oi.getOperatorLeftY()) < 0.05 && !oi.getOperatorDPadDown() && !oi.getOperatorDPadLeft() && !oi.getOperatorDPadRight() && !oi.getOperatorDPadUp()){
-    //   if(!elevator.isCoralElevatorAtBottom()){
-    //     elevator.setVelocity(-25);
-    //   }
-    // }
+    if(Math.abs(oi.getOperatorLeftY()) < 0.05 && !oi.getOperatorDPadDown() && !oi.getOperatorDPadLeft() && !oi.getOperatorDPadRight() && !oi.getOperatorDPadUp()){
+      if(!elevator.isCoralElevatorAtBottom()){
+        elevator.setVelocity(-25);
+      }
+    }
   }
   // Called once the command ends or is interrupted.
   @Override

@@ -100,3 +100,10 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |All funnel & elevator - blue   |Robot is disabled & blue alliance  |
 |All funnel & elevator - red    |Robot is disabled & red alliance   |
 |All funnel & elevator - white  |Robot is disabled & no  alliance   |
+
+## Camera Names
+
+FrontCenterCamera
+FrontLeftCamera
+FrontRightCamera
+RearCamera

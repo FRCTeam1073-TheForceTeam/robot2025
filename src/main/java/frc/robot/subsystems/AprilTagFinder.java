@@ -26,6 +26,7 @@ public class AprilTagFinder extends SubsystemBase
 {
   public class VisionMeasurement
   {
+    
     public Pose2d pose; // this is in field coordinates
     public Transform2d relativePose; // this is in robot coordinates.
     public double timeStamp;
@@ -42,26 +43,21 @@ public class AprilTagFinder extends SubsystemBase
     }
   }
 
+  ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<VisionMeasurement>();
   public PhotonCamera frontLeftCam = new PhotonCamera("FrontLeftCamera");  
   public PhotonCamera frontCenterCam = new PhotonCamera("FrontCenterCamera");
   public PhotonCamera frontRightCam = new PhotonCamera("FrontRightCamera");
+  public PhotonCamera rearCam = new PhotonCamera("RearCamera");
 
   //Camera height: 0.2159m, x and y: 0.264m
   public final Transform3d fLCamTransform3d = new Transform3d(new Translation3d(0.2925,0.2925, 0.216), new Rotation3d(0, 0, (Math.PI) / 4));
   public final Transform3d fCCamTransform3d = new Transform3d(new Translation3d(-0.2162302, -0.127, 0.673), new Rotation3d(0, Math.toRadians(15), 0));
   public final Transform3d fRCamTransform3d = new Transform3d(new Translation3d(0.2925, -0.2925, 0.216), new Rotation3d(0, 0, -(Math.PI) / 4));
-  
-
+  public final Transform3d rCamTransform3d = new Transform3d(new Translation3d(-0.1969, -0.127, 0.673), new Rotation3d(0, Math.toRadians(-15), Math.PI)); //TODO: check this number
 
   double ambiguityThreshold = 0.28; // TODO: verify this number
 
-
   public ArrayList<VisionMeasurement> getAllMeasurements() {
-    ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
-    visionMeasurements.addAll(getCamMeasurements(frontLeftCam, fLCamTransform3d));
-    visionMeasurements.addAll(getCamMeasurements(frontCenterCam, fCCamTransform3d));
-    visionMeasurements.addAll(getCamMeasurements(frontRightCam, fRCamTransform3d));
-
     return visionMeasurements;
   }
 
@@ -80,17 +76,17 @@ public class AprilTagFinder extends SubsystemBase
 
   public ArrayList<VisionMeasurement> getCamMeasurements(PhotonCamera camera, Transform3d camTransform3d) {
     ArrayList<VisionMeasurement> measurements = new ArrayList<VisionMeasurement>();
-    ArrayList<PhotonPipelineResult> results = new ArrayList<>(camera.getAllUnreadResults());
-    ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
+    var results = camera.getAllUnreadResults();
+    //ArrayList<PhotonTrackedTarget> targets = new ArrayList<>();
 
     for (PhotonPipelineResult result : results){
         if (result.hasTargets()){
-          targets.addAll(result.getTargets());
+          //targets.addAll(result.getTargets());
         
         var responseTimestamp = Timer.getFPGATimestamp() - result.metadata.getLatencyMillis() / 1000.0;
         double range = 0;
 
-        for (PhotonTrackedTarget target : targets) {
+        for (PhotonTrackedTarget target : result.getTargets()) {
           if (FieldMap.fieldMap.getTagPose(target.getFiducialId()).isPresent()){
             if (target.getPoseAmbiguity() != -1 && target.getPoseAmbiguity() < ambiguityThreshold){
               var best = target.getBestCameraToTarget();
@@ -117,16 +113,25 @@ public class AprilTagFinder extends SubsystemBase
   }
 
   public Transform3d getRobotToFLCam() {
-    return fCCamTransform3d;
+    return fLCamTransform3d;
   }
 
   public Transform3d getRobotToFCCam() {
     return fCCamTransform3d;
   }
 
+  public Transform3d getRobotToRCam() {
+    return rCamTransform3d;
+  }
+
   @Override
   public void periodic() 
-  {   
+  {
+    visionMeasurements.clear();
+    visionMeasurements.addAll(getCamMeasurements(frontLeftCam, fLCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(frontCenterCam, fCCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(frontRightCam, fRCamTransform3d));
+    visionMeasurements.addAll(getCamMeasurements(rearCam, rCamTransform3d));
   }
 
 }

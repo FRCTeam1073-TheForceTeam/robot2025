@@ -58,29 +58,29 @@ public class CenterScore2Coral
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
-        tag10.blend_radius = AutoConstants.blendRaidus;
+        tag10.blend_radius = AutoConstants.blendRadius;
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
-        tag21.blend_radius = AutoConstants.blendRaidus;
+        tag21.blend_radius = AutoConstants.blendRadius;
 
         Point back10 = new Point(backPose10.getX(), backPose10.getY());
-        back10.blend_radius = AutoConstants.blendRaidus;
+        back10.blend_radius = AutoConstants.blendRadius;
         Point back21 = new Point(backPose21.getX(), backPose21.getY());
-        back21.blend_radius = AutoConstants.blendRaidus;
+        back21.blend_radius = AutoConstants.blendRadius;
 
         Point wall10Point = new Point(wall10.getX(), wall10.getY());
-        wall10Point.blend_radius = AutoConstants.blendRaidus;
+        wall10Point.blend_radius = AutoConstants.blendRadius;
         Point wall21Point = new Point(wall21.getX(), wall21.getY());
-        wall21Point.blend_radius = AutoConstants.blendRaidus;
+        wall21Point.blend_radius = AutoConstants.blendRadius;
 
         Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
-        tag1.blend_radius = AutoConstants.blendRaidus;
+        tag1.blend_radius = AutoConstants.blendRadius;
         Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());
-        tag13.blend_radius = AutoConstants.blendRaidus;
+        tag13.blend_radius = AutoConstants.blendRadius;
 
         Point tag6 = new Point(tag6Pose.getX(), tag6Pose.getY());
-        tag6.blend_radius = AutoConstants.blendRaidus;
+        tag6.blend_radius = AutoConstants.blendRadius;
         Point tag19 = new Point(tag19Pose.getX(), tag19Pose.getY());
-        tag19.blend_radius = AutoConstants.blendRaidus;
+        tag19.blend_radius = AutoConstants.blendRadius;
 
         ArrayList<Segment> segments = new ArrayList<Segment>();
         ArrayList<Segment> after = new ArrayList<Segment>();

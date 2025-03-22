@@ -50,7 +50,7 @@ public class AlgaeClaw extends SubsystemBase {
   private final double endeffectorRotateMotorKV = 0.12;
 
   public AlgaeClaw() {
-    algaeCollectMotor = new TalonFX(25);//TODO find device IDs
+    algaeCollectMotor = new TalonFX(25);
     endeffectorRotateMotor = new TalonFX(26);
 
     algaeCollectMotorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
@@ -73,9 +73,6 @@ public class AlgaeClaw extends SubsystemBase {
     }
     if (endeffectorRotatePos <= endeffectorRotateMinPos){
       commandedEndeffectorRotateVel = Math.max(commandedEndeffectorRotateVel, 0);
-    }
-    if(endeffectorRotatePos <= 0.5){
-      endeffectorIsUp = true;
     }
 
     algaeCollectMotor.setControl(algaeCollectMotorVelocityVoltage.withVelocity(commandedAlgaeCollectVel));
@@ -101,6 +98,10 @@ public class AlgaeClaw extends SubsystemBase {
     if(!this.getIsEndeffectorRotatorAtZero()){
       commandedEndeffectorRotateVel = -1;
     }
+  }
+
+  public void changeEndeffectorIsUp(){
+    endeffectorIsUp = !endeffectorIsUp;
   }
 
   public void setAlgaeCollectorMotorBrakeMode(boolean mode){

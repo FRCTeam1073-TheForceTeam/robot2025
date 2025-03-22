@@ -38,9 +38,11 @@ public class AlgaeClawTeleop extends Command {
     if(false/*oi.algaeToggle*/){
       if(algaeClaw.getIsEndeffectorRotatorUp()){
         algaeClaw.setAlgaeCollectorVel(1);
+        algaeClaw.changeEndeffectorIsUp();
       }
       else{
         algaeClaw.setAlgaeCollectorVel(-1);
+        algaeClaw.changeEndeffectorIsUp();
       }
     }
     else{

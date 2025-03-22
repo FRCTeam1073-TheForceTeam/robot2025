@@ -21,9 +21,9 @@ import frc.robot.subsystems.OI;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SmartAlign extends SequentialCommandGroup {
+  private static int slot;
   public static Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator elevator, Lidar lidar, AprilTagFinder aprilTagFinder, OI oi){
     int tag = fieldMap.getBestReefTagID(localizer.getPose());
-    int slot = 0;
     if (oi.getDriverXButton())
     {
       slot = -1;

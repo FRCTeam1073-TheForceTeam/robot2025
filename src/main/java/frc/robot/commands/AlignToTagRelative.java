@@ -27,7 +27,7 @@ public class AlignToTagRelative extends Command
   // Localizer localizer;
   // FieldMap fieldMap;
   // MapDisplay mapDisplay;
-  int slot = 0;
+  int slot;
 
   Pose2d targetLocation; // Last location we've seen the tag in ODOMETRY coordinates.
   Transform2d offset;

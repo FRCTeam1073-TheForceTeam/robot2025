@@ -114,22 +114,22 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-    if (oi.getDriverXButton())
-    {
-      slot = -1;
-    }
-    else if (oi.getDriverAButton())
-    {
-      slot = 0;
-    }
-    else if (oi.getDriverYButton())
-    {
-      slot = 1;
-    }
-    else if (oi.getDriverViewButton())
-    {
-      slot = 2;
-    }
+    // if (oi.getDriverXButton())
+    // {
+    //   slot = -1;
+    // }
+    // else if (oi.getDriverAButton())
+    // {
+    //   slot = 0;
+    // }
+    // else if (oi.getDriverYButton())
+    // {
+    //   slot = 1;
+    // }
+    // else if (oi.getDriverViewButton())
+    // {
+    //   slot = 2;
+    // }
 
     if (aprilTagID == -1)
     {
@@ -183,7 +183,7 @@ public class AlignToTag extends Command
   @Override
   public boolean isFinished() {
     if(terminate){
-      return xError < 0.15 && yError < 0.13 && wError < 0.11;
+      return Math.sqrt((xError * xError) + (yError * yError)) < 0.20 && wError < 20 * Math.PI / 180;
     }
     return false;
   }

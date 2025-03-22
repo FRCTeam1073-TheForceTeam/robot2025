@@ -5,39 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OI;
-import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralEndeffectorTeleop extends Command {
-
-  CoralEndeffector endeffector;
-  OI oi;
-
-  /** Creates a new CoralEndeffectorTeleop. */
-  public CoralEndeffectorTeleop(CoralEndeffector Endeffector, OI Oi){
+public class Dummy extends Command {
+  /** Creates a new Dummy. */
+  public Dummy() {
     // Use addRequirements() here to declare subsystem dependencies.
-    endeffector = Endeffector;
-    oi = Oi;
-    addRequirements(endeffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // auto loads coral if coral fed
-    if(endeffector.getCoralFed() && !endeffector.getHasCoral()){
-      endeffector.setVelocity(10);
-    }
-    else {
-      endeffector.setVelocity(0);
-    }
+    System.out.println("Boom");
   }
 
   // Called once the command ends or is interrupted.

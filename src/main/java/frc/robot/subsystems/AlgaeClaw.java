@@ -199,13 +199,17 @@ public class AlgaeClaw extends SubsystemBase {
     algaeCollectMotor.setNeutralMode(NeutralModeValue.Coast);
     endeffectorRotateMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    CurrentLimitsConfigs motorCurrentLimitsConfigs = new CurrentLimitsConfigs(); //TODO check if these next 4 lines need to be copied
-    motorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                             .withSupplyCurrentLimit(15)
-                             .withSupplyCurrentLowerTime(0.25);
+    CurrentLimitsConfigs algaeCollectMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    algaeCollectMotorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+                                         .withSupplyCurrentLimit(15)
+                                         .withSupplyCurrentLowerTime(0.25);
+    CurrentLimitsConfigs endeffectorRotateMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
+    endeffectorRotateMotorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
+                                         .withSupplyCurrentLimit(15)
+                                         .withSupplyCurrentLowerTime(0.25);
 
-    algaeCollectMotor.getConfigurator().apply(motorCurrentLimitsConfigs);
-    endeffectorRotateMotor.getConfigurator().apply(motorCurrentLimitsConfigs);
+    algaeCollectMotor.getConfigurator().apply(algaeCollectMotorCurrentLimitsConfigs);
+    endeffectorRotateMotor.getConfigurator().apply(endeffectorRotateMotorCurrentLimitsConfigs);
    
     algaeCollectMotor.setPosition(0);
     endeffectorRotateMotor.setPosition(0);

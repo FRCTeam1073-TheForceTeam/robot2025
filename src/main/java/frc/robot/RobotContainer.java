@@ -39,6 +39,7 @@ import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralElevator;
@@ -66,6 +67,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
+  private final AlgaeClaw m_algaeClaw = new AlgaeClaw();
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);

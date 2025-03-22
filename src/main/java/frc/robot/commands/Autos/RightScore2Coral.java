@@ -33,14 +33,14 @@ public class RightScore2Coral
     {
         Pose2d tag8RightPose = map.getTagRelativePose(8, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
-        Pose2d tag8RightApproachPose = map.getTagRelativePose(8, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag8RightApproachPose = map.getTagRelativePose(8, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag9LeftApproachPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag2Pose = map.getTagRelativePose(2, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Pose2d tag17RightPose = map.getTagRelativePose(17, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag22LeftPose = map.getTagRelativePose(22, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
-        Pose2d tag17RightApproachPose = map.getTagRelativePose(17, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
+        Pose2d tag17RightApproachPose = map.getTagRelativePose(17, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag22LeftApproachPose = map.getTagRelativePose(22, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag12Pose = map.getTagRelativePose(12, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
@@ -72,10 +72,12 @@ public class RightScore2Coral
         ArrayList<Segment> segments1 = new ArrayList<Segment>();
         ArrayList<Segment> segments2 = new ArrayList<Segment>();
         ArrayList<Segment> segments3 = new ArrayList<Segment>();
+        ArrayList<Segment> segments4 = new ArrayList<Segment>();
 
         Path path1;
         Path path2;
         Path path3;
+        Path path4;
 
         int localTagID;
         int localTagID2;
@@ -89,12 +91,16 @@ public class RightScore2Coral
             segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
             // segments3.add(new Segment(tag2, redI1, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments3.add(new Segment(tag2, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            segments3.add(new Segment(tag2, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             // segments3.add(new Segment(tag9LApproach, tag9L, tag9LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+
+            segments4.add(new Segment(tag8R, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
 
             path1 = new Path(segments1, tag9LeftPose.getRotation().getRadians());
             path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag8RightApproachPose.getRotation().getRadians());
+            path4 = new Path(segments4, tag2Pose.getRotation().getRadians());
+
             localTagID = 8;
             localTagID2 = 9;
         }
@@ -107,12 +113,16 @@ public class RightScore2Coral
             segments2.add(new Segment(blueI1, tag12, tag12Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
             // segments3.add(new Segment(tag12, blueI1, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
-            segments3.add(new Segment(tag12, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            segments3.add(new Segment(tag12, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             // segments3.add(new Segment(tag22LApproach, tag22L, tag22LeftPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+
+            segments4.add(new Segment(tag17R, tag12, tag12Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
 
             path1 = new Path(segments1, tag22LeftPose.getRotation().getRadians());
             path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag17RightApproachPose.getRotation().getRadians());
+            path4 = new Path(segments4, tag12Pose.getRotation().getRadians());
+
             localTagID = 17;
             localTagID2 = 22;
         }
@@ -141,7 +151,11 @@ public class RightScore2Coral
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(0.5))),
-            new ZeroElevator(elevator)
+            new ParallelCommandGroup(
+                new ZeroElevator(elevator),
+                new DrivePath(drivetrain, path4, localizer)
+            )
+            
         );
     }     
 }

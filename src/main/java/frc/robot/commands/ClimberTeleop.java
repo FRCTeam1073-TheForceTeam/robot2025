@@ -36,15 +36,17 @@ public class ClimberTeleop extends Command
     else{
       if(!oi.getOperatorAButton() && !oi.getOperatorBButton() && !oi.getOperatorMenuButton()){
         if(!climber.getIsAtZero()){
-          velocity = -climber.getMotorPosition();
-          if(velocity < 0){
-            MathUtil.clamp(velocity, -10, -5);
-          } else if(velocity > 0){
-            MathUtil.clamp(velocity, 5, 10);
+          if (climber.getEncoderPosition() > 0.04){
+            velocity = -10;
+          }
+          else{
+            velocity = 10;
           }
         }
       }
-      velocity = 0;
+      else{
+        velocity = 0;
+      }
     }
     climber.setCommandedVelocity(velocity);
   }

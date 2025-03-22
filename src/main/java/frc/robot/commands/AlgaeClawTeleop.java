@@ -25,11 +25,23 @@ public class AlgaeClawTeleop extends Command {
 
   @Override
   public void execute() {
-    if(oi.getIntakeAlgae()){
+    if(false/*oi.getIntakeAlgae()*/){
       algaeClaw.setAlgaeCollectorVel(.1);//TODO change velocities
     }
-    else if(oi.getScoreAlgae()){
+    else if(false/*oi.getScoreAlgae()*/){
       algaeClaw.setAlgaeCollectorVel(-.1);//TODO change velocities
+    }
+    else{
+      algaeClaw.setAlgaeCollectorVel(0);
+    }
+
+    if(false/*oi.algaeToggle*/){
+      if(algaeClaw.getIsEndeffectorRotatorUp()){
+        algaeClaw.setAlgaeCollectorVel(1);
+      }
+      else{
+        algaeClaw.setAlgaeCollectorVel(-1);
+      }
     }
     else{
       algaeClaw.setAlgaeCollectorVel(0);

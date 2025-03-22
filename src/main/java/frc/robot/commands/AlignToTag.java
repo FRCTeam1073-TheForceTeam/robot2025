@@ -36,6 +36,9 @@ public class AlignToTag extends Command
   double xVelocity;
   double yVelocity;
   double wVelocity;
+  double xError;
+  double yError;
+  double wError;
   int slot;
   boolean isRed;
   boolean terminate = false;
@@ -143,6 +146,10 @@ public class AlignToTag extends Command
     }
     SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
 
+    xError = Math.abs(targetPose.getX() - currentPose.getX());
+    yError = Math.abs(targetPose.getY() - currentPose.getY());
+    wError = Math.abs(targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians());
+
     if (targetPose == null)
     {
       return;
@@ -176,7 +183,7 @@ public class AlignToTag extends Command
   @Override
   public boolean isFinished() {
     if(terminate){
-      return Math.abs(localizer.getPose().getX() - targetPose.getX()) < 0.55;
+      return xError < 0.15 && yError < 0.13 && wError < 0.11;
     }
     return false;
   }

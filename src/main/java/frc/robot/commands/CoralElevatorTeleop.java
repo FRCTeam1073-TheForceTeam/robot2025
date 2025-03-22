@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.CoralElevator;
+import frc.robot.subsystems.OI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralElevatorTeleop extends Command {
@@ -33,6 +33,11 @@ public class CoralElevatorTeleop extends Command {
   public void execute() {
     velocity = oi.getOperatorLeftY() * 12.0;//TODO change controls
     elevator.setVelocity(velocity);
+    if(Math.abs(oi.getOperatorLeftY()) < 0.05 && !oi.getOperatorDPadDown() && !oi.getOperatorDPadLeft() && !oi.getOperatorDPadRight() && !oi.getOperatorDPadUp()){
+      if(!elevator.isCoralElevatorAtBottom()){
+        elevator.setVelocity(-25);
+      }
+    }
   }
   // Called once the command ends or is interrupted.
   @Override

@@ -12,9 +12,9 @@ public class AlgaeClawTeleop extends Command {
   AlgaeClaw algaeClaw;
   OI oi;
 
-  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI Oi) {
+  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
     algaeClaw = AlgaeClaw;
-    oi = Oi;
+    oi = OI;
     addRequirements(algaeClaw);
   }
 
@@ -26,27 +26,17 @@ public class AlgaeClawTeleop extends Command {
   @Override
   public void execute() {
     if(oi.getOperatorLoadAlgae()){
-      algaeClaw.setAlgaeCollectorVel(.1);//TODO change velocities
+      algaeClaw.setCollectorVel(0.5);//TODO change velocities
     }
     else if(oi.getOperatorScoreAlgae()){
-      algaeClaw.setAlgaeCollectorVel(-.1);
+      algaeClaw.setCollectorVel(-0.5);
     }
     else{
-      algaeClaw.setAlgaeCollectorVel(0);
+      algaeClaw.setCollectorVel(0);
     }
 
     if(oi.getOperatorAlgaeToggle()){
-      if(algaeClaw.getIsEndeffectorRotatorUp()){
-        algaeClaw.setAlgaeCollectorVel(1);
-        algaeClaw.changeEndeffectorIsUp();
-      }
-      else{
-        algaeClaw.setAlgaeCollectorVel(-1);
-        algaeClaw.changeEndeffectorIsUp();
-      }
-    }
-    else{
-      algaeClaw.setAlgaeCollectorVel(0);
+        algaeClaw.toggleIsUp();
     }
   }
 

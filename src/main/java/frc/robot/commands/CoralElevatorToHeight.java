@@ -12,13 +12,13 @@ import frc.robot.subsystems.OI;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralElevatorToHeight extends Command {
   CoralElevator elevator;
-  int branchLevel;
+  double branchLevel;
   double velocity;
   double targetHeight = 0.0;
   boolean terminate = false;
 
   /** Creates a new CoralElevatorToHeight. */
-  public CoralElevatorToHeight(CoralElevator elevator, int branchLevel, boolean terminate) {
+  public CoralElevatorToHeight(CoralElevator elevator, double branchLevel, boolean terminate) {
     this.elevator = elevator;
     this.branchLevel = branchLevel;
     this.terminate = terminate;
@@ -37,6 +37,9 @@ public class CoralElevatorToHeight extends Command {
     }
     else if (branchLevel == 4){
       targetHeight = 1.91;
+    }
+    else {
+      targetHeight = branchLevel;
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);

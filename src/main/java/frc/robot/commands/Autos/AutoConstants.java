@@ -5,6 +5,7 @@ public class AutoConstants {
     public static final double scoreOffsetX = 0.38;
     public static final double scoreApproachOffsetX = 0.75;
 
+    public static final double algaeScoreOffsetX = 0.38;
 
     public static final double blendRaidus = 0.15;
 

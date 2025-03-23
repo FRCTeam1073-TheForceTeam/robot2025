@@ -45,13 +45,13 @@ public class AlgaeClaw extends SubsystemBase {
 
   private double rotateVel;
   private double commandedRotateVel;
-  private double rotatePos;
+  private double rotatePos; //TODO: what units is this in (get gear ratio)
   private double rotateLoad;
 
   private boolean hasAlgae;
   private boolean collectBrakeMode = true;
   private boolean rotateBrakeMode = true;
-  private boolean endeffectorIsUp = true;
+  private boolean isUp = true;
   private boolean velocityMode = true;
 
   private TalonFX collectMotor;
@@ -67,11 +67,12 @@ public class AlgaeClaw extends SubsystemBase {
     collectBrakeMode = true;
     rotateBrakeMode = true;
     velocityMode = true;
+    isUp = true;
 
     commandedRotateVel = 0.0;
     commandedCollectVel = 0.0;
 
-    collectVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+    collectVelocityVoltage = new VelocityVoltage(0);
     rotateVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotatePositionController = new MotionMagicVoltage(0).withSlot(1);
 
@@ -88,78 +89,94 @@ public class AlgaeClaw extends SubsystemBase {
     rotateLoad = rotateMotor.getTorqueCurrent().getValueAsDouble();
 
     if (rotatePos >= rotateMaxPos){
-      commandedRotateVel = Math.min(commandedRotateVel, 0); //TODO: this is where we need the with slot
+      commandedRotateVel = Math.min(commandedRotateVel, 0); 
     }
     if (rotatePos <= rotateMinPos){
       commandedRotateVel = Math.max(commandedRotateVel, 0);
     }
 
     collectMotor.setControl(collectVelocityVoltage.withVelocity(commandedCollectVel));
-    rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel));
 
-    SmartDashboard.putNumber("[AlgaeClaw]/ algae collect velocity", collectVel);
-    SmartDashboard.putNumber("[AlgaeClaw]/ algae collect commanded velocity", commandedCollectVel);
-    SmartDashboard.putNumber("[AlgaeClaw]/ endeffector rotate velocity", rotateVel);
-    SmartDashboard.putNumber("[AlgaeClaw]/ endeffector rotate position", rotatePos);
-    SmartDashboard.putNumber("[AlgaeClaw]/ endeffector rotate commanded velocity", commandedRotateVel);
-    SmartDashboard.putBoolean("[AlgaeClaw]/ has algae", hasAlgae);
+    if(velocityMode) {
+      rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
+    }
+    else {
+      rotateMotor.setControl(rotatePositionController.withPosition(commandedRotateVel).withSlot(1));
+    }
+
+    SmartDashboard.putNumber("AlgaeClaw/Collect Velocity", collectVel);
+    SmartDashboard.putNumber("AlgaeClaw/Collect Commanded Velocity", commandedCollectVel);
+    SmartDashboard.putNumber("AlgaeClaw/Collect Motor Load", collectLoad);
+    SmartDashboard.putBoolean("AlgaeClaw/Collect Break Mode", collectBrakeMode);
+    SmartDashboard.putNumber("AlgaeClaw/Rotate Velocity", rotateVel);
+    SmartDashboard.putNumber("AlgaeClaw/Rotate Commanded Velocity", commandedRotateVel);
+    SmartDashboard.putNumber("AlgaeClaw/Rotate Position", rotatePos);
+    SmartDashboard.putNumber("AlgaeClaw/Rotate Motor Load", rotateLoad);
+    SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", rotateBrakeMode);
+    SmartDashboard.putBoolean("AlgaeClaw/Has Algae", hasAlgae);
+    SmartDashboard.putBoolean("AlgaeClaw/Is Up", isUp);
   }
 
-  public void setAlgaeCollectorVel(double newVel){
+  public void setCollectorVel(double newVel){
     commandedCollectVel = newVel;
   }
 
-  public void setEndeffectorRotatorVel(double newVel){
+  public void setRotatorVel(double newVel){
     commandedRotateVel = newVel;
   }
 
-  public void zeroEndeffectorRotator(){
-    if(!this.getIsEndeffectorRotatorAtZero()){
-      commandedRotateVel = -1;
+  public void zeroRotator(){
+    rotatePos = 0.0;
+    rotateMotor.setPosition(0);
+  }
+
+  public void toggleIsUp(){
+    if(isUp) {
+      rotateMotor.setPosition(28.476);
     }
+    else if(!isUp) {
+      rotateMotor.setPosition(8.7);
+    }
+    isUp = !isUp;
   }
 
-  public void changeEndeffectorIsUp(){
-    endeffectorIsUp = !endeffectorIsUp;
-  }
-
-  public void setAlgaeCollectorMotorBrakeMode(boolean mode){
+  public void setCollectorBrakeMode(boolean mode){
     if(mode){
       collectMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else{
       collectMotor.setNeutralMode(NeutralModeValue.Coast);
     }
-    brakeMode = mode;
+    collectBrakeMode = mode;
   }
 
-  public void setEndeffectorRotateMotorBrakeMode(boolean mode){
+  public void setRotateBrakeMode(boolean mode){
     if(mode){
       rotateMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else{
       rotateMotor.setNeutralMode(NeutralModeValue.Coast);
     }
-    endeffectorRotateBrakeMode = mode;
+    rotateBrakeMode = mode;
   }
 
-  public double getAlgaeCollectorVelocity(){
+  public double getCollectorVelocity(){
     return collectVel;
   }
 
-  public double getAlgaeCollectorLoad(){
+  public double getCollectorLoad(){
     return collectLoad;
   }
 
-  public double getEndeffectorRotatorVelocity(){
+  public double getRotatorVelocity(){
     return rotateVel;
   }
 
-  public double getEndeffectorRotatorPosition(){
+  public double getRotatorPosition(){
     return rotatePos;
   }
 
-  public double getEndeffectorRotatorLoad(){
+  public double getRotatorLoad(){
     return rotateLoad;
   }
 
@@ -167,20 +184,20 @@ public class AlgaeClaw extends SubsystemBase {
     return hasAlgae;
   }
 
-  public boolean getIsEndeffectorRotatorAtZero(){
+  public boolean getIsAtZero(){
     return rotatePos <= .01;
   }
 
-  public boolean getIsEndeffectorRotatorUp(){
-    return endeffectorIsUp;
+  public boolean getIsUp(){
+    return isUp;
   }
 
-  public boolean getEndeffectorRotatorBrakeMode(){
-    return endeffectorRotateBrakeMode;
+  public boolean getRotatorBrakeMode(){
+    return rotateBrakeMode;
   }
 
-  public boolean getAlgaeCollectorBrakeMode(){
-    return brakeMode;
+  public boolean getCollectorBrakeMode(){
+    return collectBrakeMode;
   }
 
   public void configureHardware()
@@ -190,57 +207,43 @@ public class AlgaeClaw extends SubsystemBase {
     collectMotor.getConfigurator().apply(motorConfig);
     rotateMotor.getConfigurator().apply(motorConfig);
 
-    var algaeCollectmmConfigs = motorConfig.MotionMagic;
     var endeffectorRotatemmConfigs = motorConfig.MotionMagic;
-    algaeCollectmmConfigs.MotionMagicCruiseVelocity = 100;
-    algaeCollectmmConfigs.MotionMagicAcceleration = 100;
-    algaeCollectmmConfigs.MotionMagicJerk = 100;
-    endeffectorRotatemmConfigs.MotionMagicCruiseVelocity = 100;
-    endeffectorRotatemmConfigs.MotionMagicAcceleration = 100;
-    endeffectorRotatemmConfigs.MotionMagicJerk = 100;
+    endeffectorRotatemmConfigs.MotionMagicCruiseVelocity = 20; //TODO: tune numbers
+    endeffectorRotatemmConfigs.MotionMagicAcceleration = 40;
+    endeffectorRotatemmConfigs.MotionMagicJerk = 400;
 
-    var algaeCollectMotorClosedLoopConfig = new SlotConfigs();
-    algaeCollectMotorClosedLoopConfig.withKP(collectMotorKP);
-    algaeCollectMotorClosedLoopConfig.withKI(collectMotorKI);
-    algaeCollectMotorClosedLoopConfig.withKD(collectMotorKD);
-    algaeCollectMotorClosedLoopConfig.withKV(collectMotorKV);
+    var collectMotorClosedLoopConfig = new SlotConfigs();
+    var rotateMotorClosedLoop0Config = motorConfig.Slot0;
+    var rotateMotorClosedLoop1Config = motorConfig.Slot1;
 
-    collectMotor.getConfigurator().apply(algaeCollectMotorClosedLoopConfig, 0.5);
+    collectMotorClosedLoopConfig.withKP(collectMotorKP);
+    collectMotorClosedLoopConfig.withKI(collectMotorKI);
+    collectMotorClosedLoopConfig.withKD(collectMotorKD);
+    collectMotorClosedLoopConfig.withKV(collectMotorKV);
 
-    var endeffectorRotateMotorClosedLoopConfigZero = motorConfig.Slot0;
-    endeffectorRotateMotorClosedLoopConfigZero.withKP(rotateVelKP);
-    endeffectorRotateMotorClosedLoopConfigZero.withKI(rotateVelKI);
-    endeffectorRotateMotorClosedLoopConfigZero.withKD(rotateVelKD);
-    endeffectorRotateMotorClosedLoopConfigZero.withKV(rotateVelKV);
+    rotateMotorClosedLoop0Config.withKP(rotateVelKP);
+    rotateMotorClosedLoop0Config.withKI(rotateVelKI);
+    rotateMotorClosedLoop0Config.withKD(rotateVelKD);
+    rotateMotorClosedLoop0Config.withKV(rotateVelKV);
 
-    rotateMotor.getConfigurator().apply(endeffectorRotateMotorClosedLoopConfigZero, .5);
+    rotateMotorClosedLoop1Config.withKP(rotatePosKP);
+    rotateMotorClosedLoop1Config.withKI(rotatePosKI);
+    rotateMotorClosedLoop1Config.withKD(rotatePoKD);
+    rotateMotorClosedLoop1Config.withKV(rotatePosKV);
 
-    var endeffectorRotateMotorClosedLoopConfigOne = motorConfig.Slot1;
-    endeffectorRotateMotorClosedLoopConfigOne.withKP(rotatePosKP);
-    endeffectorRotateMotorClosedLoopConfigOne.withKI(rotatePosKI);
-    endeffectorRotateMotorClosedLoopConfigOne.withKD(rotatePoKD);
-    endeffectorRotateMotorClosedLoopConfigOne.withKV(rotatePosKV);
+    motorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+    .withSupplyCurrentLimit(15)
+    .withSupplyCurrentLowerTime(0.25);
 
-    rotateMotor.getConfigurator().apply(endeffectorRotateMotorClosedLoopConfigOne, .5);
+    collectMotor.getConfigurator().apply(motorConfig, 0.5);
+    rotateMotor.getConfigurator().apply(motorConfig, 0.5);
 
     collectMotor.setNeutralMode(NeutralModeValue.Coast);
     rotateMotor.setNeutralMode(NeutralModeValue.Coast);
-
-    CurrentLimitsConfigs algaeCollectMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-    algaeCollectMotorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                                         .withSupplyCurrentLimit(15)
-                                         .withSupplyCurrentLowerTime(0.25);
-    CurrentLimitsConfigs endeffectorRotateMotorCurrentLimitsConfigs = new CurrentLimitsConfigs();
-    endeffectorRotateMotorCurrentLimitsConfigs.withSupplyCurrentLimitEnable(true)
-                                         .withSupplyCurrentLimit(15)
-                                         .withSupplyCurrentLowerTime(0.25);
-
-    collectMotor.getConfigurator().apply(algaeCollectMotorCurrentLimitsConfigs);
-    rotateMotor.getConfigurator().apply(endeffectorRotateMotorCurrentLimitsConfigs);
    
     collectMotor.setPosition(0);
     rotateMotor.setPosition(0);
 
-    System.out.println("AlgaeCollector & EndeffectorRotator: Configured");
+    System.out.println("Algae Collector & Rotator: Configured");
   }
 }

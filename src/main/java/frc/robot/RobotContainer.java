@@ -196,14 +196,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger dummyButton = new Trigger(m_OI::getDummyButton);
       dummyButton.whileTrue(cmd_dummy);
 
-    /*Trigger removeAlgaeL2 = new Trigger(m_OI::getOperatorLeftTrigger);
-      removeAlgaeL2.whileTrue(cmd_removeAlgaeL2);
-
-    Trigger removeAlgaeL3 = new Trigger(m_OI::getOperatorRightTrigger);
-      removeAlgaeL3.whileTrue(cmd_RemoveAlgaeL3);*/
-
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
+
   }
 
   public void autonomousInit()
@@ -255,9 +250,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, false);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_algaeClaw, m_lidar, false);
       case centerPositionX:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, true);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_algaeClaw, m_lidar, true);
       default:
         return null;
     }

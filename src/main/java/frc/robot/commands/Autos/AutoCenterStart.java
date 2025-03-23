@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.Localizer;
 public class AutoCenterStart 
 {
     public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
-                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, boolean xversion)
+                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, AlgaeClaw algaeClaw, Lidar lidar, boolean xversion)
     {
         switch (level)
         {
@@ -37,6 +38,8 @@ public class AutoCenterStart
                else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
                return CenterScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+            case 6:
+               return CenterCoralAndBarge.create(isRed, drivetrain, map, localizer, endEffector, elevator, algaeClaw, lidar, 4);
             default:
                return new WaitCommand(0);
         }

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
@@ -18,23 +19,23 @@ import frc.robot.subsystems.Localizer;
 public class AutoCenterStart 
 {
     public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
-                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, boolean xversion)
+                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, boolean xversion)
     {
         switch (level)
         {
             case 0: 
                return Leave.create(isRed, drivetrain, localizer, climber);
             case 1: 
-               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 1);
+               return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 1);
             case 2:
                if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
-               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 2);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 2);
             case 3:
                if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
-               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 3);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 3);
             case 4:
                if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
-               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 4);
             case 5:
                return CenterScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             default:

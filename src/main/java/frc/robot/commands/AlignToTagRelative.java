@@ -233,7 +233,7 @@ public class AlignToTagRelative extends Command
     if (missCounter >= 12) return true;
 
     // We're basically there so we succeeded.
-    if (xError < 0.05 && yError < 0.03 && wError < 0.01)
+    if (xError < 0.05 && yError < 0.02 && wError < 0.01)
       return true;
     else
       return false;

@@ -115,14 +115,7 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-      if (slot != 2)
-      {
-        targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.65, 0, new Rotation2d(Math.PI)));
-      }
-      else
-      {
-        targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
-      }
+    targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(0)));
 
     SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
 

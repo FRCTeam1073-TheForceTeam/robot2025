@@ -102,11 +102,25 @@ public class AlignToTag extends Command
     xController.reset();
     yController.reset();
     thetaController.reset();
+    
     if(slot != 2){
       aprilTagID = fieldMap.getBestReefTagID(localizer.getPose());
     } else{
       aprilTagID = fieldMap.getBestSourceTagID(localizer.getPose(), isRed);
     }
+
+    if(slot == -1){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+    } 
+    else if(slot == 0){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+    } 
+    else if(slot == 1){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, -0.1, new Rotation2d(Math.PI)));
+    }
+    else if(slot == 2){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(0)));
+    } 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -115,7 +129,6 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-    targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(0)));
 
     SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
 

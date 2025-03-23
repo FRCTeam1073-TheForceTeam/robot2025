@@ -207,8 +207,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     
     Trigger tagRightAlign = new Trigger(m_OI::getDriverYButton);
       tagRightAlign.whileTrue(cmd_smartAlignReefRight);
-    
-
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);

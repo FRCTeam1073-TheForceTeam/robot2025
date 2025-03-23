@@ -20,11 +20,11 @@ if joystick_count == 0:
 	print("No joysticks found.")
 	pygame.QUIT
 else:
-	#joystickPrimary = pygame.joystick.Joystick(0)
+	joystickPrimary = pygame.joystick.Joystick(0)
 	joystickSecondary = pygame.joystick.Joystick(1)
-	#joystickPrimary.init()
+	joystickPrimary.init()
 	joystickSecondary.init()
-	#print(f"Joystick Primary {joystickPrimary.get_name()} initialized")
+	print(f"Joystick Primary {joystickPrimary.get_name()} initialized")
 	print(f"Joystick Secondary {joystickSecondary.get_name()} initialized")
 
 while running:
@@ -33,9 +33,8 @@ while running:
 			running = False
 		if event.type == pygame.JOYBUTTONDOWN:
 			print("Button pressed:", event.button)
-			print(  event.type)
-
-			if(event.button == 6):
+			
+			if(event.button == 6 and event.joy == 1):
 				sound.play()
 
 		if event.type == pygame.JOYBUTTONUP:

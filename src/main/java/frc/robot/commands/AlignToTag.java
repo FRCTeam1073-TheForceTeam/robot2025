@@ -45,7 +45,7 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, boolean terminate, int slot) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, boolean terminate, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
@@ -53,6 +53,7 @@ public class AlignToTag extends Command
     this.fieldMap = fieldMap;
     this.mapDisplay = mapDisplay;
     this.terminate = terminate;
+    aprilTagID = tagID;
     xVelocity = 0;
     yVelocity = 0;
     wVelocity = 0;
@@ -102,12 +103,6 @@ public class AlignToTag extends Command
     xController.reset();
     yController.reset();
     thetaController.reset();
-    
-    if(slot != 2){
-      aprilTagID = fieldMap.getBestReefTagID(localizer.getPose());
-    } else{
-      aprilTagID = fieldMap.getBestSourceTagID(localizer.getPose(), isRed);
-    }
 
     if(slot == -1){
       targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
@@ -119,7 +114,7 @@ public class AlignToTag extends Command
       targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, -0.1, new Rotation2d(Math.PI)));
     }
     else if(slot == 2){
-      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(0)));
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.50, 0, new Rotation2d(0)));
     } 
   }
 
@@ -160,7 +155,7 @@ public class AlignToTag extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    aprilTagID = -1;
+    //aprilTagID = -1;
     targetPose = null;
     System.out.println("Terminated Global Align");
   }
@@ -169,7 +164,7 @@ public class AlignToTag extends Command
   @Override
   public boolean isFinished() {
     if(terminate){
-      return Math.sqrt((xError * xError) + (yError * yError)) < 0.20 && wError < 20 * Math.PI / 180;
+      return Math.sqrt((xError * xError) + (yError * yError)) < 0.47 && wError < 25 * Math.PI / 180;
     }
     return false;
   }

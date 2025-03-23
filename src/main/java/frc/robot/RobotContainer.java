@@ -79,7 +79,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay,  true, -1);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
@@ -87,13 +87,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   //private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
-  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_fieldMap, 0);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
-  private final Command cmd_smartAlignReefLeft = SmartAlign.create(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
-  private final Command cmd_smartAlignReefRight = SmartAlign.create(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
-  private final Command cmd_smartAlignSource = SmartAlign.create(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
-  private final Command cmd_smartAlignReefCenter = SmartAlign.create(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
+  private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
+  private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
+  private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
+  private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
 
   private boolean isRed;
   private int level;

@@ -126,7 +126,7 @@ public class LeftScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
-            new AlignToTagRelative(drivetrain, finder, localTagID2, 1),
+            new AlignToTagRelative(drivetrain, finder, map, 1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
@@ -139,7 +139,7 @@ public class LeftScore2Coral
             // TODO: Load and drive in parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new AlignToTagRelative(drivetrain, finder, localTagID, -1),
+            new AlignToTagRelative(drivetrain, finder, map, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

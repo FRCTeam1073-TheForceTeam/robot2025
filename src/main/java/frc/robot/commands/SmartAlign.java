@@ -22,30 +22,13 @@ import frc.robot.subsystems.OI;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SmartAlign extends SequentialCommandGroup {
   private static int slot;
-  public static Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator elevator, Lidar lidar, AprilTagFinder aprilTagFinder, OI oi){
-    int tag = fieldMap.getBestReefTagID(localizer.getPose());
-    if (oi.getDriverXButton())
-    {
-      slot = -1;
-    }
-    else if (oi.getDriverAButton())
-    {
-      slot = 0;
-    }
-    else if (oi.getDriverYButton())
-    {
-      slot = 1;
-    }
-    else if (oi.getDriverViewButton())
-    {
-      slot = 2;
-    }
+  public static Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator elevator, Lidar lidar, AprilTagFinder aprilTagFinder, int slot){
     return 
     new ParallelRaceGroup(
       new CoralElevatorToHeight(elevator, 1, false),
       new SequentialCommandGroup(
-        new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, oi, true, slot),
-        new AlignToTagRelative(drivetrain, aprilTagFinder, tag, slot),
+        new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, slot),
+        new AlignToTagRelative(drivetrain, aprilTagFinder, fieldMap, slot),
         new LidarAlign(lidar, drivetrain))
     );
   }

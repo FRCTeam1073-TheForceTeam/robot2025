@@ -38,7 +38,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |  Button/Joystick | Function/Command               |
 |------------------|--------------------------------|
 |A/P3              |AlignToTag Center               |
-|B/P1              |Lidar Align                     |
+|B/P1              |AlignToTag Source               |
 |X/P4              |AlignToTag Left                 |
 |Y/P2              |AlignToTag Right                |
 |LeftJoystick      |Translation                     |

@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
@@ -28,7 +30,7 @@ public class AlignToTagRelative extends Command
   // FieldMap fieldMap;
   // MapDisplay mapDisplay;
   int slot;
-
+  boolean isRed = false;
   Pose2d targetLocation; // Last location we've seen the tag in ODOMETRY coordinates.
   Transform2d offset;
   Pose2d currentPose;
@@ -43,20 +45,21 @@ public class AlignToTagRelative extends Command
   double wError = 0.0;
   int missCounter = 0;
   ChassisSpeeds speeds;
+  FieldMap fieldMap;
 
 
   private final static double maximumLinearVelocity = 1.5;   // Meters/second
   private final static double maximumRotationVelocity = 1.5; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagID, int slot) 
+  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, FieldMap fieldMap, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.finder = finder; 
-    this.aprilTagID = tagID;
     this.slot = slot;
     this.currentPose = new Pose2d();
+    this.fieldMap = fieldMap;
 
     speeds = new ChassisSpeeds();
 
@@ -83,6 +86,20 @@ public class AlignToTagRelative extends Command
     );
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
+    if(DriverStation.getAlliance().isPresent())
+    {
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if (alliance == Alliance.Red)
+      {
+        isRed = true;
+      }
+      else
+      {
+        isRed = false;
+      }
+    }
+
     addRequirements(drivetrain);
   }
 
@@ -90,6 +107,11 @@ public class AlignToTagRelative extends Command
   @Override
   public void initialize() 
   {
+    if(slot != 2){
+      aprilTagID = fieldMap.getBestReefTagID(drivetrain.getOdometry());
+    } else{
+      aprilTagID = fieldMap.getBestSourceTagID(drivetrain.getOdometry(), isRed);
+    }
     SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
     
     double yOffset = 0.165;

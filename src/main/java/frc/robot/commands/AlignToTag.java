@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.FieldMap;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -27,7 +26,6 @@ public class AlignToTag extends Command
   Localizer localizer;
   FieldMap fieldMap;
   MapDisplay mapDisplay;
-  OI oi;
   int aprilTagID;
   Pose2d targetPose;
   PIDController xController;
@@ -47,14 +45,13 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi, boolean terminate, int slot) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, boolean terminate, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     this.fieldMap = fieldMap;
     this.mapDisplay = mapDisplay;
-    this.oi = oi;
     this.terminate = terminate;
     xVelocity = 0;
     yVelocity = 0;
@@ -105,7 +102,11 @@ public class AlignToTag extends Command
     xController.reset();
     yController.reset();
     thetaController.reset();
-    aprilTagID = -1;
+    if(slot != 2){
+      aprilTagID = fieldMap.getBestReefTagID(localizer.getPose());
+    } else{
+      aprilTagID = fieldMap.getBestSourceTagID(localizer.getPose(), isRed);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -114,36 +115,15 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-    // if (oi.getDriverXButton())
-    // {
-    //   slot = -1;
-    // }
-    // else if (oi.getDriverAButton())
-    // {
-    //   slot = 0;
-    // }
-    // else if (oi.getDriverYButton())
-    // {
-    //   slot = 1;
-    // }
-    // else if (oi.getDriverViewButton())
-    // {
-    //   slot = 2;
-    // }
-
-    if (aprilTagID == -1)
-    {
       if (slot != 2)
       {
-        aprilTagID = fieldMap.getBestReefTagID(currentPose);
         targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.65, 0, new Rotation2d(Math.PI)));
       }
       else
       {
-        aprilTagID = fieldMap.getBestSourceTagID(currentPose, isRed);
         targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
       }
-    }
+
     SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
 
     xError = Math.abs(targetPose.getX() - currentPose.getX());

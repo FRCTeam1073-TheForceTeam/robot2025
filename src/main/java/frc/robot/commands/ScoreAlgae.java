@@ -15,6 +15,7 @@ public class ScoreAlgae extends Command {
   public ScoreAlgae(AlgaeClaw algaeClaw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeClaw = algaeClaw;
+    addRequirements(algaeClaw);
   }
 
   // Called when the command is initially scheduled.
@@ -24,10 +25,6 @@ public class ScoreAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(algaeClaw.getIsUp()) {
-      algaeClaw.toggleIsUp();
-    }
-    algaeClaw.setRotateBrakeMode(true);
     algaeClaw.setCollectorVel(-1);
   }
 
@@ -35,16 +32,11 @@ public class ScoreAlgae extends Command {
   @Override
   public void end(boolean interrupted) {
     algaeClaw.setCollectorVel(0);
-    algaeClaw.setRotateBrakeMode(false);
-    algaeClaw.toggleIsUp();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(!algaeClaw.getHasAlgae()) {
-      return true;
-    }
     return false;
   }
 }

@@ -29,15 +29,17 @@ public class AlgaeClaw extends SubsystemBase {
   private final double collectMotorKD = 0;
   private final double collectMotorKV = 0.12;
 
-  private final double rotateVelKP = 0.15;
-  private final double rotateVelKI = 0;
-  private final double rotateVelKD = 0;
+  private final double rotateVelKP = 0.2;
+  private final double rotateVelKI = 0.01;
+  private final double rotateVelKD = 0.0;
   private final double rotateVelKV = 0.12;
+  private final double rotateVelKA = 0.01;
 
-  private final double rotatePosKP = 0.15;
-  private final double rotatePosKI = 0;
-  private final double rotatePoKD = 0;
+  private final double rotatePosKP = 0.2;
+  private final double rotatePosKI = 01;
+  private final double rotatePoKD = 0.0;
   private final double rotatePosKV = 0.12;
+  private final double rotatePosKA = 0.01;
 
   private double collectVel;
   private double commandedCollectVel;
@@ -45,7 +47,8 @@ public class AlgaeClaw extends SubsystemBase {
 
   private double rotateVel;
   private double commandedRotateVel;
-  private double rotatePos; //TODO: what units is this in (get gear ratio)
+  private double commandedRotatePos;
+  private double rotatePos;
   private double rotateLoad;
 
   private boolean hasAlgae;
@@ -95,6 +98,10 @@ public class AlgaeClaw extends SubsystemBase {
       commandedRotateVel = Math.max(commandedRotateVel, 0);
     }
 
+    if(rotatePos >= 0.1) {
+      isUp = false;
+    }
+
     collectMotor.setControl(collectVelocityVoltage.withVelocity(commandedCollectVel));
 
     if(velocityMode) {
@@ -122,22 +129,28 @@ public class AlgaeClaw extends SubsystemBase {
   }
 
   public void setRotatorVel(double newVel){
+    velocityMode = true;
     commandedRotateVel = newVel;
+  }
+
+  public void setRotatorPos(double position) {
+    velocityMode = false;
+    commandedRotatePos = position;
+  }
+
+  public void toggleIsUp() {
+    if(!isUp) {
+      setRotatorPos(8.7);
+    }
+    else{
+      setRotatorPos(28.476);
+    }
+    isUp = !isUp;
   }
 
   public void zeroRotator(){
     rotatePos = 0.0;
     rotateMotor.setPosition(0);
-  }
-
-  public void toggleIsUp(){
-    if(isUp) {
-      rotateMotor.setPosition(28.476);
-    }
-    else if(!isUp) {
-      rotateMotor.setPosition(8.7);
-    }
-    isUp = !isUp;
   }
 
   public void setCollectorBrakeMode(boolean mode){
@@ -202,19 +215,19 @@ public class AlgaeClaw extends SubsystemBase {
 
   public void configureHardware()
   {
-    var motorConfig = new TalonFXConfiguration();
-    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    collectMotor.getConfigurator().apply(motorConfig);
-    rotateMotor.getConfigurator().apply(motorConfig);
+    var rotateMotorConfig = new TalonFXConfiguration();
+    var collectMotorConfig = new TalonFXConfiguration();
+    rotateMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    collectMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-    var endeffectorRotatemmConfigs = motorConfig.MotionMagic;
-    endeffectorRotatemmConfigs.MotionMagicCruiseVelocity = 20; //TODO: tune numbers
-    endeffectorRotatemmConfigs.MotionMagicAcceleration = 40;
-    endeffectorRotatemmConfigs.MotionMagicJerk = 400;
+    var rotatemmConfigs = rotateMotorConfig.MotionMagic;
+    rotatemmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
+    rotatemmConfigs.MotionMagicAcceleration = 100;
+    rotatemmConfigs.MotionMagicJerk = 800;
 
     var collectMotorClosedLoopConfig = new SlotConfigs();
-    var rotateMotorClosedLoop0Config = motorConfig.Slot0;
-    var rotateMotorClosedLoop1Config = motorConfig.Slot1;
+    var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;
+    var rotateMotorClosedLoop1Config = rotateMotorConfig.Slot1;
 
     collectMotorClosedLoopConfig.withKP(collectMotorKP);
     collectMotorClosedLoopConfig.withKI(collectMotorKI);
@@ -225,18 +238,24 @@ public class AlgaeClaw extends SubsystemBase {
     rotateMotorClosedLoop0Config.withKI(rotateVelKI);
     rotateMotorClosedLoop0Config.withKD(rotateVelKD);
     rotateMotorClosedLoop0Config.withKV(rotateVelKV);
+    rotateMotorClosedLoop0Config.withKA(rotateVelKA);
 
     rotateMotorClosedLoop1Config.withKP(rotatePosKP);
     rotateMotorClosedLoop1Config.withKI(rotatePosKI);
     rotateMotorClosedLoop1Config.withKD(rotatePoKD);
     rotateMotorClosedLoop1Config.withKV(rotatePosKV);
+    rotateMotorClosedLoop1Config.withKA(rotatePosKA);
 
-    motorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+    rotateMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
     .withSupplyCurrentLimit(15)
     .withSupplyCurrentLowerTime(0.25);
 
-    collectMotor.getConfigurator().apply(motorConfig, 0.5);
-    rotateMotor.getConfigurator().apply(motorConfig, 0.5);
+    collectMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
+    .withSupplyCurrentLimit(15)
+    .withSupplyCurrentLowerTime(0.25);
+
+    collectMotor.getConfigurator().apply(collectMotorConfig, 0.5);
+    rotateMotor.getConfigurator().apply(rotateMotorConfig, 0.5);
 
     collectMotor.setNeutralMode(NeutralModeValue.Coast);
     rotateMotor.setNeutralMode(NeutralModeValue.Coast);

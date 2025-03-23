@@ -33,14 +33,14 @@ while running:
 			running = False
 		if event.type == pygame.JOYBUTTONDOWN:
 			print("Button pressed:", event.button)
-			
+
 			if(event.button == 6 and event.joy == 1):
 				sound.play()
 
 		if event.type == pygame.JOYBUTTONUP:
 			print("Button released:", event.button)
 
-		if event.type == pygame.JOYAXISMOTION and abs(event.value) > 0.5:
+		if event.type == pygame.JOYAXISMOTION:
 			print("Axis moved:", event.axis, "Value:", event.value)
 
 		if event.type == pygame.JOYHATMOTION:

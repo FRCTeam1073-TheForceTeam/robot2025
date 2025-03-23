@@ -30,8 +30,10 @@ import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.Dummy;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
+import frc.robot.commands.LoadAlgae;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.RemoveAlgae;
+import frc.robot.commands.ScoreAlgae;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
@@ -94,6 +96,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
   private final Dummy cmd_dummy = new Dummy();
+  private final LoadAlgae cmd_loadAlgae = new LoadAlgae(m_algaeClaw);
+  private final ScoreAlgae cmd_scoreAlgae = new ScoreAlgae(m_algaeClaw);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 
@@ -128,6 +132,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
+    CommandScheduler.getInstance().setDefaultCommand(m_algaeClaw, cmd_AlgaeClawTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -196,7 +201,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
+    
+    Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+      loadAlgae.whileTrue(cmd_loadAlgae);
 
+    Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+      scoreAlgae.whileTrue(cmd_scoreAlgae);
   }
 
   public void autonomousInit()

@@ -293,7 +293,7 @@ public class OI extends SubsystemBase
     if(Math.abs(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickY.getButtonVal())) < 0.1){
       return 0.0;
     }
-    return -1.0 * MathUtil.clamp(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
+    return MathUtil.clamp(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
   }
 
   /** Returns a specified button from the operator controller */

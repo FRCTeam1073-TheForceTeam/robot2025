@@ -50,12 +50,13 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.OldOI;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private final OI m_OI = new OI();
+  private final OldOI m_OI = new OI();
   private final AprilTagFinder m_aprilTagFinder = new AprilTagFinder();
   private final Field2d m_field = new Field2d();
   private final FieldMap m_fieldMap = new FieldMap();
@@ -156,31 +157,31 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger disengageClimber = new Trigger(m_OI::getOperatorDisengageButton);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
       disengageClimber.onTrue(cmd_disengageClimber);
 
-    Trigger engageClimber = new Trigger(m_OI::getOperatorEngageButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorMenuButton);
       engageClimber.onTrue(cmd_engageClimber);
 
-    Trigger zeroClimber = new Trigger(m_OI::getOperatorZeroButton);
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorBButton);
       zeroClimber.onTrue(cmd_zeroClimber);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorLoadCoral);
+    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
       loadCoral.onTrue(cmd_loadCoral);
 
-    Trigger scoreCoral = new Trigger(m_OI::getOperatorScoreCoral);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
       scoreCoral.onTrue(cmd_scoreCoral);
       
-    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2Button);
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorDPadRight);
       elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
-    Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3Button);
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
     
-    Trigger elevatorL4 = new Trigger(m_OI::getOperatorL4Button);
+    Trigger elevatorL4 = new Trigger(m_OI::getOperatorDPadLeft);
       elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
-    Trigger troughScore = new Trigger(m_OI::getOperatorL1Button);
+    Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
       troughScore.whileTrue(cmd_troughRaiseElevator);
     
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);

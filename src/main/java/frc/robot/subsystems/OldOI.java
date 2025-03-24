@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Free drive controller buttons: press left joystick, press right joystick
 // Free operator controller buttons: Right joystick y, left joystick x, right joystick x
+import frc.robot.subsystems.OI.PRIMARYPADBUTTONS;
+import frc.robot.subsystems.OI.SECONDARYPADBUTTONS;
 
 public class OldOI extends SubsystemBase
 {
@@ -335,6 +337,35 @@ public class OldOI extends SubsystemBase
   public boolean getOperatorRightJoystickPress(){
     return getOperatorRawButton(BUTTONS.RightJoystickPress.getButtonVal());
   }
+
+  public boolean getOperatorBargeScoreButton() {
+    return false;
+  }
+
+  public boolean getOperatorAlgaeToggle() {
+    return false;
+  }
+
+  public boolean getOperatorLoadAlgae() {
+    return false;
+  }
+
+  public boolean getOperatorScoreAlgae() {
+    return false;
+  }
+
+  public boolean getOperatorFloorIntake() {
+    return false;
+  }
+
+  public boolean getOperatorProccessorScore() {
+    return false;
+  }
+
+  public boolean getDummyButton() {
+    return false;
+  }
+
 
   @Override
   public void initSendable(SendableBuilder builder){

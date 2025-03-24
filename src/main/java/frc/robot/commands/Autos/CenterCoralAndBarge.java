@@ -59,17 +59,17 @@ public class CenterCoralAndBarge extends Command {
     
     Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
     Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
-    tag10.blend_radius = AutoConstants.blendRaidus;
+    tag10.blend_radius = AutoConstants.blendRadius;
     Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
-    tag21.blend_radius = AutoConstants.blendRaidus;
+    tag21.blend_radius = AutoConstants.blendRadius;
     Point tag14 = new Point(tag14Pose.getX(), tag14Pose.getY());
-    tag14.blend_radius = AutoConstants.blendRaidus;
+    tag14.blend_radius = AutoConstants.blendRadius;
     Point tag15 = new Point(tag15Pose.getX(), tag15Pose.getY());
-    tag15.blend_radius = AutoConstants.blendRaidus;
+    tag15.blend_radius = AutoConstants.blendRadius;
     Point tag4 = new Point(tag4Pose.getX(), tag4Pose.getY());
-    tag4.blend_radius = AutoConstants.blendRaidus;
+    tag4.blend_radius = AutoConstants.blendRadius;
     Point tag5 = new Point(tag5Pose.getX(), tag5Pose.getY());
-    tag5.blend_radius = AutoConstants.blendRaidus;
+    tag5.blend_radius = AutoConstants.blendRadius;
 
     ArrayList<Segment> segments = new ArrayList<Segment>();
     ArrayList<Segment> segments2 = new ArrayList<Segment>();

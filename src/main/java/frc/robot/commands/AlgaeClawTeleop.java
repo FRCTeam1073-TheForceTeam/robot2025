@@ -7,13 +7,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.OldOI;
 
 public class AlgaeClawTeleop extends Command {
   AlgaeClaw algaeClaw;
-  OI oi;
+  OldOI oi;
   private double velocity;
 
-  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
+  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OldOI OI) {
     algaeClaw = AlgaeClaw;
     oi = OI;
     addRequirements(algaeClaw);

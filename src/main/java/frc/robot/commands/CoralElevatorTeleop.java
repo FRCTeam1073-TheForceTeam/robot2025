@@ -6,17 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.OI;
+import frc.robot.subsystems.OldOI;
 import frc.robot.subsystems.CoralElevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CoralElevatorTeleop extends Command {
 
-  OI oi;
+  OldOI oi;
   CoralElevator elevator;
   private double velocity;
 
   /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
+  public CoralElevatorTeleop(CoralElevator elevator, OldOI oi){
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.oi = oi;

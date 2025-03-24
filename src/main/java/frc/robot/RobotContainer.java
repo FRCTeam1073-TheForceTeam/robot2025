@@ -65,7 +65,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final Climber m_climber = new Climber();
   private final Lidar m_lidar = new Lidar();
   //private final Lidar m_lidar = null; // Disabled temporarily.
-  //private final CANdleControl m_CANdleControl = new CANdleControl();
+  private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
 
 
@@ -85,7 +85,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
-  //private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
+  private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
@@ -126,7 +126,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralElevator, cmd_coralElevatorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
-    //CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
+    CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -214,7 +214,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public void autonomousInit()
   {
-    //m_CANdleControl.clearAnim();
+    m_CANdleControl.clearAnim();
   }
 
   public Command getAutonomousCommand() 
@@ -294,7 +294,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   public void disabledInit() 
   {
     
-    //m_CANdleControl.clearAnim();
+    m_CANdleControl.clearAnim();
     haveInitStartPos = false;
   }
 
@@ -358,22 +358,22 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
   public boolean disabledPeriodic() 
   {
-  //   if(DriverStation.getAlliance().isPresent())
-  //   {
-  //     int totalLED = m_CANdleControl.getTotalLED();
-  //     int candleNum = m_CANdleControl.getCandleNum();
+    if(DriverStation.getAlliance().isPresent())
+    {
+      int totalLED = m_CANdleControl.getTotalLED();
+      int candleNum = m_CANdleControl.getCandleNum();
 
-  //     DriverStation.Alliance alliance = DriverStation.getAlliance().get();
-  //     if(alliance == Alliance.Blue) {
-  //       m_CANdleControl.setRGB(0, 0, 255, candleNum, totalLED);
-  //     }
-  //     else if (alliance == Alliance.Red){
-  //       m_CANdleControl.setRGB(255, 0, 0, candleNum, totalLED);
-  //     }
-  //     else{
-  //       m_CANdleControl.setRGB(255, 255, 255, candleNum, totalLED);
-  //     }
-  // }
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if(alliance == Alliance.Blue) {
+        m_CANdleControl.setRGB(0, 0, 255, candleNum, totalLED);
+      }
+      else if (alliance == Alliance.Red){
+        m_CANdleControl.setRGB(255, 0, 0, candleNum, totalLED);
+      }
+      else{
+        m_CANdleControl.setRGB(255, 255, 255, candleNum, totalLED);
+      }
+  }
     
     return findStartPos();
   }

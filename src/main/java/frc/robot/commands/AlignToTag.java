@@ -114,7 +114,7 @@ public class AlignToTag extends Command
       targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, -0.1, new Rotation2d(Math.PI)));
     }
     else if(slot == 2){
-      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.50, 0, new Rotation2d(0)));
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.45, 0, new Rotation2d(0)));
     } 
   }
 

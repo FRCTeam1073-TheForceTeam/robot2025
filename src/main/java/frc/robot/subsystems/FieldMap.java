@@ -57,6 +57,7 @@ public class FieldMap
                 bestID = tag.ID;
             }
         }
+        SmartDashboard.putNumber("FieldMap/", bestID);
         return bestID;
     }
 

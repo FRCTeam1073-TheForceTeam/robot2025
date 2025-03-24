@@ -10,10 +10,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -27,8 +28,8 @@ public class AlignToTagRelative extends Command
   // Localizer localizer;
   // FieldMap fieldMap;
   // MapDisplay mapDisplay;
-  int slot = 0;
-
+  int slot;
+  boolean isRed = false;
   Pose2d targetLocation; // Last location we've seen the tag in ODOMETRY coordinates.
   Transform2d offset;
   Pose2d currentPose;
@@ -54,9 +55,9 @@ public class AlignToTagRelative extends Command
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.finder = finder; 
-    this.aprilTagID = tagID;
     this.slot = slot;
     this.currentPose = new Pose2d();
+    aprilTagID = tagID;
 
     speeds = new ChassisSpeeds();
 
@@ -83,6 +84,20 @@ public class AlignToTagRelative extends Command
     );
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
+    if(DriverStation.getAlliance().isPresent())
+    {
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if (alliance == Alliance.Red)
+      {
+        isRed = true;
+      }
+      else
+      {
+        isRed = false;
+      }
+    }
+
     addRequirements(drivetrain);
   }
 
@@ -211,7 +226,7 @@ public class AlignToTagRelative extends Command
     if (missCounter >= 12) return true;
 
     // We're basically there so we succeeded.
-    if (xError < 0.05 && yError < 0.03 && wError < 0.01)
+    if (xError < 0.05 && yError < 0.02 && wError < 0.01)
       return true;
     else
       return false;

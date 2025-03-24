@@ -31,6 +31,7 @@ import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.RemoveAlgae;
 import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroClimber;
@@ -78,7 +79,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
@@ -86,10 +87,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
-  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 22, 0);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
-
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
+  private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
+  private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
+  private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
+  private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
 
   private boolean isRed;
   private int level;
@@ -186,11 +190,23 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
       cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
     
-    Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
-      alignToTag.whileTrue(cmd_alignToTag);
+    // Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
+    //   alignToTag.whileTrue(cmd_alignToTag);
 
-    Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
-      lidarAlign.whileTrue(cmd_lidarAlign);
+    // Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
+    //   lidarAlign.whileTrue(cmd_lidarAlign);
+
+    Trigger tagCenterAlign = new Trigger(m_OI::getDriverAButton);
+      tagCenterAlign.whileTrue(cmd_smartAlignReefCenter);
+
+    Trigger sourceAlign = new Trigger(m_OI::getDriverBButton);
+      sourceAlign.whileTrue(cmd_smartAlignSource);
+
+    Trigger tagLeftAlign = new Trigger(m_OI::getDriverXButton);
+      tagLeftAlign.whileTrue(cmd_smartAlignReefLeft);
+    
+    Trigger tagRightAlign = new Trigger(m_OI::getDriverYButton);
+      tagRightAlign.whileTrue(cmd_smartAlignReefRight);
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);

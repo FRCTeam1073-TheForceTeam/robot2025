@@ -37,7 +37,7 @@ public class Lidar extends SubsystemBase {
         private final double minAcceptedRange = 0.09; // In meters
         private final double maxAcceptedRange = 2.2; // In meters
         private final double maxAcceptedX = 1.0;
-        private final double minAcceptedY = -0.39;
+        private final double minAcceptedY = -0.25;
         private final double maxAcceptedY = 0.39;
         private final int minAcceptedAngle1 = 0;   // In degrees, for the first range of accepted angles
         private final int maxAcceptedAngle1 = 45;  // In degrees, for the first range of accepted angles

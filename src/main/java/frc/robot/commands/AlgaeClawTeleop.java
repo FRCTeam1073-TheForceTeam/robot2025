@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.OI;
@@ -12,7 +13,9 @@ import frc.robot.subsystems.OldOI;
 public class AlgaeClawTeleop extends Command {
   AlgaeClaw algaeClaw;
   OldOI oi;
+
   private double velocity;
+  private boolean clawUp;
 
   public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OldOI OI) {
     algaeClaw = AlgaeClaw;
@@ -27,12 +30,31 @@ public class AlgaeClawTeleop extends Command {
 
   @Override
   public void execute() {
+    clawUp = algaeClaw.getIsUp();
     velocity = oi.getOperatorLeftX() * 12.0;//TODO change controls
     algaeClaw.setRotatorVel(velocity);
 
-    if(oi.getOperatorAlgaeToggle()){
-        algaeClaw.toggleIsUp();
+    if(oi.getOperatorScoreAlgae()) {
+      algaeClaw.setCollectorVel(1);
     }
+
+    if(oi.getOperatorScoreAlgae()) {
+      algaeClaw.setCollectorVel(-1);
+    }
+
+    if(oi.getOperatorAlgaeToggle()){
+        if(!algaeClaw.getIsUp()) {
+          algaeClaw.setRotatorPos(8.7);
+        }
+        else{
+          algaeClaw.setRotatorPos(28.476);
+        }
+        algaeClaw.setIsUp(!clawUp);
+    }
+
+    SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());
+    SmartDashboard.putBoolean("AlgaeClaw/Algae Score Button", oi.getOperatorScoreAlgae());
+    SmartDashboard.putBoolean("AlgaeClaw/Algae Load Button", oi.getOperatorLoadAlgae());
   }
 
   @Override

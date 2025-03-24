@@ -138,14 +138,8 @@ public class AlgaeClaw extends SubsystemBase {
     commandedRotatePos = position;
   }
 
-  public void toggleIsUp() {
-    if(!isUp) {
-      setRotatorPos(8.7);
-    }
-    else{
-      setRotatorPos(28.476);
-    }
-    isUp = !isUp;
+  public void setIsUp(boolean state) {
+    isUp = state;
   }
 
   public void zeroRotator(){

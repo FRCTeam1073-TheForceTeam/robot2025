@@ -15,24 +15,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Free drive controller buttons: press left joystick, press right joystick
 // Free operator controller buttons: Right joystick y, left joystick x, right joystick x
+import frc.robot.commands.DisengageClimber;
+import frc.robot.commands.EngageClimber;
+import frc.robot.commands.ZeroClimber;
+import frc.robot.commands.ZeroElevator;
 
 public class OI extends OldOI
 {
 
   public enum PRIMARYPADBUTTONS {
-    L1(1),
-    L2(2),
+    L1(5),
+    L2(4),
     L3(3),
-    L4(4),
-    DisengageClimber(5),
-    ZeroClimber(6),
-    EngageClimber(7),
-    BargeScore(8),
-    AlgaeToggle(10),
-    LoadAlgae(11),
-    ScoreAlgae(12),
-    LeftJoystickY(1),
-    LeftJoystickX(0);
+    L4(2),
+    BargeScore(1),
+    IntakeAlgae(6),
+    Destruct(7),
+    ProccessorScore(8),
+    ;
+
+
 
     private int buttonValue;
 
@@ -45,12 +47,19 @@ public class OI extends OldOI
   }
 
   public enum SECONDARYPADBUTTONS {
-    IntakeAlgae(1),
-    Destruct(2),
-    ProccessorScore(3),
-    ScoreCoral(7),
+    DisengageClimber(8),
+    ZeroClimber(9),
+    EngageClimber(10),
+    LeftJoystickY(1),
+    LeftJoystickX(0),
+    ZeroElevator(1),
     LoadCoral(5),
-    MiddleWhite(6);
+    MiddleWhite(6),
+    ScoreCoral(7),
+    AlgaeToggle(3),
+    LoadAlgae(2),
+    ScoreAlgae(4);
+
 
     private int buttonValue;
 
@@ -106,19 +115,19 @@ public class OI extends OldOI
   /** The following methods return quality-controlled values from the operator controller */
   @Override
   public double getOperatorLeftX() {
-    if(Math.abs(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickX.getButtonVal())) < 0.1){
+    if(Math.abs(operatorPrimaryController.getRawAxis(SECONDARYPADBUTTONS.LeftJoystickX.getButtonVal())) < 0.1){
       return 0.0;
     }
     // "Clamping" the value makes sure that it's still between 1 and -1 even if we have added an offset to it
-    return MathUtil.clamp(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickX.getButtonVal()) - LEFT_X_ZERO, -1, 1);
+    return MathUtil.clamp(operatorPrimaryController.getRawAxis(SECONDARYPADBUTTONS.LeftJoystickX.getButtonVal()) - LEFT_X_ZERO, -1, 1);
   }
 
   @Override
   public double getOperatorLeftY() {
-    if(Math.abs(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickY.getButtonVal())) < 0.1){
+    if(Math.abs(operatorPrimaryController.getRawAxis(SECONDARYPADBUTTONS.LeftJoystickY.getButtonVal())) < 0.1){
       return 0.0;
     }
-    return MathUtil.clamp(operatorPrimaryController.getRawAxis(PRIMARYPADBUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
+    return MathUtil.clamp(operatorPrimaryController.getRawAxis(SECONDARYPADBUTTONS.LeftJoystickY.getButtonVal()) - LEFT_Y_ZERO, -1, 1);
   }
 
   /** Returns a specified button from the operator controller */
@@ -152,12 +161,12 @@ public class OI extends OldOI
 
   @Override
   public boolean getOperatorAButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.DisengageClimber.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.DisengageClimber.getButtonVal());
   }
 
   @Override
   public boolean getOperatorBButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ZeroClimber.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.ZeroClimber.getButtonVal());
   }
 
   @Override
@@ -172,7 +181,7 @@ public class OI extends OldOI
 
   @Override
   public boolean getOperatorMenuButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.EngageClimber.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.EngageClimber.getButtonVal());
   }
 
   //TODO: haven't mapped these on controller
@@ -183,32 +192,32 @@ public class OI extends OldOI
 
   @Override
   public boolean getOperatorAlgaeToggle() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.AlgaeToggle.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.AlgaeToggle.getButtonVal());
   }
 
   @Override
   public boolean getOperatorLoadAlgae() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.LoadAlgae.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.LoadAlgae.getButtonVal());
   }
 
   @Override
   public boolean getOperatorScoreAlgae() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ScoreAlgae.getButtonVal());
+    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.ScoreAlgae.getButtonVal());
   }
 
   @Override
   public boolean getOperatorFloorIntake() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.IntakeAlgae.getButtonVal());
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
   }
 
   @Override
   public boolean getOperatorProccessorScore() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ProccessorScore.getButtonVal());
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.ProccessorScore.getButtonVal());
   }
 
   @Override
   public boolean getDummyButton() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.Destruct.getButtonVal());
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.Destruct.getButtonVal());
   }
 
   @Override

@@ -37,7 +37,7 @@ public class AutoCenterStart
                if (xversion) return CenterScoreCoralX.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
                else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 4);
             case 5:
-               return CenterScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+               return CenterScoreCoralAndAlgae.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 4);
             default:
                return new WaitCommand(0);
         }

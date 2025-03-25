@@ -322,11 +322,11 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorDisengageClimber() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.DisengageClimber.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.DisengageClimber.getButtonVal());
   }
 
   public boolean getOperatorZeroClimber() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.ZeroClimber.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroClimber.getButtonVal());
   }
 
   public boolean getOperatorLoadCoral() {
@@ -338,7 +338,7 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorEngageClimber() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.EngageClimber.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.EngageClimber.getButtonVal());
   }
 
   //TODO: haven't mapped these on controller
@@ -347,27 +347,27 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorAlgaeToggle() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.AlgaeToggle.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.AlgaeToggle.getButtonVal());
   }
 
   public boolean getOperatorLoadAlgae() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.LoadAlgae.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.LoadAlgae.getButtonVal());
   }
 
   public boolean getOperatorScoreAlgae() {
-    return getOperatorPrimaryRawButton(SECONDARYPADBUTTONS.ScoreAlgae.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ScoreAlgae.getButtonVal());
   }
 
   public boolean getOperatorFloorIntake() {
-    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
   }
 
   public boolean getOperatorProccessorScore() {
-    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.ProccessorScore.getButtonVal());
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ProccessorScore.getButtonVal());
   }
 
   public boolean getDummyButton() {
-    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.Destruct.getButtonVal());
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.Destruct.getButtonVal());
   }
 
   public boolean getOperatorZeroElevator() {

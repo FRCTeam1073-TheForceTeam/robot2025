@@ -206,7 +206,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       loadAlgae.whileTrue(cmd_loadAlgae);
 
     Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-      scoreAlgae.whileTrue(cmd_scoreAlgae);
+      scoreAlgae.onTrue(cmd_scoreAlgae);
     
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
       zeroElevator.onTrue(cmd_zeroElevator);

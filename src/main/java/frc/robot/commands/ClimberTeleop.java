@@ -26,17 +26,17 @@ public class ClimberTeleop extends Command
   @Override
   public void execute() 
   {
-    if (oi.getOperatorLeftBumper()){
-      velocity = 10;
-    }
+    velocity = 0;
+//     if (oi.getOperatorLeftBumper()){
+//       velocity = 10;
+//     }
 
-    else if (oi.getOperatorRightBumper()){
-      velocity = -10;
-    }
-    else{
-      velocity = 0;
-    }
-    
+//     else if (oi.getOperatorRightBumper()){
+//       velocity = -10;
+//     }
+//     else{
+//       velocity = 0;
+//     }
     climber.setCommandedVelocity(velocity);
   }
 

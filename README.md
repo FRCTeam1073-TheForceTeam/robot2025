@@ -5,7 +5,7 @@ TBD
 
 Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is back right.
 
-##Module CAN IDs
+## Module CAN IDs
 | Device                | CAN ID |      BUS      |
 | --------------------- | ------ | ------------- |
 | Swerve #0 Encoder     |   1    |   CANivore    |
@@ -30,6 +30,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 | Endeffector Motor     |  21    |   Rio         |
 | LaserCAN Coral        |  22    |   Rio         |
 | LaserCAN Reef         |  24    |   Rio         |
+| Algae Collect Motor   |  25    |   Rio         |
+| EndeffectorRotateMotor|  26    |   Rio         |
 | CANdle                |  30    |   Rio         |
 | PDH                   |  36    |   Rio         |
 
@@ -57,7 +59,7 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |Menu Button       |Local Align (temp)              |
 
 
-## Operator Controller
+## Old Operator Controller
 
 |  Button/Joystick | Function/Command         |
 |------------------|--------------------------|
@@ -81,6 +83,30 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |RightTrigger      |Coral Intake & Shoot      |
 |View Button       |Zero Elevator             |
 |Menu Button       |Engage Climber            |
+
+## New Operator Controller
+
+|  Button/Joystick | Function/Command         |
+|------------------|--------------------------|
+|Blue Top          |   Elevator L4            |
+|Blue Top Middle   |   Elevator L3            |
+|Blue Bottom Middle|   Elevator L3            |
+|Blue Bottom       |   Elevator L1            |
+|Yellow Top        |   Barge Score            |
+|Yellow Left       |   Disengage Climber      |
+|Yellow Middle     |   Zero Climber           |
+|Yellow Right      |   Engage Climber         |
+|Red Top           |   Intake Algae Floor     |
+|Red Middle        |   Boom Button            |
+|Red Bottom        |   Proccessor Score       |
+|Single Player     |   Load Coral             |
+|Two Player        |                          |
+|Coin Button       |   Score Coral            |
+|Top Green         |   Toggle Algae           |
+|Middle Green      |   Score Algae            |
+|Bottom Green      |   Load Algae             |
+|Left Joystick     |   Elevator Teleop        |
+
 
 ## Robot LED codes
 

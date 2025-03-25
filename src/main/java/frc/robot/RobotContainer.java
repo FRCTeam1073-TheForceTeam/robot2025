@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeCommand;
+import frc.robot.commands.AlgaeClawTeleop;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CancelLoadCoral;
@@ -28,8 +28,10 @@ import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
+import frc.robot.commands.LoadAlgaeTeleop;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.RemoveAlgae;
+import frc.robot.commands.ScoreAlgaeTeleop;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
@@ -39,6 +41,7 @@ import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
+import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.commands.Autos.TestAuto;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
@@ -67,6 +70,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
+  private final AlgaeClaw m_algaeClaw = new AlgaeClaw();
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -78,17 +82,22 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, 3, false);
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToBarge = new CoralElevatorToHeight(m_coralElevator, 5, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToLowA = new CoralElevatorToHeight(m_coralElevator, 6, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToHighA = new CoralElevatorToHeight(m_coralElevator, 7, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
-  private final AlgaeCommand cmd_algaeCommand = new AlgaeCommand(m_coralEndeffector, -20);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain);
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
+  private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
+  private final LoadAlgaeTeleop cmd_loadAlgae = new LoadAlgaeTeleop(m_algaeClaw);
+  private final ScoreAlgaeTeleop cmd_scoreAlgae = new ScoreAlgaeTeleop(m_algaeClaw);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
@@ -117,6 +126,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String scoreL3 = "Score L3";
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
+  private static final String bargeScore = "Barge Score";
   
   private static final String zeroClawAndLift = "Zero Claw And Lift";
 
@@ -127,6 +137,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
+    CommandScheduler.getInstance().setDefaultCommand(m_algaeClaw, cmd_AlgaeClawTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -148,6 +159,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_levelChooser.addOption("Score L3", scoreL3);
     m_levelChooser.addOption("Score L4", scoreL4);
     m_levelChooser.addOption("Score 2 L4", score2L4);
+    m_levelChooser.addOption("Barge Score", bargeScore);
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
@@ -158,37 +170,32 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorDisengageClimber);
       disengageClimber.onTrue(cmd_disengageClimber);
-    Trigger engageClimber = new Trigger(m_OI::getOperatorMenuButton);
-      engageClimber.onTrue(cmd_engageClimber);
-    Trigger zeroClimber = new Trigger(m_OI::getOperatorBButton);
-      zeroClimber.onTrue(cmd_zeroClimber);
-    Trigger zeroElevator = new Trigger(m_OI::getOperatorViewButton);
-      zeroElevator.onTrue(cmd_zeroElevator);
-    Trigger stowElevator = new Trigger(m_OI::getOperatorLeftJoystickPress);
-      stowElevator.onTrue(cmd_stowElevator);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorEngageClimber);
+      engageClimber.onTrue(cmd_engageClimber);
+
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorZeroClimber);
+      zeroClimber.onTrue(cmd_zeroClimber);
+
+    Trigger loadCoral = new Trigger(m_OI::getOperatorLoadCoral);
       loadCoral.onTrue(cmd_loadCoral);
 
-    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorScoralCoral);
       scoreCoral.onTrue(cmd_scoreCoral);
       
-    Trigger elevatorL2 = new Trigger(m_OI :: getOperatorDPadRight);
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
       elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
-    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
     
-    Trigger elevatorL4 = new Trigger(m_OI::getOperatorDPadLeft);
+    Trigger elevatorL4 = new Trigger(m_OI::getOperatorL4);
       elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
-    Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
+    Trigger troughScore = new Trigger(m_OI::getOperatorL1);
       troughScore.whileTrue(cmd_troughRaiseElevator);
-
-    Trigger cancelLoadCoral = new Trigger(m_OI::getOperatorRightJoystickPress);
-      cancelLoadCoral.onTrue(cmd_cancelLoadCoral);
     
     // Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
     //   alignToTag.whileTrue(cmd_alignToTag);
@@ -210,7 +217,25 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
-  }
+    
+    Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+      loadAlgae.whileTrue(cmd_loadAlgae);
+
+    Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+      scoreAlgae.whileTrue(cmd_scoreAlgae);
+    
+    Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
+      zeroElevator.onTrue(cmd_zeroElevator);
+
+    Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
+      elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
+    
+    Trigger elevatorLowAlgae = new Trigger(m_OI::getOperatorLowAlgaeButton);
+      elevatorLowAlgae.whileTrue(cmd_coralElevatorToLowA);
+    
+    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgaeButton);
+      elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
+  } 
 
   public void autonomousInit()
   {
@@ -243,6 +268,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         break;
       case score2L4:
         level = 5;
+        break;
+      case bargeScore:
+        level = 6;
         break;
       default:
         level = -1;

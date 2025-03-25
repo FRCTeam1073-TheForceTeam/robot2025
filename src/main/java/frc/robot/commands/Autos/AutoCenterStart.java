@@ -18,8 +18,7 @@ import frc.robot.subsystems.Localizer;
 /** Add your docs here. */
 public class AutoCenterStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, 
-                                 Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, boolean xversion)
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, boolean xversion)
     {
         switch (level)
         {
@@ -38,6 +37,8 @@ public class AutoCenterStart
                else return CenterScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, 4);
             case 5:
                return CenterScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
+            case 6:
+               return CenterCoralAndBarge.create(isRed, drivetrain, map, localizer, endEffector, elevator, algaeClaw, lidar, 4);
             default:
                return new WaitCommand(0);
         }

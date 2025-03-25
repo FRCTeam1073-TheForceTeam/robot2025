@@ -7,6 +7,7 @@ public class AutoConstants {
 
     public static final double scoreApproachOffsetY = 0.2;
 
+    public static final double algaeScoreOffsetX = 0.38;
 
     public static final double blendRadius = 0.08;
 

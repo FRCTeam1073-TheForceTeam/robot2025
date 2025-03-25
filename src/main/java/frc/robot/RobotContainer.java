@@ -26,7 +26,6 @@ import frc.robot.commands.CoralElevatorTeleop;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
-import frc.robot.commands.Dummy;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadAlgaeTeleop;
@@ -96,7 +95,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 22, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
-  private final Dummy cmd_dummy = new Dummy();
   private final LoadAlgaeTeleop cmd_loadAlgae = new LoadAlgaeTeleop(m_algaeClaw);
   private final ScoreAlgaeTeleop cmd_scoreAlgae = new ScoreAlgaeTeleop(m_algaeClaw);
 
@@ -200,9 +198,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
-
-    Trigger dummyButton = new Trigger(m_OI::getOperatorHighAlgaeButton);
-      dummyButton.whileTrue(cmd_dummy);
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);

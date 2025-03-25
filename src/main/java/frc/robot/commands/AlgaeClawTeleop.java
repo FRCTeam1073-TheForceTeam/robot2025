@@ -40,7 +40,6 @@ public class AlgaeClawTeleop extends Command {
         else{
           algaeClaw.setRotatorPos(28.476);
         }
-        algaeClaw.setIsUp(!clawUp);
     }
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());

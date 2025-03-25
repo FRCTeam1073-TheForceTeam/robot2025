@@ -101,6 +101,9 @@ public class AlgaeClaw extends SubsystemBase {
     if(rotatePos >= 8.7) {
       isUp = false;
     }
+    else if(rotatePos < 8.7) {
+      isUp = true;
+    }
 
     collectMotor.setControl(collectVelocityVoltage.withVelocity(commandedCollectVel));
 

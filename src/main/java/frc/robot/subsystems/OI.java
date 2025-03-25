@@ -63,7 +63,7 @@ public class OI extends SubsystemBase
     L4(2),
     BargeScore(1),
     IntakeAlgae(6),
-    Destruct(7),
+    HighAlgae(7),
     ProccessorScore(8);
 
     private int buttonValue;
@@ -84,7 +84,7 @@ public class OI extends SubsystemBase
     LeftJoystickX(0),
     ZeroElevator(1),
     LoadCoral(5),
-    MiddleWhite(6),
+    LowAlgae(6),
     ScoreCoral(7),
     AlgaeToggle(3),
     LoadAlgae(2),
@@ -366,12 +366,16 @@ public class OI extends SubsystemBase
     return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ProccessorScore.getButtonVal());
   }
 
-  public boolean getDummyButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.Destruct.getButtonVal());
+  public boolean getOperatorHighAlgaeButton() {
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.HighAlgae.getButtonVal());
   }
 
   public boolean getOperatorZeroElevator() {
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroElevator.getButtonVal());
+  }
+
+  public boolean getOperatorLowAlgaeButton() {
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.LowAlgae.getButtonVal());
   }
 
   @Override

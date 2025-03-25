@@ -82,6 +82,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_coralElevatorToL3 = new CoralElevatorToHeight(m_coralElevator, 3, false);
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToBarge = new CoralElevatorToHeight(m_coralElevator, 5, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToLowA = new CoralElevatorToHeight(m_coralElevator, 6, false);
+  private final CoralElevatorToHeight cmd_coralElevatorToHighA = new CoralElevatorToHeight(m_coralElevator, 7, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_OI);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
@@ -196,7 +199,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger lidarAlign = new Trigger(m_OI::getDriverBButton);
       lidarAlign.whileTrue(cmd_lidarAlign);
 
-    Trigger dummyButton = new Trigger(m_OI::getDummyButton);
+    Trigger dummyButton = new Trigger(m_OI::getOperatorHighAlgaeButton);
       dummyButton.whileTrue(cmd_dummy);
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
@@ -210,7 +213,16 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
       zeroElevator.onTrue(cmd_zeroElevator);
-  }
+
+    Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
+      elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
+    
+    Trigger elevatorLowAlgae = new Trigger(m_OI::getOperatorLowAlgaeButton);
+      elevatorLowAlgae.whileTrue(cmd_coralElevatorToLowA);
+    
+    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgaeButton);
+      elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
+  } 
 
   public void autonomousInit()
   {

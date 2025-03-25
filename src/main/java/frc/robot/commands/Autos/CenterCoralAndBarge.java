@@ -37,7 +37,7 @@ import frc.robot.subsystems.Localizer;
 public class CenterCoralAndBarge extends Command {
   /** Creates a new CenterCoralAndBarge. */
   public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeClaw algaeClaw, Lidar lidar, int branchLevel) {
-    double height;
+    int height;
     int slot;
     if (branchLevel == 1)
     {
@@ -93,10 +93,10 @@ public class CenterCoralAndBarge extends Command {
     }
 
     if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) {
-      height = 2.5; //TODO: get real numbers
+      height = 6;
     }
     else {
-      height = 3.5;
+      height = 7;
     }
 
 
@@ -120,7 +120,7 @@ public class CenterCoralAndBarge extends Command {
       ),
       new ZeroElevator(elevator),
       new DrivePath(drivetrain, path2, localizer),
-      new CoralElevatorToHeight(elevator, 4, true),
+      new CoralElevatorToHeight(elevator, 5, true),
       new ScoreAlgae(algaeClaw),
       new ZeroElevator(elevator));
   }

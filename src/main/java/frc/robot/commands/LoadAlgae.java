@@ -25,7 +25,7 @@ public class LoadAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeClaw.setCollectorVel(1);
+    algaeClaw.setCollectorVel(30);
   }
 
   // Called once the command ends or is interrupted.

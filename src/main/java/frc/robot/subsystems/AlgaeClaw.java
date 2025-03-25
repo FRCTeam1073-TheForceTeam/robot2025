@@ -75,7 +75,7 @@ public class AlgaeClaw extends SubsystemBase {
     commandedRotateVel = 0.0;
     commandedCollectVel = 0.0;
 
-    collectVelocityVoltage = new VelocityVoltage(0);
+    collectVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotateVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotatePositionController = new MotionMagicVoltage(0).withSlot(1);
 
@@ -98,7 +98,7 @@ public class AlgaeClaw extends SubsystemBase {
       commandedRotateVel = Math.max(commandedRotateVel, 0);
     }
 
-    if(rotatePos >= 0.1) {
+    if(rotatePos >= 8.7) {
       isUp = false;
     }
 
@@ -114,12 +114,12 @@ public class AlgaeClaw extends SubsystemBase {
     SmartDashboard.putNumber("AlgaeClaw/Collect Velocity", collectVel);
     SmartDashboard.putNumber("AlgaeClaw/Collect Commanded Velocity", commandedCollectVel);
     SmartDashboard.putNumber("AlgaeClaw/Collect Motor Load", collectLoad);
-    SmartDashboard.putBoolean("AlgaeClaw/Collect Break Mode", collectBrakeMode);
+    SmartDashboard.putBoolean("AlgaeClaw/Collect Brake Mode", !collectBrakeMode);
     SmartDashboard.putNumber("AlgaeClaw/Rotate Velocity", rotateVel);
     SmartDashboard.putNumber("AlgaeClaw/Rotate Commanded Velocity", commandedRotateVel);
     SmartDashboard.putNumber("AlgaeClaw/Rotate Position", rotatePos);
     SmartDashboard.putNumber("AlgaeClaw/Rotate Motor Load", rotateLoad);
-    SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", rotateBrakeMode);
+    SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", !rotateBrakeMode);
     SmartDashboard.putBoolean("AlgaeClaw/Has Algae", hasAlgae);
     SmartDashboard.putBoolean("AlgaeClaw/Is Up", isUp);
   }
@@ -219,7 +219,7 @@ public class AlgaeClaw extends SubsystemBase {
     rotatemmConfigs.MotionMagicAcceleration = 100;
     rotatemmConfigs.MotionMagicJerk = 800;
 
-    var collectMotorClosedLoopConfig = new SlotConfigs();
+    var collectMotorClosedLoopConfig = collectMotorConfig.Slot0;
     var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;
     var rotateMotorClosedLoop1Config = rotateMotorConfig.Slot1;
 

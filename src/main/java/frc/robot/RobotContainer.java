@@ -124,6 +124,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String scoreL3 = "Score L3";
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
+  private static final String bargeScore = "Barge Score";
   
   private static final String zeroClawAndLift = "Zero Claw And Lift";
 
@@ -156,6 +157,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_levelChooser.addOption("Score L3", scoreL3);
     m_levelChooser.addOption("Score L4", scoreL4);
     m_levelChooser.addOption("Score 2 L4", score2L4);
+    m_levelChooser.addOption("Barge Score", bargeScore);
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
     SmartDashboard.putData("Level Chooser", m_levelChooser);
@@ -255,6 +257,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         break;
       case score2L4:
         level = 5;
+        break;
+      case bargeScore:
+        level = 6;
         break;
       default:
         level = -1;

@@ -20,8 +20,8 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
 public class CANdleControl extends SubsystemBase {
   CANdle m_candle;
-  int numTotalLED = 58;
-  int numPerStrip = 13;
+  int numTotalLED = 28;
+  int numPerStrip = 20;
   int candleNum = 8;
 
   public CANdleControl() {

@@ -45,18 +45,18 @@ public class CANdleObserver extends Command {
   public void execute() {
     
     if (endeffector.getHasReef()){
-      candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
+      candleControl.setRGB(0, 255, 0, candleNum, numPerStrip - 1);//elevator forward - green
     }
     else{
-      candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
+      candleControl.setRGB(255, 0, 0, candleNum, numPerStrip - 1);//elevator forward - red
     }
 
-    if (endeffector.getHasCoral()){
-      candleControl.setRGB(255, 255, 255, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light on
-    }
-    else{
-      candleControl.setRGB(0, 0, 0, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light off
-    }
+    // if (endeffector.getHasCoral()){
+    //   candleControl.setRGB(255, 255, 255, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light on
+    // }
+    // else{
+    //   candleControl.setRGB(0, 0, 0, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light off
+    // }
 
     if (RobotController.getBatteryVoltage() > 12){
       candleControl.setRGB(0, 255, 0, 0, candleNum);//CANdle - green
@@ -68,18 +68,18 @@ public class CANdleObserver extends Command {
       candleControl.setRGB(255, 0, 0, 0, candleNum);//CANdle - red
     }
 
-    if (climber.getIsDisengaged()){
-      candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - blue
-    }
-    else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange
-    }
-    else if (climber.getIsAtZero()){
-      candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple
-    }
-    else{
-      candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - grey
-    }
+    // if (climber.getIsDisengaged()){
+    //   candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - blue
+    // }
+    // else if (climber.getIsEngaged()){
+    //   candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange
+    // }
+    // else if (climber.getIsAtZero()){
+    //   candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple
+    // }
+    // else{
+    //   candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - grey
+    // }
 
     SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());
     SmartDashboard.putBoolean("is Engaged", climber.getIsEngaged());

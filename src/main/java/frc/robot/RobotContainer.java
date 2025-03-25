@@ -53,7 +53,6 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -164,31 +163,31 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   }
 
   private void configureBindings() {
-    Trigger disengageClimber = new Trigger(m_OI::getOperatorAButton);
+    Trigger disengageClimber = new Trigger(m_OI::getOperatorDisengageClimber);
       disengageClimber.onTrue(cmd_disengageClimber);
 
-    Trigger engageClimber = new Trigger(m_OI::getOperatorMenuButton);
+    Trigger engageClimber = new Trigger(m_OI::getOperatorEngageClimber);
       engageClimber.onTrue(cmd_engageClimber);
 
-    Trigger zeroClimber = new Trigger(m_OI::getOperatorBButton);
+    Trigger zeroClimber = new Trigger(m_OI::getOperatorZeroClimber);
       zeroClimber.onTrue(cmd_zeroClimber);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorXButton);
+    Trigger loadCoral = new Trigger(m_OI::getOperatorLoadCoral);
       loadCoral.onTrue(cmd_loadCoral);
 
-    Trigger scoreCoral = new Trigger(m_OI::getOperatorYButton);
+    Trigger scoreCoral = new Trigger(m_OI::getOperatorScoralCoral);
       scoreCoral.onTrue(cmd_scoreCoral);
       
-    Trigger elevatorL2 = new Trigger(m_OI::getOperatorDPadRight);
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
       elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
-    Trigger elevatorL3 = new Trigger(m_OI::getOperatorDPadDown);
+    Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
     
-    Trigger elevatorL4 = new Trigger(m_OI::getOperatorDPadLeft);
+    Trigger elevatorL4 = new Trigger(m_OI::getOperatorL4);
       elevatorL4.whileTrue(cmd_coralElevatorToL4);
 
-    Trigger troughScore = new Trigger(m_OI::getOperatorDPadUp);
+    Trigger troughScore = new Trigger(m_OI::getOperatorL1);
       troughScore.whileTrue(cmd_troughRaiseElevator);
     
     Trigger alignToTag = new Trigger(m_OI::getDriverAlignButtons);
@@ -208,6 +207,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
       scoreAlgae.whileTrue(cmd_scoreAlgae);
+    
+    Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
+      zeroElevator.onTrue(cmd_zeroElevator);
   }
 
   public void autonomousInit()

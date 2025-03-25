@@ -3,15 +3,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 
 public class ClimberTeleop extends Command
 {
     Climber climber;
-    OldOI oi;
+    OI oi;
     private double velocity;
 
-  public ClimberTeleop(Climber climber, OldOI oi) 
+  public ClimberTeleop(Climber climber, OI oi) 
   {
     this.climber = climber;
     this.oi = oi;

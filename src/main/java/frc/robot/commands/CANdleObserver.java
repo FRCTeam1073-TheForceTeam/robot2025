@@ -11,7 +11,6 @@ import frc.robot.subsystems.CANdleControl;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CANdleObserver extends Command {
@@ -19,12 +18,12 @@ public class CANdleObserver extends Command {
   CANdleControl candleControl;
   CoralEndeffector endeffector;
   Climber climber;
-  OldOI oi;
+  OI oi;
   int numPerStrip;
   int numTotalLED;
   int candleNum;
 
-  public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OldOI Oi) {
+  public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi) {
     candleControl = CandleControl;
     endeffector = Endeffector;
     climber = Climber;

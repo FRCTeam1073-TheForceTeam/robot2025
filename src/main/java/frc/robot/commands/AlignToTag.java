@@ -18,7 +18,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 import frc.robot.subsystems.FieldMap;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -28,7 +27,7 @@ public class AlignToTag extends Command
   Localizer localizer;
   FieldMap fieldMap;
   MapDisplay mapDisplay;
-  OldOI oi;
+  OI oi;
   int aprilTagID;
   Pose2d targetPose;
   PIDController xController;
@@ -44,7 +43,7 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OldOI oi) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;

@@ -8,16 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 
 public class AlgaeClawTeleop extends Command {
   AlgaeClaw algaeClaw;
-  OldOI oi;
+  OI oi;
 
   private double velocity;
   private boolean clawUp;
 
-  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OldOI OI) {
+  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
     algaeClaw = AlgaeClaw;
     oi = OI;
     addRequirements(algaeClaw);
@@ -33,14 +32,6 @@ public class AlgaeClawTeleop extends Command {
     clawUp = algaeClaw.getIsUp();
     velocity = oi.getOperatorLeftX() * 12.0;//TODO change controls
     algaeClaw.setRotatorVel(velocity);
-
-    if(oi.getOperatorScoreAlgae()) {
-      algaeClaw.setCollectorVel(1);
-    }
-
-    if(oi.getOperatorScoreAlgae()) {
-      algaeClaw.setCollectorVel(-1);
-    }
 
     if(oi.getOperatorAlgaeToggle()){
         if(!algaeClaw.getIsUp()) {

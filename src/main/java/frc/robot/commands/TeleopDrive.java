@@ -17,7 +17,6 @@ import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OldOI;
 import frc.robot.subsystems.SwerveModule;
 
 public class TeleopDrive extends Command 
@@ -27,7 +26,7 @@ public class TeleopDrive extends Command
   Pose2d Rotation;
   Pose2d robotRotation;
   Drivetrain drivetrain;
-  OldOI m_OI;
+  OI m_OI;
   private boolean fieldCentric;
   private boolean parked = false;
   ChassisSpeeds speeds;
@@ -69,7 +68,7 @@ public class TeleopDrive extends Command
 
 
   /** Creates a new Teleop. */
-  public TeleopDrive(Drivetrain drivetrain, OldOI oi, AprilTagFinder finder, Localizer localizer) 
+  public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer) 
   {
     this.drivetrain = drivetrain;
     this.localizer = localizer;

@@ -108,7 +108,7 @@ public class AlgaeClaw extends SubsystemBase {
       rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
     }
     else {
-      rotateMotor.setControl(rotatePositionController.withPosition(commandedRotateVel).withSlot(1));
+      rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
     }
 
     SmartDashboard.putNumber("AlgaeClaw/Collect Velocity", collectVel);

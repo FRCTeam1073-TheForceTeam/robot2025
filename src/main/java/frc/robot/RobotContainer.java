@@ -59,7 +59,7 @@ import frc.robot.subsystems.CANdleControl;
 public class RobotContainer implements Consumer<String> // need the interface for onChange
 {
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private final OldOI m_OI = new OI();
+  private final OI m_OI = new OI();
   private final AprilTagFinder m_aprilTagFinder = new AprilTagFinder();
   private final Field2d m_field = new Field2d();
   private final FieldMap m_fieldMap = new FieldMap();

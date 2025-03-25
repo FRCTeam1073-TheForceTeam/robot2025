@@ -31,10 +31,7 @@ public class OI extends OldOI
     BargeScore(1),
     IntakeAlgae(6),
     Destruct(7),
-    ProccessorScore(8),
-    ;
-
-
+    ProccessorScore(8);
 
     private int buttonValue;
 
@@ -72,9 +69,9 @@ public class OI extends OldOI
   }
 
   // Declares our controller variable
-  public static Joystick driverController;
-  public static Joystick operatorPrimaryController;
-  public static Joystick operatorSecondaryController;
+  private Joystick driverController;
+  private Joystick operatorPrimaryController;
+  private Joystick operatorSecondaryController;
 
   public Debouncer fieldCentricDebouncer = new Debouncer(0.05);
   public Debouncer parkingBrakeDebouncer = new Debouncer(0.05);
@@ -218,6 +215,11 @@ public class OI extends OldOI
   @Override
   public boolean getDummyButton() {
     return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.Destruct.getButtonVal());
+  }
+
+  @Override
+  public boolean getOperatorLeftJoystickPress() {
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroElevator.getButtonVal());
   }
 
   @Override

@@ -218,12 +218,12 @@ public class OldOI extends SubsystemBase
     return getDriverRawButton(BUTTONS.LeftJoystickPress.getButtonVal());
   }
 
-  public static void rumble() {
-    OI.driverController.setRumble(RumbleType.kBothRumble, 1);
+  public void rumble() {
+    // OI.driverController.setRumble(RumbleType.kBothRumble, 1);
   }
 
-  public static void stopRumble() {
-    OI.driverController.setRumble(RumbleType.kBothRumble, 0);
+  public void stopRumble() {
+    // OI.driverController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void zeroOperatorController() {
@@ -298,7 +298,7 @@ public class OldOI extends SubsystemBase
   }
 
   public double getOperatorRightTrigger(){
-    return MathUtil.clamp( operatorController.getRawAxis(BUTTONS.RightTrigger.getButtonVal()), 0, 1);
+    return MathUtil.clamp(operatorController.getRawAxis(BUTTONS.RightTrigger.getButtonVal()), 0, 1);
   }
 
   public double getOperatorLeftTrigger(){

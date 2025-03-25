@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CreepToReef;
 import frc.robot.commands.DrivePath;
-import frc.robot.commands.LoadAlgae;
+import frc.robot.commands.LoadAlgaeAuto;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
-import frc.robot.commands.ScoreAlgae;
+import frc.robot.commands.ScoreAlgaeAuto;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
@@ -116,12 +116,12 @@ public class CenterCoralAndBarge extends Command {
       new ZeroElevator(elevator)),
       new ParallelCommandGroup(
         new CoralElevatorToHeight(elevator, height, true),
-        new LoadAlgae(algaeClaw)
+        new LoadAlgaeAuto(algaeClaw)
       ),
       new ZeroElevator(elevator),
       new DrivePath(drivetrain, path2, localizer),
       new CoralElevatorToHeight(elevator, 5, true),
-      new ScoreAlgae(algaeClaw),
+      new ScoreAlgaeAuto(algaeClaw),
       new ZeroElevator(elevator));
   }
 }

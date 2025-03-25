@@ -29,10 +29,10 @@ import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.Dummy;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
-import frc.robot.commands.LoadAlgae;
+import frc.robot.commands.LoadAlgaeTeleop;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.RemoveAlgae;
-import frc.robot.commands.ScoreAlgae;
+import frc.robot.commands.ScoreAlgaeTeleop;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
@@ -97,8 +97,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
   private final Dummy cmd_dummy = new Dummy();
-  private final LoadAlgae cmd_loadAlgae = new LoadAlgae(m_algaeClaw);
-  private final ScoreAlgae cmd_scoreAlgae = new ScoreAlgae(m_algaeClaw);
+  private final LoadAlgaeTeleop cmd_loadAlgae = new LoadAlgaeTeleop(m_algaeClaw);
+  private final ScoreAlgaeTeleop cmd_scoreAlgae = new ScoreAlgaeTeleop(m_algaeClaw);
 
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
 

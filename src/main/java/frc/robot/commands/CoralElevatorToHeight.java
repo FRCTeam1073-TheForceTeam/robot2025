@@ -28,11 +28,11 @@ public class CoralElevatorToHeight extends Command {
 
     }
     else if(branchLevel == 2){
-      targetHeight = 0.77;
+      targetHeight = 0.72;
 
     }
     else if (branchLevel == 3){
-      targetHeight = 1.13;
+      targetHeight = 1.11;
 
     }
     else if (branchLevel == 4){

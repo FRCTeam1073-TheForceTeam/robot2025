@@ -34,12 +34,7 @@ public class AlgaeClawTeleop extends Command {
     algaeClaw.setRotatorVel(velocity);
 
     if(oi.getOperatorAlgaeToggle()){
-        if(!algaeClaw.getIsUp()) {
-          algaeClaw.setRotatorPos(8.7);
-        }
-        else{
-          algaeClaw.setRotatorPos(28.476);
-        }
+      algaeClaw.setRotatorPos(10); //find the right position
     }
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());

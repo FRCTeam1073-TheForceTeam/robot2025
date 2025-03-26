@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.Localizer;
 /** Add your docs here. */
 public class AutoCenterStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, boolean xversion)
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, boolean xversion, AlgaeClaw algaeClaw)
     {
         switch (level)
         {

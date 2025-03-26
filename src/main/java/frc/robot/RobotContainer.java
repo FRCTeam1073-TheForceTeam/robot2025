@@ -289,9 +289,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case rightPosition:
         return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, false);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, false, null);
       case centerPositionX:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, true);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, true, null);
       case testAuto:
         return TestAuto.create(m_drivetrain, m_localizer, m_fieldMap);
       default:

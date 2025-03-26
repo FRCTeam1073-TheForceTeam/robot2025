@@ -42,10 +42,10 @@ public class CoralElevatorToHeight extends Command {
       targetHeight = 1.8;
     }
     else if (branchLevel == 6) {
-      targetHeight = 0.95;
+      targetHeight = 0.0;
     }
     else if (branchLevel == 7) {
-      targetHeight = 1.44;
+      targetHeight = 1.2;
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);

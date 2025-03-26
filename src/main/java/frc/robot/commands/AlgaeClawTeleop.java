@@ -15,6 +15,7 @@ public class AlgaeClawTeleop extends Command {
 
   private double velocity;
   private boolean clawUp;
+  private final double algaeVel = 50;
 
   public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
     algaeClaw = AlgaeClaw;
@@ -40,6 +41,16 @@ public class AlgaeClawTeleop extends Command {
         else{
           algaeClaw.setRotatorPos(28.476);
         }
+    }
+
+    if(oi.getOperatorLoadAlgae()) {
+      algaeClaw.setCollectorVel(algaeVel);
+    }
+    else if(oi.getOperatorScoreAlgae()) {
+      algaeClaw.setCollectorVel(-algaeVel);
+    }
+    else {
+      algaeClaw.setCollectorVel(0);
     }
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());

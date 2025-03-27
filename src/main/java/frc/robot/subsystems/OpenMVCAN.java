@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.hal.CANData;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OpenMVCAN extends SubsystemBase {
   private CAN openmv;
@@ -167,7 +168,7 @@ public class OpenMVCAN extends SubsystemBase {
    * @return True if we got a heartbeat mesage, false if we did not.
    */
   public boolean readHeartbeat() {
-    if(read(apiIndex(1, 2), recvData) == true && recvData.length == 3) {
+    if(read(apiIndex(1, 2), recvData) == true && recvData.length == 5) {
       mode = recvData.data[0];
       int counterHi = recvData.data[1] & 0xFF;
       int counterLo = recvData.data[2] & 0xFF;
@@ -303,6 +304,8 @@ public class OpenMVCAN extends SubsystemBase {
       }
 
     }
+    SmartDashboard.putNumber("CAN/cx", tracks.get(0).cx);
+    SmartDashboard.putNumber("CAN/missed heartbeats", missedHeartbeats);
 
     // On H7's this does not do anything right now. Bug being worked by OpenMV
     if ((loopCounter % 50 == 0)) {

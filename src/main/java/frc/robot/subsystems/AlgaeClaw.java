@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AlgaeClaw extends SubsystemBase {
 
   private final double rotateMinPos = 0;
-  private final double rotateMaxPos = 28.476;
+  private final double rotateMaxPos = 41.9;
 
   private final double collectMotorKP = 0.15; //TODO change these values
   private final double collectMotorKI = 0;
@@ -275,7 +275,7 @@ public class AlgaeClaw extends SubsystemBase {
     collectMotor.getConfigurator().apply(collectMotorConfig, 0.5);
     rotateMotor.getConfigurator().apply(rotateMotorConfig, 0.5);
 
-    collectMotor.setNeutralMode(NeutralModeValue.Coast);
+    collectMotor.setNeutralMode(NeutralModeValue.Brake);
     rotateMotor.setNeutralMode(NeutralModeValue.Coast);
    
     collectMotor.setPosition(0);

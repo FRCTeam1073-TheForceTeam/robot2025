@@ -28,10 +28,7 @@ import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
 import frc.robot.commands.LidarAlign;
-import frc.robot.commands.LoadAlgaeTeleop;
 import frc.robot.commands.LoadCoral;
-import frc.robot.commands.RemoveAlgae;
-import frc.robot.commands.ScoreAlgaeTeleop;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
@@ -83,7 +80,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_troughRaiseElevator = new CoralElevatorToHeight(m_coralElevator, 1, false);
   private final CoralElevatorToHeight cmd_coralElevatorToL4 = new CoralElevatorToHeight(m_coralElevator, 4, false);
   private final CoralElevatorToHeight cmd_coralElevatorToBarge = new CoralElevatorToHeight(m_coralElevator, 5, false);
-  private final CoralElevatorToHeight cmd_coralElevatorToLowA = new CoralElevatorToHeight(m_coralElevator, 6, false);
   private final CoralElevatorToHeight cmd_coralElevatorToHighA = new CoralElevatorToHeight(m_coralElevator, 7, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
   private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
@@ -96,8 +92,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeClawTeleop cmd_AlgaeClawTeleop = new AlgaeClawTeleop(m_algaeClaw, m_OI);
-  private final LoadAlgaeTeleop cmd_loadAlgae = new LoadAlgaeTeleop(m_algaeClaw);
-  private final ScoreAlgaeTeleop cmd_scoreAlgae = new ScoreAlgaeTeleop(m_algaeClaw);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
@@ -229,9 +223,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
       elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
-    
-    Trigger elevatorLowAlgae = new Trigger(m_OI::getOperatorLowAlgaeButton);
-      elevatorLowAlgae.whileTrue(cmd_coralElevatorToLowA);
     
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgaeButton);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);

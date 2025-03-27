@@ -29,6 +29,11 @@ public class AlgaeClaw extends SubsystemBase {
   private final double collectMotorKD = 0;
   private final double collectMotorKV = 0.12;
 
+  private final double collectPosKP = 0.15; //TODO change these values
+  private final double collectPosKI = 0;
+  private final double collectPosKD = 0;
+  private final double collectPosKV = 0.12;
+
   private final double rotateVelKP = 0.2;
   private final double rotateVelKI = 0.01;
   private final double rotateVelKD = 0.0;
@@ -36,13 +41,15 @@ public class AlgaeClaw extends SubsystemBase {
   private final double rotateVelKA = 0.01;
 
   private final double rotatePosKP = 0.2;
-  private final double rotatePosKI = 01;
-  private final double rotatePoKD = 0.0;
+  private final double rotatePosKI = 0.01;
+  private final double rotatePosKD = 0.0;
   private final double rotatePosKV = 0.12;
   private final double rotatePosKA = 0.01;
 
   private double collectVel;
   private double commandedCollectVel;
+  private double commandedCollectPos;
+  private double collectPos;
   private double collectLoad;
 
   private double rotateVel;
@@ -60,6 +67,7 @@ public class AlgaeClaw extends SubsystemBase {
   private TalonFX collectMotor;
   private TalonFX rotateMotor;
   private VelocityVoltage collectVelocityVoltage;
+  private MotionMagicVoltage collectPositionVoltage;
   private VelocityVoltage rotateVelocityVoltage;
   private MotionMagicVoltage rotatePositionController;
 
@@ -78,6 +86,7 @@ public class AlgaeClaw extends SubsystemBase {
     collectVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotateVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotatePositionController = new MotionMagicVoltage(0).withSlot(1);
+    collectPositionVoltage = new MotionMagicVoltage(0).withSlot(1);
 
     configureHardware();
   }
@@ -85,11 +94,16 @@ public class AlgaeClaw extends SubsystemBase {
   @Override
   public void periodic() {
     collectVel = collectMotor.getVelocity().getValueAsDouble(); 
+    collectPos = collectMotor.getPosition().getValueAsDouble(); 
     collectLoad = collectMotor.getTorqueCurrent().getValueAsDouble();
 
     rotateVel = rotateMotor.getVelocity().getValueAsDouble(); 
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
     rotateLoad = rotateMotor.getTorqueCurrent().getValueAsDouble();
+
+    commandedCollectPos = commandedCollectVel * 0.5; //calculating collect position based on velocity and time
+    collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(1));
+
 
     if (rotatePos >= rotateMaxPos){
       commandedRotateVel = Math.min(commandedRotateVel, 0); 
@@ -104,8 +118,6 @@ public class AlgaeClaw extends SubsystemBase {
     else if(rotatePos < 8.7) {
       isUp = true;
     }
-
-    collectMotor.setControl(collectVelocityVoltage.withVelocity(commandedCollectVel));
 
     if(velocityMode) {
       rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
@@ -222,14 +234,25 @@ public class AlgaeClaw extends SubsystemBase {
     rotatemmConfigs.MotionMagicAcceleration = 100;
     rotatemmConfigs.MotionMagicJerk = 800;
 
-    var collectMotorClosedLoopConfig = collectMotorConfig.Slot0;
+    var collectmmConfigs = rotateMotorConfig.MotionMagic;
+    collectmmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
+    collectmmConfigs.MotionMagicAcceleration = 100;
+    collectmmConfigs.MotionMagicJerk = 800;
+    
+    var collectMotorClosedLoop0Config = collectMotorConfig.Slot0;
+    var collectMotorClosedLoop1Config = collectMotorConfig.Slot1;
     var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;
     var rotateMotorClosedLoop1Config = rotateMotorConfig.Slot1;
 
-    collectMotorClosedLoopConfig.withKP(collectMotorKP);
-    collectMotorClosedLoopConfig.withKI(collectMotorKI);
-    collectMotorClosedLoopConfig.withKD(collectMotorKD);
-    collectMotorClosedLoopConfig.withKV(collectMotorKV);
+    collectMotorClosedLoop0Config.withKP(collectMotorKP);
+    collectMotorClosedLoop0Config.withKI(collectMotorKI);
+    collectMotorClosedLoop0Config.withKD(collectMotorKD);
+    collectMotorClosedLoop0Config.withKV(collectMotorKV);
+
+    collectMotorClosedLoop1Config.withKP(collectPosKP);
+    collectMotorClosedLoop1Config.withKI(collectPosKI);
+    collectMotorClosedLoop1Config.withKD(collectPosKD);
+    collectMotorClosedLoop1Config.withKV(collectPosKV);
 
     rotateMotorClosedLoop0Config.withKP(rotateVelKP);
     rotateMotorClosedLoop0Config.withKI(rotateVelKI);
@@ -239,7 +262,7 @@ public class AlgaeClaw extends SubsystemBase {
 
     rotateMotorClosedLoop1Config.withKP(rotatePosKP);
     rotateMotorClosedLoop1Config.withKI(rotatePosKI);
-    rotateMotorClosedLoop1Config.withKD(rotatePoKD);
+    rotateMotorClosedLoop1Config.withKD(rotatePosKD);
     rotateMotorClosedLoop1Config.withKV(rotatePosKV);
     rotateMotorClosedLoop1Config.withKA(rotatePosKA);
 

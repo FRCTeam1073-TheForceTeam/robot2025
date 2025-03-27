@@ -49,8 +49,8 @@ public class LeftScore2Coral
 
         Point tag6L = new Point(tag6LeftPose.getX(), tag6LeftPose.getY());
         tag6L.blend_radius = AutoConstants.blendRadius;
-        Point tag6LApproach = new Point(tag6LeftApproachPose.getX(), tag6LeftApproachPose.getY());
-        Point tag11RApproach = new Point(tag11RightApproachPose.getX(), tag11RightApproachPose.getY());
+        Point tag6LApproach = new Point(tag6LeftApproachPose.getX(), tag6LeftApproachPose.getY() - 0.2);
+        Point tag11RApproach = new Point(tag11RightApproachPose.getX(), tag11RightApproachPose.getY() - 0.2);
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         // redI1.blend_radius = AutoConstants.blendRadius;
         Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
@@ -61,8 +61,8 @@ public class LeftScore2Coral
 
         Point tag19L = new Point(tag19LeftPose.getX(), tag19LeftPose.getY());
         tag19L.blend_radius = AutoConstants.blendRadius;
-        Point tag19LApproach = new Point(tag19LeftApproachPose.getX(), tag19LeftApproachPose.getY());
-        Point tag20RApproach = new Point(tag20RightApproachPose.getX(), tag20RightApproachPose.getY());
+        Point tag19LApproach = new Point(tag19LeftApproachPose.getX(), tag19LeftApproachPose.getY() - 0.2);
+        Point tag20RApproach = new Point(tag20RightApproachPose.getX(), tag20RightApproachPose.getY() - 0.2);
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         // blueI1.blend_radius = AutoConstants.blendRadius;
         Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());

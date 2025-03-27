@@ -49,14 +49,19 @@ public class SmartAlign extends Command {
   }
 
   public Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, boolean isRed, int slot){
-    return new ParallelRaceGroup(
-      new CoralElevatorToHeight(coralElevator, 2, false),
-      new SequentialCommandGroup(
-        new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
-        new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
-        new LidarAlign(lidar, drivetrain)
-      )
+    return new SequentialCommandGroup(
+      new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
+      new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
+      new LidarAlign(lidar, drivetrain)
     );
+    // return new ParallelRaceGroup(
+    //   new CoralElevatorToHeight(coralElevator, 2, false),
+    //   new SequentialCommandGroup(
+    //     new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
+    //     new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
+    //     new LidarAlign(lidar, drivetrain)
+    //   )
+    // );
   }
 
   public Command createSource(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, int slot){

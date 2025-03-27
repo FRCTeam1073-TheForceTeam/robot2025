@@ -30,11 +30,16 @@ public class AlgaeClawTeleop extends Command {
   @Override
   public void execute() {
     clawUp = algaeClaw.getIsUp();
-    velocity = oi.getOperatorLeftX() * 12.0;//TODO change controls
+    velocity = oi.getOperatorLeftX() * 7.0;//TODO change controls
     algaeClaw.setRotatorVel(velocity);
 
-    if(oi.getOperatorAlgaeToggle()){
-      algaeClaw.setRotatorPos(10); //find the right position
+    if(oi.getOperatorLoadAlgae()){
+      algaeClaw.setCollectorVel(30);
+    } else if(oi.getOperatorScoreAlgae()){
+      algaeClaw.setCollectorVel(-30);
+    }
+    else{
+      algaeClaw.setCollectorVel(0);
     }
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());

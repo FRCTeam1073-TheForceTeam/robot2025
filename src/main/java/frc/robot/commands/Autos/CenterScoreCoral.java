@@ -50,11 +50,11 @@ public class CenterScoreCoral
 
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
         tag10.blend_radius = AutoConstants.blendRadius;
-        Point tag10Approach = new Point(tag10ApproachPose.getX(), tag10ApproachPose.getY());
+        Point tag10Approach = new Point(tag10ApproachPose.getX(), tag10ApproachPose.getY() - 0.1);
 
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
         tag21.blend_radius = AutoConstants.blendRadius;
-        Point tag21Approach = new Point(tag21ApproachPose.getX(), tag21ApproachPose.getY());
+        Point tag21Approach = new Point(tag21ApproachPose.getX(), tag21ApproachPose.getY() - 0.1);
 
 
         ArrayList<Segment> segments = new ArrayList<Segment>();

@@ -54,7 +54,7 @@ public class LeftScoreCoral
 
         Point tag11 = new Point(tag11Pose.getX(), tag11Pose.getY());
         tag11.blend_radius = AutoConstants.blendRadius;
-        Point tag11Approach = new Point(tag11ApproachPose.getX(), tag11ApproachPose.getY());
+        Point tag11Approach = new Point(tag11ApproachPose.getX(), tag11ApproachPose.getY() - 0.2);
         // tag11Approach.blend_radius = AutoConstants.blendRadius;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         // redI1.blend_radius = AutoConstants.blendRadius;
@@ -63,7 +63,7 @@ public class LeftScoreCoral
 
         Point tag20 = new Point(tag20Pose.getX(), tag20Pose.getY());
         tag20.blend_radius = AutoConstants.blendRadius;
-        Point tag20Approach = new Point(tag20ApproachPose.getX(), tag20ApproachPose.getY());
+        Point tag20Approach = new Point(tag20ApproachPose.getX(), tag20ApproachPose.getY() - 0.2);
         // tag20Approach.blend_radius = AutoConstants.blendRadius;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         // blueI1.blend_radius = AutoConstants.blendRadius;

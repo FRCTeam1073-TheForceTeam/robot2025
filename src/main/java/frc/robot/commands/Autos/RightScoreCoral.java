@@ -53,7 +53,7 @@ public class RightScoreCoral
 
         Point tag9 = new Point(tag9Pose.getX(), tag9Pose.getY());
         tag9.blend_radius = AutoConstants.blendRadius;
-        Point tag9Approach = new Point(tag9ApproachPose.getX(), tag9ApproachPose.getY());
+        Point tag9Approach = new Point(tag9ApproachPose.getX(), tag9ApproachPose.getY() - 0.2);
         // tag9Approach.blend_radius = AutoConstants.blendRadius;
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         // redI1.blend_radius = AutoConstants.blendRadius;
@@ -62,7 +62,7 @@ public class RightScoreCoral
 
         Point tag22 = new Point(tag22Pose.getX(), tag22Pose.getY());
         tag22.blend_radius = AutoConstants.blendRadius;
-        Point tag22Approach = new Point(tag22ApproachPose.getX(), tag22ApproachPose.getY());
+        Point tag22Approach = new Point(tag22ApproachPose.getX(), tag22ApproachPose.getY() - 0.2);
         // tag22Approach.blend_radius = AutoConstants.blendRadius;
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         // blueI1.blend_radius = AutoConstants.blendRadius;

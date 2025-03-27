@@ -218,11 +218,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
     
-    Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
-      loadAlgae.whileTrue(cmd_loadAlgae);
+    // Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+    //   loadAlgae.whileTrue(cmd_loadAlgae);
 
-    Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-      scoreAlgae.whileTrue(cmd_scoreAlgae);
+    // Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+    //   scoreAlgae.whileTrue(cmd_scoreAlgae);
     
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
       zeroElevator.onTrue(cmd_zeroElevator);

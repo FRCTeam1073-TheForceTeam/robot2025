@@ -52,6 +52,7 @@ public class AlgaeClaw extends SubsystemBase {
   private double commandedCollectPos;
   private double collectPos;
   private double collectLoad;
+  private double collectTemp;
 
   private double rotateVel;
   private double commandedRotateVel;
@@ -94,9 +95,11 @@ public class AlgaeClaw extends SubsystemBase {
 
   @Override
   public void periodic() {
+    collectTemp = collectMotor.getDeviceTemp().getValueAsDouble();
     collectVel = collectMotor.getVelocity().getValueAsDouble(); 
     collectPos = collectMotor.getPosition().getValueAsDouble(); 
     collectLoad = collectMotor.getTorqueCurrent().getValueAsDouble();
+
 
     rotateVel = rotateMotor.getVelocity().getValueAsDouble(); 
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
@@ -104,28 +107,31 @@ public class AlgaeClaw extends SubsystemBase {
 
     commandedCollectPos = commandedCollectPos + (commandedCollectVel * 0.02); //calculating collect position based on velocity and time
     collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(0));
+    
+    commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
+    rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
 
 
-    if (rotatePos >= rotateMaxPos){
-      commandedRotateVel = Math.min(commandedRotateVel, 0); 
-    }
-    if (rotatePos <= rotateMinPos){
-      commandedRotateVel = Math.max(commandedRotateVel, 0);
-    }
+    // if (rotatePos >= rotateMaxPos){
+    //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
+    // }
+    // if (rotatePos <= rotateMinPos){
+    //   commandedRotateVel = Math.max(commandedRotateVel, 0);
+    // }
 
-    if(rotatePos >= 8.7) {
-      isUp = false;
-    }
-    else if(rotatePos < 8.7) {
-      isUp = true;
-    }
+    // if(rotatePos >= 8.7) {
+    //   isUp = false;
+    // }
+    // else if(rotatePos < 8.7) {
+    //   isUp = true;
+    // }
 
-    if(velocityMode) {
-      rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
-    }
-    else {
-      rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
-    }
+    // if(velocityMode) {
+    //   rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
+    // }
+    // else {
+    //   rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
+    // }
 
     SmartDashboard.putNumber("AlgaeClaw/Collect Velocity", collectVel);
     SmartDashboard.putNumber("AlgaeClaw/Collect Position", collectPos);
@@ -139,6 +145,7 @@ public class AlgaeClaw extends SubsystemBase {
     SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", !rotateBrakeMode);
     SmartDashboard.putBoolean("AlgaeClaw/Has Algae", hasAlgae);
     SmartDashboard.putBoolean("AlgaeClaw/Is Up", isUp);
+    SmartDashboard.putNumber("AlgaeClaw/Algae Collect Motor Temp", collectTemp);
   }
 
   public void setCollectorVel(double newVel){

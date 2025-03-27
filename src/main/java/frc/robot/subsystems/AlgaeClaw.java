@@ -127,6 +127,7 @@ public class AlgaeClaw extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("AlgaeClaw/Collect Velocity", collectVel);
+    SmartDashboard.putNumber("AlgaeClaw/Collect Position", collectPos);
     SmartDashboard.putNumber("AlgaeClaw/Collect Commanded Velocity", commandedCollectVel);
     SmartDashboard.putNumber("AlgaeClaw/Collect Motor Load", collectLoad);
     SmartDashboard.putBoolean("AlgaeClaw/Collect Brake Mode", !collectBrakeMode);

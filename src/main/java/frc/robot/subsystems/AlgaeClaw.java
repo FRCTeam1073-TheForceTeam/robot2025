@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -67,7 +68,7 @@ public class AlgaeClaw extends SubsystemBase {
   private TalonFX collectMotor;
   private TalonFX rotateMotor;
   private VelocityVoltage collectVelocityVoltage;
-  private MotionMagicVoltage collectPositionVoltage;
+  private PositionVoltage collectPositionVoltage;
   private VelocityVoltage rotateVelocityVoltage;
   private MotionMagicVoltage rotatePositionController;
 
@@ -86,7 +87,7 @@ public class AlgaeClaw extends SubsystemBase {
     collectVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotateVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotatePositionController = new MotionMagicVoltage(0).withSlot(1);
-    collectPositionVoltage = new MotionMagicVoltage(0).withSlot(1);
+    collectPositionVoltage = new PositionVoltage(0).withSlot(0);
 
     configureHardware();
   }
@@ -101,8 +102,8 @@ public class AlgaeClaw extends SubsystemBase {
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
     rotateLoad = rotateMotor.getTorqueCurrent().getValueAsDouble();
 
-    commandedCollectPos = commandedCollectVel * 0.5; //calculating collect position based on velocity and time
-    collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(1));
+    commandedCollectPos = commandedCollectPos + (commandedCollectVel * 0.02); //calculating collect position based on velocity and time
+    collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(0));
 
 
     if (rotatePos >= rotateMaxPos){
@@ -234,14 +235,8 @@ public class AlgaeClaw extends SubsystemBase {
     rotatemmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
     rotatemmConfigs.MotionMagicAcceleration = 100;
     rotatemmConfigs.MotionMagicJerk = 800;
-
-    var collectmmConfigs = rotateMotorConfig.MotionMagic;
-    collectmmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
-    collectmmConfigs.MotionMagicAcceleration = 100;
-    collectmmConfigs.MotionMagicJerk = 800;
     
     var collectMotorClosedLoop0Config = collectMotorConfig.Slot0;
-    var collectMotorClosedLoop1Config = collectMotorConfig.Slot1;
     var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;
     var rotateMotorClosedLoop1Config = rotateMotorConfig.Slot1;
 
@@ -249,11 +244,6 @@ public class AlgaeClaw extends SubsystemBase {
     collectMotorClosedLoop0Config.withKI(collectMotorKI);
     collectMotorClosedLoop0Config.withKD(collectMotorKD);
     collectMotorClosedLoop0Config.withKV(collectMotorKV);
-
-    collectMotorClosedLoop1Config.withKP(collectPosKP);
-    collectMotorClosedLoop1Config.withKI(collectPosKI);
-    collectMotorClosedLoop1Config.withKD(collectPosKD);
-    collectMotorClosedLoop1Config.withKV(collectPosKV);
 
     rotateMotorClosedLoop0Config.withKP(rotateVelKP);
     rotateMotorClosedLoop0Config.withKI(rotateVelKI);

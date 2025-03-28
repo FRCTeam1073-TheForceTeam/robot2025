@@ -31,20 +31,9 @@ public class AlgaeClawTeleop extends Command {
   @Override
   public void execute() {
     clawUp = algaeClaw.getIsUp();
+    velocity = oi.getOperatorLeftX() * 7.0;//TODO change controls
+    algaeClaw.setRotatorVel(velocity);
 
-    //rotator logic from controller
-    if(oi.getOperatorAlgaeToggle() && clawUp) {
-      algaeClaw.setRotatorPos(28.476);
-    }
-    else if(oi.getOperatorAlgaeToggle() && !clawUp) {
-      algaeClaw.setRotatorPos(8.7);
-    }
-    else {
-      velocity = oi.getOperatorLeftX() * 7.0;
-      algaeClaw.setRotatorVel(velocity);
-    }
-
-    //collector logic from controller
     if(oi.getOperatorLoadAlgae()){
       algaeClaw.setCollectorVel(30);
     } else if(oi.getOperatorScoreAlgae()){

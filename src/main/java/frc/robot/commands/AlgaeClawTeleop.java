@@ -15,7 +15,7 @@ public class AlgaeClawTeleop extends Command {
 
   private double velocity;
   private boolean clawUp;
-  private final double algaeVel = 50;
+  private final double algaeVel = 30;
 
   public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
     algaeClaw = AlgaeClaw;
@@ -42,16 +42,6 @@ public class AlgaeClawTeleop extends Command {
     else {
       velocity = oi.getOperatorLeftX() * 7.0;
       algaeClaw.setRotatorVel(velocity);
-    }
-
-    //collector logic from controller
-    if(oi.getOperatorLoadAlgae()){
-      algaeClaw.setCollectorVel(30);
-    } else if(oi.getOperatorScoreAlgae()){
-      algaeClaw.setCollectorVel(-30);
-    }
-    else{
-      algaeClaw.setCollectorVel(0);
     }
 
     if(oi.getOperatorLoadAlgae()) {

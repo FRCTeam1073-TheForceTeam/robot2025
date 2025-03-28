@@ -78,7 +78,7 @@ public class CenterCoralAndBarge extends Command {
 
     if(isRed) {
       segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments2.add(new Segment(tag10, tag4, tag4Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments2.add(new Segment(tag10, tag5, tag5Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
       path = new Path(segments, tag10Pose.getRotation().getRadians());
       path2 = new Path(segments2, tag4Pose.getRotation().getRadians());

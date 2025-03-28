@@ -17,6 +17,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,9 +26,9 @@ public class AlgaeClaw extends SubsystemBase {
   private final double rotateMinPos = 0;
   private final double rotateMaxPos = 41.9;
 
-  private final double collectMotorKP = 0.15; //TODO change these values
+  private final double collectMotorKP = 0.2; //TODO change these values
   private final double collectMotorKI = 0;
-  private final double collectMotorKD = 0;
+  private final double collectMotorKD = 0.02;
   private final double collectMotorKV = 0.12;
 
   private final double collectPosKP = 0.15; //TODO change these values
@@ -72,9 +73,10 @@ public class AlgaeClaw extends SubsystemBase {
   private PositionVoltage collectPositionVoltage;
   private VelocityVoltage rotateVelocityVoltage;
   private MotionMagicVoltage rotatePositionController;
-
+  private LinearFilter filter;
 
   public AlgaeClaw() {
+    filter = LinearFilter.singlePoleIIR(0.5, 0.02);
     collectMotor = new TalonFX(25);
     rotateMotor = new TalonFX(26);
     collectBrakeMode = true;
@@ -99,6 +101,7 @@ public class AlgaeClaw extends SubsystemBase {
     collectVel = collectMotor.getVelocity().getValueAsDouble(); 
     collectPos = collectMotor.getPosition().getValueAsDouble(); 
     collectLoad = collectMotor.getTorqueCurrent().getValueAsDouble();
+    collectLoad = filter.calculate(collectLoad);
 
 
     rotateVel = rotateMotor.getVelocity().getValueAsDouble(); 

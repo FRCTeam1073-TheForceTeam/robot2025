@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeAutoGrabCommand;
+import frc.robot.commands.AlgaeAutoReleaseCommand;
 import frc.robot.commands.AlgaeClawTeleop;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.AlignToTagRelative;
@@ -99,6 +101,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
   private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
+  private final AlgaeAutoGrabCommand cmd_algaeGrabCommand = new AlgaeAutoGrabCommand(m_algaeClaw);
+  private final AlgaeAutoReleaseCommand cmd_algaeReleaseCommand = new AlgaeAutoReleaseCommand(m_algaeClaw);
 
   private boolean isRed;
   private int level;
@@ -213,12 +217,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
-    
-    // Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
-    //   loadAlgae.whileTrue(cmd_loadAlgae);
 
-    // Trigger scoreAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-    //   scoreAlgae.whileTrue(cmd_scoreAlgae);
+    Trigger algaeLoad = new Trigger(m_OI::getOperatorLoadAlgae);
+      algaeLoad.whileTrue(cmd_algaeGrabCommand);
+
+    Trigger algaeRelease = new Trigger(m_OI::getOperatorScoreAlgae);
+      algaeRelease.whileTrue(cmd_algaeReleaseCommand);
     
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
       zeroElevator.onTrue(cmd_zeroElevator);
@@ -226,7 +230,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
       elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
     
-    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgaeButton);
+    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorAlgaeToggle);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
   } 
 

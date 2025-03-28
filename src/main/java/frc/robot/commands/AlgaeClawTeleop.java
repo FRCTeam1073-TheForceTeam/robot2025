@@ -32,27 +32,25 @@ public class AlgaeClawTeleop extends Command {
   public void execute() {
     clawUp = algaeClaw.getIsUp();
 
-    //rotator logic from controller
-    if(oi.getOperatorAlgaeToggle() && clawUp) {
-      algaeClaw.setRotatorPos(28.476);
-    }
-    else if(oi.getOperatorAlgaeToggle() && !clawUp) {
-      algaeClaw.setRotatorPos(8.7);
-    }
-    else {
+    // //rotator logic from controller
+    // if(oi.getOperatorAlgaeToggle() && clawUp) {
+    //   algaeClaw.setRotatorPos(28.476);
+    // }
+    // else if(oi.getOperatorAlgaeToggle() && !clawUp) {
+    //   algaeClaw.setRotatorPos(8.7);
+    // }
       velocity = oi.getOperatorLeftX() * 7.0;
       algaeClaw.setRotatorVel(velocity);
-    }
 
-    if(oi.getOperatorLoadAlgae()) {
-      algaeClaw.setCollectorVel(algaeVel);
-    }
-    else if(oi.getOperatorScoreAlgae()) {
-      algaeClaw.setCollectorVel(-algaeVel);
-    }
-    else {
-      algaeClaw.setCollectorVel(0);
-    }
+    // if(oi.getOperatorLoadAlgae()) {
+    //   algaeClaw.setCollectorVel(algaeVel);
+    // }
+    // else if(oi.getOperatorScoreAlgae()) {
+    //   algaeClaw.setCollectorVel(-algaeVel);
+    // }
+    // else {
+    //   algaeClaw.setCollectorVel(0);
+    // }
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());
     SmartDashboard.putBoolean("AlgaeClaw/Algae Score Button", oi.getOperatorScoreAlgae());

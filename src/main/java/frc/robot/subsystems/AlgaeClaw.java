@@ -162,10 +162,6 @@ public class AlgaeClaw extends SubsystemBase {
     commandedRotatePos = position;
   }
 
-  public void setIsUp(boolean state) {
-    isUp = state;
-  }
-
   public void zeroRotator(){
     rotatePos = 0.0;
     rotateMotor.setPosition(0);

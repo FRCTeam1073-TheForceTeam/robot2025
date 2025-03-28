@@ -5,42 +5,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralElevator;
-import frc.robot.subsystems.OI;
+import frc.robot.subsystems.AlgaeClaw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralElevatorTeleop extends Command {
+public class ScoreAlgaeAuto extends Command {
+  AlgaeClaw algaeClaw;
 
-  OI oi;
-  CoralElevator elevator;
-  private double velocity;
-
-  /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
+  /** Creates a new ScoreAlgaeAuto. */
+  public ScoreAlgaeAuto(AlgaeClaw algaeClaw) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
-    this.oi = oi;
-    addRequirements(elevator);
+    this.algaeClaw = algaeClaw;
   }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //elevator.setBrakeMode(false);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorLeftY() * 12.0;//TODO change controls
-    elevator.setVelocity(velocity);
+    algaeClaw.setRotatorPos(28.476);
+    algaeClaw.setCollectorVel(-30);
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    algaeClaw.setCollectorVel(0);
+    algaeClaw.setRotatorPos(8.7);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(algaeClaw.getCollectorLoad()) >= 25;
   }
 }

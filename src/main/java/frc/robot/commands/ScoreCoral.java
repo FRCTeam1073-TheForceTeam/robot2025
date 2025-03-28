@@ -36,6 +36,7 @@ public class ScoreCoral extends Command {
   @Override
   public void end(boolean interrupted) {
     endeffector.setVelocity(0);
+    endeffector.setCoralFed(false);
   }
 
   // Returns true when the command should end.

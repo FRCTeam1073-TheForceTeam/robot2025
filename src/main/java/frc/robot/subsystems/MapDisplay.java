@@ -46,8 +46,8 @@ public class MapDisplay extends SubsystemBase{
         tagNames.put(14,"Close Blue Reef");
         tagNames.put(4, "Far Blue Reef");
         tagNames.put(3,"Blue Processor");
-        tagNames.put(12,"Right Coral Stretch");
-        tagNames.put(13,"Left Coral Stretch");
+        tagNames.put(12,"Right Coral Station");
+        tagNames.put(13,"Left Coral Station");
         tagNames.put(6,"Close Left");
         tagNames.put(7,"Close Center");
         tagNames.put(8,"Close Right");

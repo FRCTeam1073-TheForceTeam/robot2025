@@ -24,19 +24,28 @@ public class CoralElevatorToHeight extends Command {
     this.terminate = terminate;
     
     if(branchLevel == 1){
-      targetHeight = 0.798;
+      targetHeight = 0.45;
 
     }
     else if(branchLevel == 2){
-      targetHeight = 0.957;
+      targetHeight = 0.72;
 
     }
     else if (branchLevel == 3){
-      targetHeight = 1.341;
+      targetHeight = 1.11;
 
     }
     else if (branchLevel == 4){
-      targetHeight = 1.91;
+      targetHeight = 1.73;
+    }
+    else if (branchLevel == 5) {
+      targetHeight = 1.8;
+    }
+    else if (branchLevel == 6) {
+      targetHeight = 0.0;
+    }
+    else if (branchLevel == 7) {
+      targetHeight = 1.2;
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
@@ -69,7 +78,7 @@ public class CoralElevatorToHeight extends Command {
   @Override
   public boolean isFinished() {
     if(terminate) {
-      return Math.abs(elevator.getMeters() - targetHeight) < 0.361;
+      return Math.abs(elevator.getMeters() - targetHeight) < 0.02;
     }
     else {
       return false;

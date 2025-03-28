@@ -299,7 +299,7 @@ public class OpenMVCAN extends SubsystemBase {
       // If we miss too many complain about it.
       if (missedHeartbeats > 100) {
         // TODO: Do something more reasonable using Shuffleboard to tell which cameras are working.
-        // System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
+        System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
         missedHeartbeats = 0;
       }
 
@@ -308,10 +308,10 @@ public class OpenMVCAN extends SubsystemBase {
     SmartDashboard.putNumber("CAN/missed heartbeats", missedHeartbeats);
 
     // On H7's this does not do anything right now. Bug being worked by OpenMV
-    if ((loopCounter % 50 == 0)) {
-      // System.out.println("SET MODE");
-      setMode((byte)3);
-    }
+    // if ((loopCounter % 50 == 0)) {
+    //   // System.out.println("SET MODE");
+    //   setMode((byte)3);
+    // }
 
     // See if we got a config message and update data, but only check once in a while.
     if ((loopCounter % 200 == 0) && readConfig()) {
@@ -329,6 +329,12 @@ public class OpenMVCAN extends SubsystemBase {
       readSimpleTarget(slot);
     }
 
+    SmartDashboard.putNumber("CAN/Track 0 CX", tracks.get(0).cx);
+    SmartDashboard.putNumber("CAN/Track 1 CX", tracks.get(1).cx);
+    SmartDashboard.putNumber("CAN/Trsck 2 CX", tracks.get(2).cx);
+    SmartDashboard.putNumber("CAN/Track 3 CX", tracks.get(3).cx);
+    SmartDashboard.putNumber("CAN/missed heartbeats", missedHeartbeats);
+    
     loopCounter++;
   }
 

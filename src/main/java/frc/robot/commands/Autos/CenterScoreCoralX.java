@@ -41,12 +41,12 @@ public class CenterScoreCoralX
             slot = -1;
         }
         Pose2d tag10Pose = map.getTagRelativePose(10, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
-        Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI))); // -0.05 y offset is specific to week 2
+        Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
         Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
-        tag10.blend_radius = AutoConstants.blendRaidus;
+        tag10.blend_radius = AutoConstants.blendRadius;
         Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
-        tag21.blend_radius = AutoConstants.blendRaidus;
+        tag21.blend_radius = AutoConstants.blendRadius;
 
 
         ArrayList<Segment> segments = new ArrayList<Segment>();
@@ -76,7 +76,8 @@ public class CenterScoreCoralX
             // new LidarAlign(lidar, drivetrain),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
-                                   new SequentialCommandGroup(new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
+                                   new SequentialCommandGroup(
+                                    new CreepToReef(drivetrain, endEffector, -1).withTimeout(3.0),
                                                             new ScoreCoral(endEffector),
                                                             new WaitCommand(0.5))),
             new WaitCommand(0.5),

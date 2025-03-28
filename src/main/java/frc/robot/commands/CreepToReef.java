@@ -20,7 +20,7 @@ public class CreepToReef extends Command {
   int seenReef = 0;
   boolean hasReef = false;
 
-
+  // TODO: Update when openMV is implemented
   /** This command creeps along the reef slowly until the sensor sees the reef then exits/ stops. 
    * Suggested by Cody.
   */

@@ -24,10 +24,7 @@ public class LoadCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: change velocity to actual velocity
-    if(!endeffector.getHasCoral()){
       endeffector.setVelocity(10);
-    }
   }
 
   // Called once the command ends or is interrupted.

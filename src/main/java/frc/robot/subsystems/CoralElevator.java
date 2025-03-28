@@ -48,6 +48,7 @@ public class CoralElevator extends SubsystemBase {
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
   private final double maxPosition = 1.92;
+  public final double minPosition = 0.3467; //WINDHAM
 
 
   private double position;
@@ -101,6 +102,9 @@ public class CoralElevator extends SubsystemBase {
     if (isAtZero){
       setZero();
       if (commandedVelocity < 0.0) commandedVelocity = 0.0; // Velocity hard-limit at bottom of travel can only go up from here.
+      if(commandedPosition <= minPosition){
+        commandedPosition = position;
+      }
     }
 
     if (position > getEncoderUnits(maxPosition) && commandedVelocity > 0.0) commandedVelocity = 0.0; // Don't go past maximum height.
@@ -162,10 +166,6 @@ public class CoralElevator extends SubsystemBase {
     return brakemode;
   }
 
-  public boolean getIsAtZero(){
-    return isAtZero;
-  }
-
   public double getMeters() {
     return ((position + 9.832) / 28.353); // 5:1 gear rotatio turns the pulley 0.17635 meters
   }
@@ -192,7 +192,7 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var mmConfigs = frontElevatorMotorConfig.MotionMagic;
-    mmConfigs.MotionMagicCruiseVelocity = 45;
+    mmConfigs.MotionMagicCruiseVelocity = 75;
     mmConfigs.MotionMagicAcceleration = 100;
     mmConfigs.MotionMagicJerk = 800;
 

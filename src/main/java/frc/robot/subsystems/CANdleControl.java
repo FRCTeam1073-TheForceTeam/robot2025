@@ -28,7 +28,7 @@ public class CANdleControl extends SubsystemBase {
     m_candle = new CANdle(30); // creates a new CANdle with ID 0
     CANdleConfiguration config = new CANdleConfiguration();
     config.stripType = LEDStripType.RGB; // set the strip type to RGB
-    config.brightnessScalar = 0.05; // dim the LEDs to half brightness
+    config.brightnessScalar = 0.5; // dim the LEDs to half brightness
     m_candle.configAllSettings(config);
     m_candle.configLEDType(LEDStripType.GRB, 5);
     m_candle.setLEDs(255, 255, 255); // set the CANdle LEDs to white

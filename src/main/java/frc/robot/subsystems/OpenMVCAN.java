@@ -299,17 +299,17 @@ public class OpenMVCAN extends SubsystemBase {
       // If we miss too many complain about it.
       if (missedHeartbeats > 100) {
         // TODO: Do something more reasonable using Shuffleboard to tell which cameras are working.
-        // System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
+        System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
         missedHeartbeats = 0;
       }
 
     }
 
     // On H7's this does not do anything right now. Bug being worked by OpenMV
-    if ((loopCounter % 50 == 0)) {
-      // System.out.println("SET MODE");
-      setMode((byte)3);
-    }
+    // if ((loopCounter % 50 == 0)) {
+    //   // System.out.println("SET MODE");
+    //   setMode((byte)3);
+    // }
 
     // See if we got a config message and update data, but only check once in a while.
     if ((loopCounter % 200 == 0) && readConfig()) {

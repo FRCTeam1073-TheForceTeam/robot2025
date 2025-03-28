@@ -93,10 +93,10 @@ public class CenterCoralAndBarge extends Command {
     }
 
     if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) {
-      height = 6;
+      height = 5;
     }
     else {
-      height = 7;
+      height = 6;
     }
 
 
@@ -120,7 +120,7 @@ public class CenterCoralAndBarge extends Command {
       ),
       new ZeroElevator(elevator),
       new DrivePath(drivetrain, path2, localizer),
-      new CoralElevatorToHeight(elevator, 5, true),
+      new CoralElevatorToHeight(elevator, 7, true),
       new ScoreAlgaeAuto(algaeClaw),
       new ZeroElevator(elevator));
   }

@@ -6,21 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.OI;
 
-public class AlgaeClawTeleop extends Command {
-  AlgaeClaw algaeClaw;
+public class AlgaeCollectorTeleop extends Command {
+  AlgaeCollector algaeCollector;
   OI oi;
 
   private double velocity;
-  private boolean clawUp;
   private final double algaeVel = 30;
 
-  public AlgaeClawTeleop(AlgaeClaw AlgaeClaw, OI OI) {
-    algaeClaw = AlgaeClaw;
+  public AlgaeCollectorTeleop(AlgaeCollector algaeCollector, OI OI) {
+    this.algaeCollector = algaeCollector;
     oi = OI;
-    addRequirements(algaeClaw);
+    addRequirements(algaeCollector);
   }
 
   @Override
@@ -30,7 +30,6 @@ public class AlgaeClawTeleop extends Command {
 
   @Override
   public void execute() {
-    clawUp = algaeClaw.getIsUp();
 
     // //rotator logic from controller
     // if(oi.getOperatorAlgaeToggle() && clawUp) {
@@ -39,8 +38,6 @@ public class AlgaeClawTeleop extends Command {
     // else if(oi.getOperatorAlgaeToggle() && !clawUp) {
     //   algaeClaw.setRotatorPos(8.7);
     // }
-      velocity = oi.getOperatorLeftX() * 4.0;
-      algaeClaw.setRotatorVel(velocity);
 
     // if(oi.getOperatorLoadAlgae()) {
     //   algaeClaw.setCollectorVel(algaeVel);
@@ -51,6 +48,8 @@ public class AlgaeClawTeleop extends Command {
     // else {
     //   algaeClaw.setCollectorVel(0);
     // }
+
+    algaeCollector.setCollectorVel(0);
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorHighAlgae());
     SmartDashboard.putBoolean("AlgaeClaw/Algae Score Button", oi.getOperatorScoreAlgae());

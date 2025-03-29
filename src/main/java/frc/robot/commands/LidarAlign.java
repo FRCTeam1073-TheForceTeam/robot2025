@@ -10,6 +10,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Lidar;
 
@@ -29,6 +30,7 @@ public class LidarAlign extends Command {
   PIDController xController;
   LinearFilter filter;
   double angleOffset = (-2.0 * Math.PI)/180;
+  CommandStates state;
   
   public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
     this.lidar = lidar;
@@ -46,6 +48,7 @@ public class LidarAlign extends Command {
   public void initialize() {
     thetaController.reset();
     xController.reset();
+    state.setIsLidarAligning(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -74,6 +77,7 @@ public class LidarAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     drivetrain.setTargetChassisSpeeds( new ChassisSpeeds(0, 0, 0));
+    state.setIsLidarAligning(false);
   }
 
   // Returns true when the command should end.

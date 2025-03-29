@@ -5,16 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LoadAlgaeAuto extends Command {
-    AlgaeClaw algaeClaw;
+    AlgaeCollector algaeCollector;
+    AlgaePivot algaePivot;
 
   /** Creates a new LoadAlgaeAuto. */
-  public LoadAlgaeAuto(AlgaeClaw algaeClaw) {
+  public LoadAlgaeAuto(AlgaeCollector algaeCollector, AlgaePivot algaePivot) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeClaw = algaeClaw;
+    this.algaeCollector = algaeCollector;
+    this.algaePivot = algaePivot;
   }
 
   // Called when the command is initially scheduled.
@@ -24,20 +27,20 @@ public class LoadAlgaeAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeClaw.setRotatorPos(28.476);
-    algaeClaw.setCollectorVel(30);
+    algaePivot.setRotatorPos(28.476);
+    algaeCollector.setCollectorVel(30);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeClaw.setCollectorVel(0);
-    algaeClaw.setRotatorPos(8.7);
+    algaeCollector.setCollectorVel(0);
+    algaePivot.setRotatorPos(8.7);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(algaeClaw.getCollectorLoad()) >= 25;
+    return Math.abs(algaeCollector.getCollectorLoad()) >= 25;
   }
 }

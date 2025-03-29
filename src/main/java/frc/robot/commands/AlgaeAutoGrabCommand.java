@@ -6,38 +6,44 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.CommandStates;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeAutoGrabCommand extends Command {
   /** Creates a new AlgaeAutoGrabCommand. */
-  AlgaeClaw algaeClaw;
+  AlgaeCollector algaeCollector;
+  CommandStates state;
 
-  public AlgaeAutoGrabCommand(AlgaeClaw algaeClaw) {
-    this.algaeClaw = algaeClaw;
+  public AlgaeAutoGrabCommand(AlgaeCollector algaeCollector, CommandStates states) {
+    this.algaeCollector = algaeCollector;
+    this.state = states;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(algaeCollector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    state.setIsCollecting(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(algaeClaw.getCollectorLoad() < 10){
-      algaeClaw.setCollectorVel(10);
+    if(algaeCollector.getCollectorLoad() < 10){
+      algaeCollector.setCollectorVel(10);
     }
     else{
-      algaeClaw.setCollectorVel(0);
+      algaeCollector.setCollectorVel(0);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeClaw.setCollectorVel(0);
+    algaeCollector.setCollectorVel(0);
+    state.setIsCollecting(false);
   }
 
   // Returns true when the command should end.

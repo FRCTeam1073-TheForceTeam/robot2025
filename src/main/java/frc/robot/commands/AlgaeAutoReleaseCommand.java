@@ -8,16 +8,17 @@ import java.security.Timestamp;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeAutoReleaseCommand extends Command {
   /** Creates a new AlgaeAutoReleaseCommand. */
-  AlgaeClaw algaeClaw;
+  AlgaeCollector algaeCollector;
   double timeAtInit;
-  public AlgaeAutoReleaseCommand(AlgaeClaw algaeClaw) {
-    this.algaeClaw = algaeClaw;
+  public AlgaeAutoReleaseCommand(AlgaeCollector algaeCollector) {
+    this.algaeCollector = algaeCollector;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(algaeCollector);
   }
 
   // Called when the command is initially scheduled.
@@ -29,14 +30,14 @@ public class AlgaeAutoReleaseCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeClaw.setCollectorVel(-85);
+    algaeCollector.setCollectorVel(-85);
     //algaeClaw.setRotatorVel(15);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeClaw.setCollectorVel(0);
+    algaeCollector.setCollectorVel(0);
   }
 
   // Returns true when the command should end.

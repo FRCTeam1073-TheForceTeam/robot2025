@@ -25,7 +25,8 @@ import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -36,7 +37,7 @@ import frc.robot.subsystems.Localizer;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CenterCoralAndBarge extends Command {
   /** Creates a new CenterCoralAndBarge. */
-  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeClaw algaeClaw, Lidar lidar, int branchLevel) {
+  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeCollector algaeCollector, AlgaePivot algaePivot, Lidar lidar, int branchLevel) {
     int height;
     int slot;
     if (branchLevel == 1)
@@ -116,12 +117,12 @@ public class CenterCoralAndBarge extends Command {
       new ZeroElevator(elevator)),
       new ParallelCommandGroup(
         new CoralElevatorToHeight(elevator, height, true),
-        new LoadAlgaeAuto(algaeClaw)
+        new LoadAlgaeAuto(algaeCollector, algaePivot)
       ),
       new ZeroElevator(elevator),
       new DrivePath(drivetrain, path2, localizer),
       new CoralElevatorToHeight(elevator, 7, true),
-      new ScoreAlgaeAuto(algaeClaw),
+      new ScoreAlgaeAuto(algaeCollector, algaePivot),
       new ZeroElevator(elevator));
   }
 }

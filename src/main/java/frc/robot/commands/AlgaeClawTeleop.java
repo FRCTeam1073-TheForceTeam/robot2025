@@ -39,7 +39,7 @@ public class AlgaeClawTeleop extends Command {
     // else if(oi.getOperatorAlgaeToggle() && !clawUp) {
     //   algaeClaw.setRotatorPos(8.7);
     // }
-      velocity = oi.getOperatorLeftX() * 7.0;
+      velocity = oi.getOperatorLeftX() * 4.0;
       algaeClaw.setRotatorVel(velocity);
 
     // if(oi.getOperatorLoadAlgae()) {

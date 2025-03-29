@@ -29,7 +29,7 @@ public class AlgaeAutoReleaseCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeClaw.setCollectorVel(-40);
+    algaeClaw.setCollectorVel(-85);
     //algaeClaw.setRotatorVel(15);
   }
 
@@ -42,7 +42,7 @@ public class AlgaeAutoReleaseCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Timer.getFPGATimestamp() - timeAtInit > 5.0) {
+    if(Timer.getFPGATimestamp() - timeAtInit > 2.0) {
       return true;
     }
     return false;

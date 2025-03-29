@@ -230,7 +230,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
       elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
     
-    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorAlgaeToggle);
+    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
   } 
 

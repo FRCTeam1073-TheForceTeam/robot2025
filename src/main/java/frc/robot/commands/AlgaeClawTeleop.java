@@ -52,7 +52,7 @@ public class AlgaeClawTeleop extends Command {
     //   algaeClaw.setCollectorVel(0);
     // }
 
-    SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorAlgaeToggle());
+    SmartDashboard.putBoolean("AlgaeClaw/Algae Toggle Button", oi.getOperatorHighAlgae());
     SmartDashboard.putBoolean("AlgaeClaw/Algae Score Button", oi.getOperatorScoreAlgae());
     SmartDashboard.putBoolean("AlgaeClaw/Algae Load Button", oi.getOperatorLoadAlgae());
   }

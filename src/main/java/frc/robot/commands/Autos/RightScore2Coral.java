@@ -101,8 +101,8 @@ public class RightScore2Coral
             path3 = new Path(segments3, tag8RightApproachPose.getRotation().getRadians());
             path4 = new Path(segments4, tag2Pose.getRotation().getRadians());
 
-            localTagID = 8;
-            localTagID2 = 9;
+            localTagID = 9;
+            localTagID2 = 8;
         }
         else
         {
@@ -123,8 +123,8 @@ public class RightScore2Coral
             path3 = new Path(segments3, tag17RightApproachPose.getRotation().getRadians());
             path4 = new Path(segments4, tag12Pose.getRotation().getRadians());
 
-            localTagID = 17;
-            localTagID2 = 22;
+            localTagID = 22;
+            localTagID2 = 17;
         }
         
 
@@ -146,7 +146,7 @@ public class RightScore2Coral
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new AlignToTagRelative(drivetrain, finder, localTagID, 1),
+            new AlignToTagRelative(drivetrain, finder, localTagID2, 1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

@@ -42,7 +42,7 @@ public class CoralElevatorToHeight extends Command {
       targetHeight = 0.0;
     }
     else if (branchLevel == 6) { //high algae
-      targetHeight = 1.2;
+      targetHeight = 0.72;
     }
     else if (branchLevel == 7) { //barge
       targetHeight = 1.8;

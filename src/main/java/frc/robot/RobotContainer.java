@@ -219,7 +219,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       localAlign.whileTrue(cmd_localAlign);
 
     Trigger algaeLoad = new Trigger(m_OI::getOperatorLoadAlgae);
-      algaeLoad.whileTrue(cmd_algaeGrabCommand);
+      algaeLoad.onTrue(cmd_algaeGrabCommand);
 
     Trigger algaeRelease = new Trigger(m_OI::getOperatorScoreAlgae);
       algaeRelease.onTrue(cmd_algaeReleaseCommand);

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DrivePath;
-import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
 import frc.robot.commands.ScoreCoral;

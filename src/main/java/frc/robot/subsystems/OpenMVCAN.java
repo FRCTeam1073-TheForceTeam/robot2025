@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.hal.CANData;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OpenMVCAN extends SubsystemBase {
@@ -331,7 +332,7 @@ public class OpenMVCAN extends SubsystemBase {
     SmartDashboard.putNumber("CAN/Track 1 CX", tracks.get(1).cx);
     SmartDashboard.putNumber("CAN/Trsck 2 CX", tracks.get(2).cx);
     SmartDashboard.putNumber("CAN/Track 3 CX", tracks.get(3).cx);
-    SmartDashboard.putNumber("CAN/missed heartbeats", missedHeartbeats);
+    SmartDashboard.putNumber("CAN/Frame Counter", frameCounter);
     
     loopCounter++;
   }

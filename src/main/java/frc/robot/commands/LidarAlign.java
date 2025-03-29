@@ -32,8 +32,9 @@ public class LidarAlign extends Command {
   double angleOffset = (-2.0 * Math.PI)/180;
   CommandStates state;
   
-  public LidarAlign(Lidar lidar, Drivetrain drivetrain) {
+  public LidarAlign(Lidar lidar, Drivetrain drivetrain, CommandStates state) {
     this.lidar = lidar;
+    this.state = state;
     this.drivetrain = drivetrain;
     thetaController = new PIDController(1.7, 0, 0.015);
     xController = new PIDController(1, 0, 0.01);

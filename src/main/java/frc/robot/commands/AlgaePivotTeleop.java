@@ -40,9 +40,15 @@ public class AlgaePivotTeleop extends Command {
     // else if(oi.getOperatorAlgaeToggle() && !clawUp) {
     //   algaeClaw.setRotatorPos(8.7);
     // }
+    if(oi.getOperatorLeftX() > 0){
+      velocity = oi.getOperatorLeftX() * 6.0;
+    } else if(oi.getOperatorLeftX() < 0){
       velocity = oi.getOperatorLeftX() * 4.0;
-      algaePivot.setRotatorVel(velocity);
+    } else{
+      velocity = 0;
+    }
 
+      algaePivot.setRotatorVel(velocity);
     // if(oi.getOperatorLoadAlgae()) {
     //   algaeClaw.setCollectorVel(algaeVel);
     // }

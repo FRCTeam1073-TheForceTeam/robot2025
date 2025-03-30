@@ -30,6 +30,9 @@ import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
+import frc.robot.commands.FloorEject;
+import frc.robot.commands.FloorIntake;
+import frc.robot.commands.FloorPickupPivotTeleop;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
@@ -51,6 +54,8 @@ import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.FloorPickupCollect;
+import frc.robot.subsystems.FloorPickupPivot;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
@@ -65,6 +70,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AprilTagFinder m_aprilTagFinder = new AprilTagFinder();
   private final Field2d m_field = new Field2d();
   private final FieldMap m_fieldMap = new FieldMap();
+  private final FloorPickupCollect m_floorPickupCollect = new FloorPickupCollect();
+  private final FloorPickupPivot m_floorPickupPivot = new FloorPickupPivot();
   private final Localizer m_localizer = new Localizer(m_drivetrain, m_fieldMap, m_aprilTagFinder);
   private final MapDisplay m_MapDisplay = new MapDisplay(m_drivetrain, m_localizer, m_fieldMap);
   private final CoralElevator m_coralElevator = new CoralElevator();
@@ -109,7 +116,9 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
   private final AlgaeAutoGrabCommand cmd_algaeGrabCommand = new AlgaeAutoGrabCommand(m_algaeCollector, m_commandStates);
   private final AlgaeAutoReleaseCommand cmd_algaeReleaseCommand = new AlgaeAutoReleaseCommand(m_algaeCollector);
-
+  private final FloorIntake cmd_floorIntake = new FloorIntake(m_floorPickupCollect);
+  private final FloorEject cmd_floorEject = new FloorEject(m_floorPickupCollect);
+  private final FloorPickupPivotTeleop cmd_floorPickupPivotTeleop = new FloorPickupPivotTeleop(m_floorPickupPivot, m_OI);
   private boolean isRed;
   private int level;
   private boolean isRainbow = false;
@@ -145,6 +154,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
     CommandScheduler.getInstance().setDefaultCommand(m_algaeCollector, cmd_algaeCollectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_algaePivot, cmd_algaePivotTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_floorPickupPivot, cmd_floorPickupPivotTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);

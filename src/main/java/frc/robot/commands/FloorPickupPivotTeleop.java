@@ -5,24 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FloorPickup;
+import frc.robot.subsystems.FloorPickupPivot;
 import frc.robot.subsystems.OI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TeleopFloorPickup extends Command {
+public class FloorPickupPivotTeleop extends Command {
   /** Creates a new TeleopFloorPickup. */
-  FloorPickup floorPickup;
+  FloorPickupPivot floorPickupPivot;
   OI oi;
   private int togglePositions = -1;
   private double positionZero = 0; //Initialize Position
   private double positionOne = 0.2; //Floor Position
   private double positionTwo = 0.1; //Stow Position / Score Position
 
-  public TeleopFloorPickup(FloorPickup floorPickup, OI oi) {
-    this.floorPickup = floorPickup;
+  public FloorPickupPivotTeleop(FloorPickupPivot floorPickupPivot, OI oi) {
+    this.floorPickupPivot = floorPickupPivot;
     this.oi = oi;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(floorPickupPivot);
   }
 
   // Called when the command is initially scheduled.
@@ -35,21 +35,20 @@ public class TeleopFloorPickup extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO ADD BUTTON
-    if(buttonPush){
+    if(oi.getOperatorMiddleRedButton()){
       togglePositions++;
       if(togglePositions > 2){
         togglePositions = 0;
       }
     }
     if(togglePositions == 0){
-      floorPickup.setPivotPosition(positionZero);
+      floorPickupPivot.setRotatorPos(positionZero);
     }
     else if(togglePositions == 1){
-      floorPickup.setPivotPosition(positionOne);
+      floorPickupPivot.setRotatorPos(positionOne);
     }
     else if(togglePositions == 2){
-      floorPickup.setPivotPosition(positionTwo);
+      floorPickupPivot.setRotatorPos(positionTwo);
     }
   }
 

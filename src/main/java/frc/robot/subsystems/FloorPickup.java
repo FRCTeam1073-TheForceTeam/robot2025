@@ -117,12 +117,10 @@ public class FloorPickup extends SubsystemBase{
     public void configureHardware() {
 
         var rollerMotorConfig = new TalonFXConfiguration(); //TODO check configs with robots
-        rollerMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        rollerMotor.getConfigurator().apply(rollerMotorConfig);
-
         var pivotMotorConfig = new TalonFXConfiguration(); //TODO check configs with robots
+        rollerMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         pivotMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        pivotMotor.getConfigurator().apply(pivotMotorConfig);
+        
 
         var mmConfigs = pivotMotorConfig.MotionMagic;
         mmConfigs.MotionMagicCruiseVelocity = 75; //TODO change mm numbers
@@ -145,9 +143,13 @@ public class FloorPickup extends SubsystemBase{
 
         var rollerError = rollerMotor.getConfigurator().apply(rollerMotorClosedLoopConfig, 0.5);
         var pivotError = pivotMotor.getConfigurator().apply(pivotMotorClosedLoopConfig, 0.5);
+        
+        rollerMotor.getConfigurator().apply(rollerMotorConfig, 0.5);
+        pivotMotor.getConfigurator().apply(pivotMotorConfig, 0.5);
 
         rollerMotor.setNeutralMode(NeutralModeValue.Coast);//TODO consider changing brakemode (also test ungeared setup before gearing)
         pivotMotor.setNeutralMode(NeutralModeValue.Coast);//TODO consider changing brakemode (also test ungeared setup before gearing)
+
 
         rollerMotor.setPosition(0);
         pivotMotor.setPosition(0);

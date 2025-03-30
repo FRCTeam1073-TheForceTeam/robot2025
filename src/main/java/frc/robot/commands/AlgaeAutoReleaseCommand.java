@@ -4,43 +4,48 @@
 
 package frc.robot.commands;
 
+import java.security.Timestamp;
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralElevator;
-import frc.robot.subsystems.OI;
+import frc.robot.subsystems.AlgaeCollector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralElevatorTeleop extends Command {
-
-  OI oi;
-  CoralElevator elevator;
-  private double velocity;
-
-  /** Creates a new CoralElevatorTeleop. */
-  public CoralElevatorTeleop(CoralElevator elevator, OI oi){
+public class AlgaeAutoReleaseCommand extends Command {
+  /** Creates a new AlgaeAutoReleaseCommand. */
+  AlgaeCollector algaeCollector;
+  double timeAtInit;
+  public AlgaeAutoReleaseCommand(AlgaeCollector algaeCollector) {
+    this.algaeCollector = algaeCollector;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
-    this.oi = oi;
-    addRequirements(elevator);
+    addRequirements(algaeCollector);
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //elevator.setBrakeMode(false);
+    timeAtInit = Timer.getFPGATimestamp();    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocity = oi.getOperatorLeftY() * 12.0;//TODO change controls
-    elevator.setVelocity(velocity);
+    algaeCollector.setCollectorVel(-85);
+    //algaeClaw.setRotatorVel(15);
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    algaeCollector.setCollectorVel(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(Timer.getFPGATimestamp() - timeAtInit > 2.0) {
+      return true;
+    }
     return false;
   }
 }

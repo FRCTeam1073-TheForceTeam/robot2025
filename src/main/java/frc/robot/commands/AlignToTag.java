@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
-import frc.robot.subsystems.OI;
 import frc.robot.subsystems.FieldMap;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -27,7 +26,6 @@ public class AlignToTag extends Command
   Localizer localizer;
   FieldMap fieldMap;
   MapDisplay mapDisplay;
-  OI oi;
   int aprilTagID;
   Pose2d targetPose;
   PIDController xController;
@@ -36,27 +34,30 @@ public class AlignToTag extends Command
   double xVelocity;
   double yVelocity;
   double wVelocity;
+  double xError;
+  double yError;
+  double wError;
   int slot;
   boolean isRed;
+  boolean terminate = false;
 
-  // private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  // private final static double maximumRotationVelocity = 4.0; // Radians/second
-  private final static double maximumLinearVelocity = 3.5;   // Meters/second
-  private final static double maximumRotationVelocity = 4.0; // Radians/second
+  private final static double maximumLinearVelocity = 3.0;   // Meters/second
+  private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, boolean terminate, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     this.fieldMap = fieldMap;
     this.mapDisplay = mapDisplay;
-    this.oi = oi;
+    this.terminate = terminate;
+    aprilTagID = tagID;
     xVelocity = 0;
     yVelocity = 0;
     wVelocity = 0;
-    slot = -1;
+    this.slot = slot;
 
     xController = new PIDController(
       1.5, 
@@ -102,7 +103,19 @@ public class AlignToTag extends Command
     xController.reset();
     yController.reset();
     thetaController.reset();
-    aprilTagID = -1;
+
+    if(slot == -1){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+    } 
+    else if(slot == 0){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, 0, new Rotation2d(Math.PI)));
+    } 
+    else if(slot == 1){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.75, -0.1, new Rotation2d(Math.PI)));
+    }
+    else if(slot == 2){
+      targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.45, 0, new Rotation2d(0)));
+    } 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -111,37 +124,12 @@ public class AlignToTag extends Command
   {
     Pose2d currentPose = localizer.getPose();
 
-    if (oi.getDriverXButton())
-    {
-      slot = -1;
-    }
-    else if (oi.getDriverAButton())
-    {
-      slot = 0;
-    }
-    else if (oi.getDriverYButton())
-    {
-      slot = 1;
-    }
-    else if (oi.getDriverViewButton())
-    {
-      slot = 2;
-    }
 
-    if (aprilTagID == -1)
-    {
-      if (slot != 2)
-      {
-        aprilTagID = fieldMap.getBestReefTagID(currentPose);
-        targetPose = fieldMap.getTagRelativePose(aprilTagID, slot, new Transform2d(0.65, 0, new Rotation2d(Math.PI)));
-      }
-      else
-      {
-        aprilTagID = fieldMap.getBestSourceTagID(currentPose, isRed);
-        targetPose = fieldMap.getTagRelativePose(aprilTagID, 0, new Transform2d(0.75, 0, new Rotation2d(0)));
-      }
-    }
     SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
+
+    xError = Math.abs(targetPose.getX() - currentPose.getX());
+    yError = Math.abs(targetPose.getY() - currentPose.getY());
+    wError = Math.abs(targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians());
 
     if (targetPose == null)
     {
@@ -156,6 +144,8 @@ public class AlignToTag extends Command
     yVelocity = MathUtil.clamp(yVelocity, -maximumLinearVelocity, maximumLinearVelocity);
     wVelocity = MathUtil.clamp(wVelocity, -maximumRotationVelocity, maximumRotationVelocity);
 
+    SmartDashboard.putNumber("AlignToTag/error", Math.sqrt(Math.pow(targetPose.minus(currentPose).getX(), 2) + Math.pow(targetPose.minus(currentPose).getY(), 2)));
+
     drivetrain.setTargetChassisSpeeds(
       ChassisSpeeds.fromFieldRelativeSpeeds (xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
     );
@@ -165,13 +155,17 @@ public class AlignToTag extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    aprilTagID = -1;
+    //aprilTagID = -1;
     targetPose = null;
+    System.out.println("Terminated Global Align");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(terminate){
+      return Math.sqrt((xError * xError) + (yError * yError)) < 0.47 && wError < 25 * Math.PI / 180;
+    }
     return false;
   }
 }

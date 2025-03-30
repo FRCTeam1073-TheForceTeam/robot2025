@@ -3,6 +3,7 @@
 package frc.robot.subsystems;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,22 @@ public class FieldMap
     // TODO: AprilTagFields has two flavors of reefscape map: andymark and welded. which one do you need? who knows!
     // apparently for the 2/15 event it's welded. after that all bets are off.
     public static final AprilTagFieldLayout fieldMap = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
-
+    
+    public static final HashMap<Integer, Integer> algaeHeight = new HashMap<>() {{
+        put(6, 0);
+        put(7, 1);
+        put(8, 0);
+        put(9, 1);
+        put(10, 0);
+        put(11, 1);
+        put(17, 0);
+        put(18, 1);
+        put(19, 0);
+        put(20, 1);
+        put(21, 0);
+        put(22, 1);
+    }};
+    
     public int getBestAprilTagID(Pose2d robotPose) 
     {
         double shortestDistance = 998;
@@ -57,6 +73,7 @@ public class FieldMap
                 bestID = tag.ID;
             }
         }
+        SmartDashboard.putNumber("FieldMap/", bestID);
         return bestID;
     }
 

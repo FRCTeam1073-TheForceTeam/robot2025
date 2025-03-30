@@ -7,9 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.CANdleControl;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OI;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -19,15 +22,19 @@ public class CANdleObserver extends Command {
   CoralEndeffector endeffector;
   Climber climber;
   OI oi;
+  CommandStates state;
+  Drivetrain drivetrain;
   int numPerStrip;
   int numTotalLED;
   int candleNum;
 
-  public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi) {
+  public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi, CommandStates state, Drivetrain drivetrain) {
     candleControl = CandleControl;
     endeffector = Endeffector;
     climber = Climber;
     oi = Oi;
+    this.state = state;
+    this.drivetrain = drivetrain;
     numPerStrip = candleControl.getStripLED();
     numTotalLED = candleControl.getTotalLED();
     candleNum = candleControl.getCandleNum();
@@ -44,18 +51,18 @@ public class CANdleObserver extends Command {
   @Override
   public void execute() {
     
-    if (endeffector.getHasReef()){
-      candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
-    }
-    else{
-      candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
-    }
+    // if (endeffector.getHasReef()){
+    //   candleControl.setRGB(0, 255, 0, candleNum, numPerStrip + 3);//elevator forward - green
+    // }
+    // else{
+    //   candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
+    // }
 
     if (endeffector.getHasCoral()){
-      candleControl.setRGB(255, 255, 255, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light on
+      candleControl.setRGB(255, 0, 0, candleNum, 15);//sides of funnel - light on
     }
     else{
-      candleControl.setRGB(0, 0, 0, candleNum + (numPerStrip * 2), numTotalLED);//sides of funnel - light off
+      candleControl.setRGB(0, 0, 0, candleNum, 15);//sides of funnel - light off
     }
 
     if (RobotController.getBatteryVoltage() > 12){
@@ -69,16 +76,20 @@ public class CANdleObserver extends Command {
     }
 
     if (climber.getIsDisengaged()){
-      candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - blue
+      candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - blue
     }
     else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - orange
+      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - orange
     }
     else if (climber.getIsAtZero()){
-      candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - purple
+      candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - purple
     }
     else{
-      candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 3);//elevator side - grey
+      candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - grey
+    }
+
+    if(state.getIsLidarAligning() && drivetrain.getAverageLoad() > 50) {
+        candleControl.setRGB(255, 255, 0, 8, 58);
     }
 
     SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());

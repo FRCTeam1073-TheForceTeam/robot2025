@@ -10,10 +10,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
@@ -24,13 +25,12 @@ public class AlignToTagRelative extends Command
   Drivetrain drivetrain;
   AprilTagFinder finder;
   int aprilTagID;
-  OI oi;
-  Localizer localizer;
-  FieldMap fieldMap;
-  MapDisplay mapDisplay;
-  int slot = 0;
-
-  Transform2d lastLocation; // Last location we've seen the tag in robot coordinates.
+  // Localizer localizer;
+  // FieldMap fieldMap;
+  // MapDisplay mapDisplay;
+  int slot;
+  boolean isRed = false;
+  Pose2d targetLocation; // Last location we've seen the tag in ODOMETRY coordinates.
   Transform2d offset;
   Pose2d currentPose;
   PIDController xController;
@@ -46,21 +46,18 @@ public class AlignToTagRelative extends Command
   ChassisSpeeds speeds;
 
 
-  private final static double maximumLinearVelocity = 1.0;   // Meters/second
-  private final static double maximumRotationVelocity = 1.0; // Radians/second
+  private final static double maximumLinearVelocity = 1.5;   // Meters/second
+  private final static double maximumRotationVelocity = 1.5; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, OI oi) 
+  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
-    this.finder = finder;
-    this.drivetrain = drivetrain;
-    this.localizer = localizer;
-    this.fieldMap = fieldMap;
-    this.mapDisplay = mapDisplay;
-    this.oi = oi;
-    this.aprilTagID = -1;
+    this.finder = finder; 
+    this.slot = slot;
+    this.currentPose = new Pose2d();
+    aprilTagID = tagID;
 
     speeds = new ChassisSpeeds();
 
@@ -69,24 +66,38 @@ public class AlignToTagRelative extends Command
     wVelocity = 0;
 
     xController = new PIDController(
-      1.5, 
+      2.5, 
       0.0, 
       0.03
     );
 
     yController = new PIDController(
-      1.5, 
+      2.5, 
       0.0, 
       0.03
     );
 
     thetaController = new PIDController(
-      1.875, 
+      2.0, 
       0.0,
       0.03
     );
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
+    if(DriverStation.getAlliance().isPresent())
+    {
+      DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+      if (alliance == Alliance.Red)
+      {
+        isRed = true;
+      }
+      else
+      {
+        isRed = false;
+      }
+    }
+
     addRequirements(drivetrain);
   }
 
@@ -94,88 +105,80 @@ public class AlignToTagRelative extends Command
   @Override
   public void initialize() 
   {
+    SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
+    
     double yOffset = 0.165;
     double endEffectorOffset = 0.1905;
 
     xController.reset();
     yController.reset();
     thetaController.reset();
-    missCounter = 1; // Need to see it to start...
+    missCounter = 0;
 
-    currentPose = localizer.getPose();
-
-    // temporary for testing the align
-    // if (oi.getDriverXButton())
-    // {
-    //   slot = -1;
-    //   offset = new Transform2d(0.45, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-    // else if (oi.getDriverAButton())
-    // {
-    //   slot = 0;
-    //   offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-    // else if (oi.getDriverYButton())
-    // {
-    //   slot = 1;
-    //   offset = new Transform2d(0.45, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
-    // }
-
-    slot = 0; //this is just a hack for testing
-    offset = new Transform2d(0.45, endEffectorOffset, new Rotation2d(Math.PI));
-
-    if (aprilTagID == -1)
+    if (slot == 0)
     {
-      if (slot != 2)
-      {
-        aprilTagID = fieldMap.getBestReefTagID(currentPose);
-      }
+      offset = new Transform2d(0.42, endEffectorOffset, new Rotation2d(Math.PI));
     }
-    SmartDashboard.putString("AlignTag", mapDisplay.aprilTagAssignments(aprilTagID));
+    else if (slot == -1)
+    {
+      offset = new Transform2d(0.42, -yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    }
+    else if (slot == 1)
+    {
+      offset = new Transform2d(0.42, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+    }
+    
+    // When we start, assume a large error until we update it.
+    xError = 10;
+    yError = 10;
+    wError = 10;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
+    // Capture current pose for local *odometry* based movement.
+    currentPose = drivetrain.getOdometry();
+
     // Drive on vision measurements.
     // Look for the tag in the currently tracked set:
     var tags = finder.getAllMeasurements();
-    
-
-    // Scan for the tag we're aligning with:
+    SmartDashboard.putNumber("AlignToTagRelative/Tags", tags.size());
     boolean found = false;
-    if(tags != null) {
-      for (var tag : tags) {
-        if (tag.tagID == aprilTagID) {
+    for(int i = 0; i < tags.size(); i++){
+      if (tags.get(i).tagID == aprilTagID) {
   
-          /// Update last location of tag in robot coordinates with the offset...
-          lastLocation = tag.relativePose.plus(offset).inverse();
-          xError = Math.abs(lastLocation.getX());
-          yError = Math.abs(lastLocation.getX());
-          wError = Math.abs(lastLocation.getRotation().getRadians());
-  
-          /// We didn't miss it, we have it.
-          if (missCounter > 0) missCounter--;
-          found = true;
-        }
-      }
-      if (!found) missCounter++; // We missed seeing it this time, we're using old location?
-    }
-    else {
-      missCounter++;
-    }
+        // Update target location of tag in *odometry** coordinates with the offset
+        // every time we see it.
+        targetLocation = currentPose.plus(tags.get(i).relativePose.plus(offset));
 
-    if(lastLocation == null) {
+        /// We didn't miss it, we have it.
+        if (missCounter > 0) missCounter = 0;
+        found = true;
+      }
+    }
+    
+    // Didn't find tag anywhere so we're keeping old target location but count misses.
+    if (!found) missCounter++; // We missed seeing it this time, we're using old location?
+    SmartDashboard.putNumber("AlignToTagRelative/MissCounter", missCounter);
+
+    // We don't yet have a target location at all.
+    if(targetLocation == null) {
       return;
     }
 
+    // Update our error  target (in odo) from odo.
+    xError = Math.abs(targetLocation.getX() - currentPose.getX());
+    yError = Math.abs(targetLocation.getY() - currentPose.getY());
+    wError = Math.abs(targetLocation.getRotation().getRadians() - currentPose.getRotation().getRadians());
+
     // Within ~1/10th second.
-    if (missCounter < 12) {
+    if (missCounter < 60) {
       // We have the tag, align to the offset robot relative position (make the robot center 0,0,0 from the location)
-      xVelocity = xController.calculate(lastLocation.getX(), 0);
-      yVelocity = yController.calculate(lastLocation.getY(), 0);
-      wVelocity = thetaController.calculate(lastLocation.getRotation().getRadians(), 0);
+      xVelocity = xController.calculate(currentPose.getX(), targetLocation.getX());
+      yVelocity = yController.calculate(currentPose.getY(), targetLocation.getY());
+      wVelocity = thetaController.calculate(currentPose.getRotation().getRadians(), targetLocation.getRotation().getRadians());
 
       xVelocity = MathUtil.clamp(xVelocity, -maximumLinearVelocity, maximumLinearVelocity);
       yVelocity = MathUtil.clamp(yVelocity, -maximumLinearVelocity, maximumLinearVelocity);
@@ -184,44 +187,46 @@ public class AlignToTagRelative extends Command
       speeds.vyMetersPerSecond = yVelocity;
       speeds.omegaRadiansPerSecond = wVelocity;
 
-    
     } else {
-      // Missed target a lot... stop?
+      
+      // Haven't seen target in too long => stop moving.
       speeds.vxMetersPerSecond = 0.0;
       speeds.vyMetersPerSecond = 0.0;
       speeds.omegaRadiansPerSecond = 0.0;
     }
 
-    drivetrain.setTargetChassisSpeeds(speeds);
+    drivetrain.setTargetChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation()));
 
-    SmartDashboard.putNumber("AlignToTag/TagId", aprilTagID);
-    SmartDashboard.putNumber("AlignToTag/MissCounter", missCounter);
-    SmartDashboard.putNumber("AlignToTag/X", lastLocation.getX());
-    SmartDashboard.putNumber("AlignToTag/Y", lastLocation.getY());
-    SmartDashboard.putNumber("AlignToTag/Omega", lastLocation.getRotation().getRadians());
+    SmartDashboard.putNumber("AlignToTagRelative/TagId", aprilTagID);
+    SmartDashboard.putNumber("AlignToTagRelative/ErrorX", xError);
+    SmartDashboard.putNumber("AlignToTagRelative/ErrorY", yError);
+    SmartDashboard.putNumber("AlignToTagRelative/ErrorW", wError);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
+    // Stop when we're interrupted.
     speeds.vxMetersPerSecond = 0.0;
     speeds.vyMetersPerSecond = 0.0;
     speeds.omegaRadiansPerSecond = 0.0;
-    aprilTagID = -1;
-
     drivetrain.setTargetChassisSpeeds(speeds);
+
+    // We have no target location
+    targetLocation = null;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
 
-    // We lost it for too long.
-    if (missCounter >= 12) return true;
+    // We lost it for too long so we failed.
+    if (missCounter >= 60) return true;
 
-    // We're basically there.
-    if (xError < 0.05 && yError < 0.03 && wError < 0.01)
+    // We're basically there so we succeeded.
+    if (xError < 0.07 && yError < 0.05 && wError < 0.02)
       return true;
     else
       return false;

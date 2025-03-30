@@ -103,8 +103,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |Two Player        |                          |
 |Coin Button       |   Score Coral            |
 |Top Green         |   Toggle Algae           |
-|Middle Green      |   Score Algae            |
-|Bottom Green      |   Load Algae             |
+|Middle Green      |   Load Algae             |
+|Bottom Green      |   Score Algae            |
 |Left Joystick     |   Elevator Teleop        |
 
 

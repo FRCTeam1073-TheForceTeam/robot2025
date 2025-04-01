@@ -14,9 +14,9 @@ public class FloorPickupPivotTeleop extends Command {
   FloorPickupPivot floorPickupPivot;
   OI oi;
   private int togglePositions = -1;
-  private double positionZero = 0; //Initialize Position
-  private double positionOne = 0.2; //Floor Position
-  private double positionTwo = 0.1; //Stow Position / Score Position
+  private double positionZero = 0.2; //Initialize Position
+  private double positionOne = 20.0; //Floor Position
+  private double positionTwo = 10.57; //Stow Position / Score Position
 
   public FloorPickupPivotTeleop(FloorPickupPivot floorPickupPivot, OI oi) {
     this.floorPickupPivot = floorPickupPivot;

@@ -70,9 +70,9 @@ public class AlgaeCollector extends SubsystemBase {
     collectLoad = collectMotor.getTorqueCurrent().getValueAsDouble();
     collectLoad = filter.calculate(collectLoad);
 
-    commandedCollectPos = commandedCollectPos + (commandedCollectVel * 0.02); //calculating collect position based on velocity and time
-    collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(0));
-
+    // commandedCollectPos = commandedCollectPos + (commandedCollectVel * 0.02); //calculating collect position based on velocity and time
+    // collectMotor.setControl(collectPositionVoltage.withPosition(commandedCollectPos).withSlot(0));
+    collectMotor.setControl(collectVelocityVoltage.withVelocity(commandedCollectVel).withSlot(0));
     // if (rotatePos >= rotateMaxPos){
     //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
     // }

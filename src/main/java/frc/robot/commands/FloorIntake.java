@@ -21,12 +21,13 @@ public class FloorIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    floorPickupCollect.setVelocity(2);//TODO change number
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+      floorPickupCollect.setVelocity(-10);//TODO change number%
+    }
 
   // Called once the command ends or is interrupted.
   @Override

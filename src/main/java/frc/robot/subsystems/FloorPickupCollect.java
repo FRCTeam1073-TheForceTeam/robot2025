@@ -53,12 +53,13 @@ public class FloorPickupCollect extends SubsystemBase {
     velocity = rollerMotor.getVelocity().getValueAsDouble();
     load = rollerMotor.getTorqueCurrent().getValueAsDouble();
     position = rollerMotor.getPosition().getValueAsDouble();
-    commandedPosition += commandedVelocity * 0.02;
+    commandedPosition = commandedPosition + (commandedVelocity * 0.02);
 
     rollerMotor.setControl(collectPositionVoltage.withPosition(commandedPosition));
 
     SmartDashboard.putNumber("Floor Collect/Velocity", velocity);
     SmartDashboard.putNumber("Floor Collect/Commanded Velocity", commandedVelocity);
+    SmartDashboard.putNumber("Floor Collect/Commanded Position", commandedPosition);
   }
 
   public double getVelocity(){

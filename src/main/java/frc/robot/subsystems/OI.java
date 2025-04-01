@@ -62,9 +62,9 @@ public class OI extends SubsystemBase
     L3(3),
     L4(2),
     BargeScore(1),
-    IntakeAlgae(6),
-    TwoPlayer(7),
-    ProccessorScore(8);
+    TopRed(6),
+    MiddleRed(7),
+    BottomRed(8);
 
     private int buttonValue;
 
@@ -83,11 +83,11 @@ public class OI extends SubsystemBase
     LeftJoystickY(1),
     LeftJoystickX(0),
     ZeroElevator(1),
-    LoadCoral(5),
-    MiddleRed(6),
-    ScoreCoral(7),
-    HighAlgae(3),
+    LoadCoral(5),     //single person
+    ScoreCoral(7),    //coin
+    HighAlgae(3),     //
     LoadAlgae(2),
+    TwoPlayer(7),
     ScoreAlgae(4);
 
 
@@ -358,16 +358,8 @@ public class OI extends SubsystemBase
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ScoreAlgae.getButtonVal());
   }
 
-  public boolean getOperatorFloorIntake() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
-  }
-
-  public boolean getOperatorProccessorScore() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ProccessorScore.getButtonVal());
-  }
-
   public boolean getOperatorTwoPlayerButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.TwoPlayer.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.TwoPlayer.getButtonVal());
   }
 
   public boolean getOperatorZeroElevator() {
@@ -375,7 +367,15 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorMiddleRedButton() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.MiddleRed.getButtonVal());
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.MiddleRed.getButtonVal());
+  }
+
+  public boolean getOperatorTopRedButton() {
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.TopRed.getButtonVal());
+  }
+
+  public boolean getOperatorBottomRedButton() {
+    return getOperatorSecondaryRawButton(PRIMARYPADBUTTONS.BottomRed.getButtonVal());
   }
 
   @Override

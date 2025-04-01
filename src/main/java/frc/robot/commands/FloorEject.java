@@ -26,7 +26,7 @@ public class FloorEject extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    floorPickupCollect.setVelocity(10);//TODO change number
+    floorPickupCollect.setVelocity(15);//TODO change number
   }
 
   // Called once the command ends or is interrupted.

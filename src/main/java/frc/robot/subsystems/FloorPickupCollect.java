@@ -20,8 +20,8 @@ public class FloorPickupCollect extends SubsystemBase {
   /** Creates a new FloorPickupCollect. */
   private String kCANbus = "rio";
   private double rollerkP = 0.2;
-  private double rollerkI = 0.01;
-  private double rollerkD = 0.0;
+  private double rollerkI = 0.0;
+  private double rollerkD = 0.02;
   private double rollerkV = 0.12;
 
   private double velocity = 0.0;
@@ -56,6 +56,7 @@ public class FloorPickupCollect extends SubsystemBase {
     commandedPosition = commandedPosition + (commandedVelocity * 0.02);
 
     rollerMotor.setControl(collectPositionVoltage.withPosition(commandedPosition));
+    rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity).withSlot(0));
 
     SmartDashboard.putNumber("Floor Collect/Velocity", velocity);
     SmartDashboard.putNumber("Floor Collect/Commanded Velocity", commandedVelocity);

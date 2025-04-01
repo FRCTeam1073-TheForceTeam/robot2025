@@ -26,7 +26,7 @@ public class FloorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      floorPickupCollect.setVelocity(-10);//TODO change number%
+      floorPickupCollect.setVelocity(-15);//TODO change number%
     }
 
   // Called once the command ends or is interrupted.
@@ -38,6 +38,6 @@ public class FloorIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return floorPickupCollect.getLoad() < 10;
+    return false;
   }
 }

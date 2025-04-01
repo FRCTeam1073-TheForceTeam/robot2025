@@ -141,18 +141,18 @@ public class CenterCoralAndBarge extends Command {
 
     return new SequentialCommandGroup(
       new ParallelRaceGroup(
-        new SequentialCommandGroup(
-          new ParallelCommandGroup(
+        new SequentialCommandGroup( // scores coral 
+          new ParallelCommandGroup( 
             new LoadCoral(endEffector),
-              new DrivePath(drivetrain, path, localizer)
-            ),
-          new AlignToTagRelative(drivetrain, finder, tagID, slot),
+            new DrivePath(drivetrain, path, localizer) 
+          ),
+          new AlignToTagRelative(drivetrain, finder, tagID, slot), 
           new CoralElevatorToHeight(elevator, branchLevel, true),
           new ParallelRaceGroup( 
             new CoralElevatorToHeight(elevator, branchLevel, false),
             new SequentialCommandGroup(
               new ScoreCoral(endEffector),
-              new WaitCommand(0.5)
+              new WaitCommand(0.5) 
             )
           ),
           new ParallelCommandGroup(

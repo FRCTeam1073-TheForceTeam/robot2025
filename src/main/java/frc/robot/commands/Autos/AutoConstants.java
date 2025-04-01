@@ -9,6 +9,8 @@ public class AutoConstants {
 
     public static final double algaeScoreOffsetX = 0.38;
 
+    public static final double algaeEndOffsetX = 2.0;
+
     public static final double blendRadius = 0.08;
 
     // Loading X offset from tag.

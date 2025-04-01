@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
@@ -30,12 +31,13 @@ public class SmartAlign extends Command {
   Command smartAlignCommand;
   Lidar lidar;
   CoralElevator elevator;
+  CommandStates state;
   int slot;
   int tagID;
 
 
   boolean isRed = false;
-  public SmartAlign(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int slot) {
+  public SmartAlign(Drivetrain drivetrain, Localizer localizer, CommandStates state, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int slot) {
     this.drivetrain = drivetrain;
     this.fieldMap = fieldMap;
     this.localizer = localizer;
@@ -43,20 +45,26 @@ public class SmartAlign extends Command {
     this.aprilTagFinder = aprilTagFinder;
     this.lidar = lidar;
     this.slot = slot;
+    this.state = state;
     elevator = coralElevator;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements();
   }
 
   public Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, boolean isRed, int slot){
-    return new ParallelRaceGroup(
-      new CoralElevatorToHeight(coralElevator, 2, false),
-      new SequentialCommandGroup(
-        new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
-        new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
-        new LidarAlign(lidar, drivetrain)
-      )
+    return new SequentialCommandGroup(
+      new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
+      new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
+      new LidarAlign(lidar, drivetrain, state)
     );
+    // return new ParallelRaceGroup(
+    //   new CoralElevatorToHeight(coralElevator, 2, false),
+    //   new SequentialCommandGroup(
+    //     new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
+    //     new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
+    //     new LidarAlign(lidar, drivetrain)
+    //   )
+    // );
   }
 
   public Command createSource(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, int slot){

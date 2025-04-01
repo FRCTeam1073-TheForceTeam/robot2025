@@ -102,8 +102,8 @@ public class LeftScore2Coral
             path3 = new Path(segments3, tag6LeftApproachPose.getRotation().getRadians());
             path4 = new Path(segments4, tag1Pose.getRotation().getRadians());
 
-            localTagID = 6;
-            localTagID2 = 11;
+            localTagID = 11;
+            localTagID2 = 6;
         }
         else
         {
@@ -124,8 +124,8 @@ public class LeftScore2Coral
             path3 = new Path(segments3, tag19LeftApproachPose.getRotation().getRadians());
             path4 = new Path(segments4, tag13Pose.getRotation().getRadians());
 
-            localTagID = 19;
-            localTagID2 = 20;
+            localTagID = 20;
+            localTagID2 = 19;
         }
         
 
@@ -147,7 +147,7 @@ public class LeftScore2Coral
             // TODO: Load and drive in parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new AlignToTagRelative(drivetrain, finder, localTagID, -1),
+            new AlignToTagRelative(drivetrain, finder, localTagID2, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

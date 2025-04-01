@@ -25,7 +25,8 @@ import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -36,7 +37,7 @@ import frc.robot.subsystems.Localizer;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CenterCoralAndBarge extends Command {
   /** Creates a new CenterCoralAndBarge. */
-  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeClaw algaeClaw, Lidar lidar, int branchLevel) {
+  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeCollector algaeCollector, AlgaePivot algaePivot, Lidar lidar, int branchLevel) {
     int height;
     int slot;
     if (branchLevel == 1)
@@ -78,7 +79,7 @@ public class CenterCoralAndBarge extends Command {
 
     if(isRed) {
       segments.add(new Segment(start, tag10, tag10Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments2.add(new Segment(tag10, tag4, tag4Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments2.add(new Segment(tag10, tag5, tag5Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
       path = new Path(segments, tag10Pose.getRotation().getRadians());
       path2 = new Path(segments2, tag4Pose.getRotation().getRadians());
@@ -93,10 +94,10 @@ public class CenterCoralAndBarge extends Command {
     }
 
     if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) {
-      height = 6;
+      height = 5;
     }
     else {
-      height = 7;
+      height = 6;
     }
 
 
@@ -116,12 +117,12 @@ public class CenterCoralAndBarge extends Command {
       new ZeroElevator(elevator)),
       new ParallelCommandGroup(
         new CoralElevatorToHeight(elevator, height, true),
-        new LoadAlgaeAuto(algaeClaw)
+        new LoadAlgaeAuto(algaeCollector, algaePivot)
       ),
       new ZeroElevator(elevator),
       new DrivePath(drivetrain, path2, localizer),
-      new CoralElevatorToHeight(elevator, 5, true),
-      new ScoreAlgaeAuto(algaeClaw),
+      new CoralElevatorToHeight(elevator, 7, true),
+      new ScoreAlgaeAuto(algaeCollector, algaePivot),
       new ZeroElevator(elevator));
   }
 }

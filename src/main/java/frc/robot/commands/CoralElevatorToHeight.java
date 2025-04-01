@@ -38,14 +38,14 @@ public class CoralElevatorToHeight extends Command {
     else if (branchLevel == 4){
       targetHeight = 1.73;
     }
-    else if (branchLevel == 5) {
+    else if (branchLevel == 5) { //low algae
+      targetHeight = 0.0;
+    }
+    else if (branchLevel == 6) { //high algae
+      targetHeight = 0.72;
+    }
+    else if (branchLevel == 7) { //barge
       targetHeight = 1.8;
-    }
-    else if (branchLevel == 6) {
-      targetHeight = 0.95;
-    }
-    else if (branchLevel == 7) {
-      targetHeight = 1.44;
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);

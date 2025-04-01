@@ -109,7 +109,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeCollectorTeleop cmd_algaeCollectorTeleop = new AlgaeCollectorTeleop(m_algaeCollector, m_OI);
-  private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
+  //private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer, m_lidar);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
@@ -155,7 +155,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
     CommandScheduler.getInstance().setDefaultCommand(m_algaeCollector, cmd_algaeCollectorTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(m_algaePivot, cmd_algaePivotTeleop);
+    //CommandScheduler.getInstance().setDefaultCommand(m_algaePivot, cmd_algaePivotTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_floorPickupPivot, cmd_floorPickupPivotTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_floorPickupCollect, cmd_floorPickupCollectTeleop);
 
@@ -205,11 +205,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger scoreCoral = new Trigger(m_OI::getOperatorScoralCoral);
     //   scoreCoral.onTrue(cmd_scoreCoral);
       
-    Trigger troughScore = new Trigger(m_OI::getOperatorL1);
-      troughScore.whileTrue(cmd_troughRaiseElevator);
+    // Trigger troughScore = new Trigger(m_OI::getOperatorL1);
+    //   troughScore.whileTrue(cmd_troughRaiseElevator);
 
-    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
-      elevatorL2.whileTrue(cmd_coralElevatorToL2);
+    // Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
+    //   elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
     Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
@@ -254,10 +254,10 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
 
-    Trigger floorIntake = new Trigger(m_OI::getOperatorTopRedButton);
+    Trigger floorIntake = new Trigger(m_OI::getOperatorL1);
       floorIntake.whileTrue(cmd_floorIntake);
       
-    Trigger floorEject = new Trigger(m_OI::getOperatorBottomRedButton);
+    Trigger floorEject = new Trigger(m_OI::getOperatorL2);
       floorEject.whileTrue(cmd_floorEject);
 
   } 

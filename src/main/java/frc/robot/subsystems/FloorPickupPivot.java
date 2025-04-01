@@ -28,15 +28,15 @@ public class FloorPickupPivot extends SubsystemBase {
   private final double rotateMinPos = 0;
   private final double rotateMaxPos = 41.9;
 
-  private final double rotateVelKP = 0.2;
+  private final double rotateVelKP = 0.4;
   private final double rotateVelKI = 0.01;
-  private final double rotateVelKD = 0.0;
+  private final double rotateVelKD = 0.01;
   private final double rotateVelKV = 0.12;
   private final double rotateVelKA = 0.01;
 
-  private final double rotatePosKP = 0.2;
+  private final double rotatePosKP = 0.4;
   private final double rotatePosKI = 0.01;
-  private final double rotatePosKD = 0.0;
+  private final double rotatePosKD = 0.01;
   private final double rotatePosKV = 0.12;
   private final double rotatePosKA = 0.01;
 
@@ -102,12 +102,12 @@ public class FloorPickupPivot extends SubsystemBase {
     //   rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
     // }
 
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Velocity", rotateVel);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Commanded Velocity", commandedRotateVel);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Position", rotatePos);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Motor Load", rotateLoad);
-    SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", !rotateBrakeMode);
-    SmartDashboard.putBoolean("AlgaeClaw/Is Up", isUp);
+    SmartDashboard.putNumber("FloorPivot/Rotate Velocity", rotateVel);
+    SmartDashboard.putNumber("FloorPivot/Rotate Commanded Velocity", commandedRotateVel);
+    SmartDashboard.putNumber("FloorPivot/Rotate Position", rotatePos);
+    SmartDashboard.putNumber("FloorPivot/Rotate Motor Load", rotateLoad);
+    SmartDashboard.putBoolean("FloorPivot/Rotate Break Mode", !rotateBrakeMode);
+    SmartDashboard.putBoolean("FloorPivot/Is Up", isUp);
   }
 
   public void setRotatorVel(double newVel){
@@ -190,7 +190,7 @@ public class FloorPickupPivot extends SubsystemBase {
 
     rotateMotor.getConfigurator().apply(rotateMotorConfig, 0.5);
 
-    rotateMotor.setNeutralMode(NeutralModeValue.Coast);
+    rotateMotor.setNeutralMode(NeutralModeValue.Brake);
    
     rotateMotor.setPosition(0);
 

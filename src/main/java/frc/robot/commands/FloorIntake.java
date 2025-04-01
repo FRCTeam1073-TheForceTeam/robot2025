@@ -30,7 +30,7 @@ public class FloorIntake extends Command {
         System.out.println("in floor intake");
       }
       
-      floorPickupCollect.setVelocity(-15);//TODO change number%
+      floorPickupCollect.setVelocity(-75);//TODO change number%
     }
 
   // Called once the command ends or is interrupted.

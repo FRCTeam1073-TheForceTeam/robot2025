@@ -29,7 +29,7 @@ public class FloorEject extends Command {
     for(int i = 0; i < 100; i++) {
       System.out.println("in floor eject");
     }
-    floorPickupCollect.setVelocity(15);//TODO change number
+    floorPickupCollect.setVelocity(75);//TODO change number
   }
 
   // Called once the command ends or is interrupted.

@@ -23,6 +23,7 @@ public class FloorPickupCollect extends SubsystemBase {
   private double rollerkI = 0.0;
   private double rollerkD = 0.02;
   private double rollerkV = 0.12;
+  private double rollerkA = 0.1;
 
   private double velocity = 0.0;
   private double commandedVelocity = 0.0;
@@ -94,6 +95,7 @@ public class FloorPickupCollect extends SubsystemBase {
         rollerMotorClosedLoopConfig.withKI(rollerkI);
         rollerMotorClosedLoopConfig.withKD(rollerkD);
         rollerMotorClosedLoopConfig.withKV(rollerkV);
+        rollerMotorClosedLoopConfig.withKA(rollerkA);
         //rollerMotorClosedLoopConfig.withKS(rollerkS);
 
         var rollerError = rollerMotor.getConfigurator().apply(rollerMotorClosedLoopConfig, 0.5);

@@ -148,7 +148,7 @@ public class FloorPickupPivot extends SubsystemBase {
   }
 
   public boolean getIsAtZero(){
-    return rotatePos <= .01;
+    return Math.abs(rotatePos) <= .01;
   }
 
   public boolean getIsUp(){
@@ -162,16 +162,13 @@ public class FloorPickupPivot extends SubsystemBase {
   public void configureHardware()
   {
     var rotateMotorConfig = new TalonFXConfiguration();
-    var collectMotorConfig = new TalonFXConfiguration();
     rotateMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    collectMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var rotatemmConfigs = rotateMotorConfig.MotionMagic;
     rotatemmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
     rotatemmConfigs.MotionMagicAcceleration = 100;
     rotatemmConfigs.MotionMagicJerk = 800;
     
-    var collectMotorClosedLoop0Config = collectMotorConfig.Slot0;
     var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;
     var rotateMotorClosedLoop1Config = rotateMotorConfig.Slot1;
 
@@ -188,10 +185,6 @@ public class FloorPickupPivot extends SubsystemBase {
     rotateMotorClosedLoop1Config.withKA(rotatePosKA);
 
     rotateMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
-    .withSupplyCurrentLimit(15)
-    .withSupplyCurrentLowerTime(0.25);
-
-    collectMotorConfig.CurrentLimits.withSupplyCurrentLimitEnable(true)
     .withSupplyCurrentLimit(15)
     .withSupplyCurrentLowerTime(0.25);
 

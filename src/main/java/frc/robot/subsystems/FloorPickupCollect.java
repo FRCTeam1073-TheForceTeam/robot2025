@@ -41,6 +41,7 @@ public class FloorPickupCollect extends SubsystemBase {
 
     commandedVelocity = 0.0;
 
+    // TODO: Separate slots if we're using both modes.
     velocityVoltage = new VelocityVoltage(0).withSlot(0);
     collectPositionVoltage = new PositionVoltage(0).withSlot(0);
 
@@ -56,7 +57,7 @@ public class FloorPickupCollect extends SubsystemBase {
     commandedPosition = commandedPosition + (commandedVelocity * 0.02);
 
     rollerMotor.setControl(collectPositionVoltage.withPosition(commandedPosition));
-    rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity).withSlot(0));
+    // rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity).withSlot(0));
 
     SmartDashboard.putNumber("Floor Collect/Velocity", velocity);
     SmartDashboard.putNumber("Floor Collect/Commanded Velocity", commandedVelocity);
@@ -88,7 +89,7 @@ public class FloorPickupCollect extends SubsystemBase {
         var rollerMotorConfig = new TalonFXConfiguration(); //TODO check configs with robots
         rollerMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        var rollerMotorClosedLoopConfig = new SlotConfigs();
+        var rollerMotorClosedLoopConfig = rollerMotorConfig.Slot0;
         rollerMotorClosedLoopConfig.withKP(rollerkP);
         rollerMotorClosedLoopConfig.withKI(rollerkI);
         rollerMotorClosedLoopConfig.withKD(rollerkD);

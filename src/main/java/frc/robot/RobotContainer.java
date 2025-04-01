@@ -205,11 +205,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger scoreCoral = new Trigger(m_OI::getOperatorScoralCoral);
     //   scoreCoral.onTrue(cmd_scoreCoral);
       
-    // Trigger troughScore = new Trigger(m_OI::getOperatorL1);
-    //   troughScore.whileTrue(cmd_troughRaiseElevator);
+    Trigger troughScore = new Trigger(m_OI::getOperatorL1);
+      troughScore.whileTrue(cmd_troughRaiseElevator);
 
-    // Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
-    //   elevatorL2.whileTrue(cmd_coralElevatorToL2);
+    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
+      elevatorL2.whileTrue(cmd_coralElevatorToL2);
 
     Trigger elevatorL3 = new Trigger(m_OI::getOperatorL3);
       elevatorL3.whileTrue(cmd_coralElevatorToL3);
@@ -253,18 +253,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
-    
-    Trigger troughScore = new Trigger(m_OI::getOperatorL1);
-      troughScore.whileTrue(cmd_floorIntake);
-      
-    Trigger elevatorL2 = new Trigger(m_OI::getOperatorL2);
-      elevatorL2.whileTrue(cmd_floorEject);
 
-    // Trigger floorIntake = new Trigger(m_OI::getOperatorTopRedButton);
-    //   floorIntake.whileTrue(cmd_floorIntake);
+    Trigger floorIntake = new Trigger(m_OI::getOperatorTopRedButton);
+      floorIntake.whileTrue(cmd_floorIntake);
       
-    // Trigger floorEject = new Trigger(m_OI::getOperatorBottomRedButton);
-    //   floorEject.whileTrue(cmd_floorEject);
+    Trigger floorEject = new Trigger(m_OI::getOperatorBottomRedButton);
+      floorEject.whileTrue(cmd_floorEject);
 
   } 
 

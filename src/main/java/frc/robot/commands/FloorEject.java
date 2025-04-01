@@ -26,6 +26,9 @@ public class FloorEject extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    for(int i = 0; i < 100; i++) {
+      System.out.println("in floor eject");
+    }
     floorPickupCollect.setVelocity(15);//TODO change number
   }
 

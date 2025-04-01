@@ -35,21 +35,25 @@ public class FloorPickupPivotTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(oi.getOperatorMiddleRedButton()){
-      togglePositions++;
-      if(togglePositions > 2){
-        togglePositions = 0;
-      }
-    }
-    if(togglePositions == 0){
-      floorPickupPivot.setRotatorPos(positionZero);
-    }
-    else if(togglePositions == 1){
-      floorPickupPivot.setRotatorPos(positionOne);
-    }
-    else if(togglePositions == 2){
-      floorPickupPivot.setRotatorPos(positionTwo);
-    }
+     //first test with this because its a little easier to see if properly move
+     //after can try a button command
+    floorPickupPivot.setRotatorVel(oi.getOperatorLeftX() * 6.0);
+
+    // if(oi.getOperatorMiddleRedButton()){
+    //   togglePositions++;
+    //   if(togglePositions > 2){
+    //     togglePositions = 0;
+    //   }
+    // }
+    // if(togglePositions == 0){
+    //   floorPickupPivot.setRotatorPos(positionZero);
+    // }
+    // else if(togglePositions == 1){
+    //   floorPickupPivot.setRotatorPos(positionOne);
+    // }
+    // else if(togglePositions == 2){
+    //   floorPickupPivot.setRotatorPos(positionTwo);
+    // }
   }
 
   // Called once the command ends or is interrupted.

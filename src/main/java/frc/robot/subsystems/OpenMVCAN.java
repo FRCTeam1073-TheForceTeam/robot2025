@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 import edu.wpi.first.hal.CANData;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OpenMVCAN extends SubsystemBase {
   private CAN openmv;
@@ -81,8 +83,8 @@ public class OpenMVCAN extends SubsystemBase {
    *    - Class 6 Range Data, Index is range slot.
    *         - Provides 16bit range data + quality for a range sensor.
    */
-  public OpenMVCAN(int deviceId_) {
-    deviceId = deviceId_;
+  public OpenMVCAN(int deviceId) {
+    this.deviceId = deviceId;
     openmv = new CAN(deviceId, 173, 10);
     recvData = new CANData();
     tracks = new ArrayList<Track>();
@@ -167,7 +169,7 @@ public class OpenMVCAN extends SubsystemBase {
    * @return True if we got a heartbeat mesage, false if we did not.
    */
   public boolean readHeartbeat() {
-    if(read(apiIndex(1, 2), recvData) == true && recvData.length == 3) {
+    if(read(apiIndex(1, 2), recvData) == true && recvData.length == 5) {
       mode = recvData.data[0];
       int counterHi = recvData.data[1] & 0xFF;
       int counterLo = recvData.data[2] & 0xFF;
@@ -298,17 +300,17 @@ public class OpenMVCAN extends SubsystemBase {
       // If we miss too many complain about it.
       if (missedHeartbeats > 100) {
         // TODO: Do something more reasonable using Shuffleboard to tell which cameras are working.
-        // System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
+        System.out.format("OpenMV Missing heartbeat. Device ID: %d\n", deviceId);
         missedHeartbeats = 0;
       }
 
     }
 
     // On H7's this does not do anything right now. Bug being worked by OpenMV
-    if ((loopCounter % 50 == 0)) {
-      // System.out.println("SET MODE");
-      setMode((byte)3);
-    }
+    // if ((loopCounter % 50 == 0)) {
+    //   // System.out.println("SET MODE");
+    //   setMode((byte)3);
+    // }
 
     // See if we got a config message and update data, but only check once in a while.
     if ((loopCounter % 200 == 0) && readConfig()) {
@@ -326,6 +328,12 @@ public class OpenMVCAN extends SubsystemBase {
       readSimpleTarget(slot);
     }
 
+    SmartDashboard.putNumber("CAN/Track 0 CX", tracks.get(0).cx);
+    SmartDashboard.putNumber("CAN/Track 1 CX", tracks.get(1).cx);
+    SmartDashboard.putNumber("CAN/Trsck 2 CX", tracks.get(2).cx);
+    SmartDashboard.putNumber("CAN/Track 3 CX", tracks.get(3).cx);
+    SmartDashboard.putNumber("CAN/Frame Counter", frameCounter);
+    
     loopCounter++;
   }
 

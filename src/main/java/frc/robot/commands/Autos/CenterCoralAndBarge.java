@@ -26,8 +26,9 @@ import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -38,8 +39,8 @@ import frc.robot.subsystems.Localizer;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CenterCoralAndBarge extends Command {
   /** Creates a new CenterCoralAndBarge. */
-  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeClaw algaeClaw, Lidar lidar, AprilTagFinder finder, int branchLevel) {
-    int algaeHeight;
+  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeCollector algaeCollector, AlgaePivot algaePivot, AprilTagFinder finder, Lidar lidar, int branchLevel) {
+    int height;
     int slot;
     if (branchLevel == 1)
     {
@@ -105,7 +106,8 @@ public class CenterCoralAndBarge extends Command {
 
     int tagID;
 
-    if(isRed) {
+    if(isRed) 
+{
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag10, tag5, tag5Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
@@ -118,7 +120,8 @@ public class CenterCoralAndBarge extends Command {
       tagID = 10;
 
     }
-    else {
+    else 
+{
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag21, tag14, tag14Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
@@ -132,10 +135,10 @@ public class CenterCoralAndBarge extends Command {
     }
 
     if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) {
-      algaeHeight = 6;
+      height = 5;
     }
     else {
-      algaeHeight = 7;
+      height = 6;
     }
 
 

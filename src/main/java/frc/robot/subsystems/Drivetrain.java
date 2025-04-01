@@ -400,4 +400,8 @@ public class Drivetrain extends SubsystemBase
     return modules;
   }
 
+  public double getAverageLoad() {
+    return (modules[0].getLoad() + modules[1].getLoad() + modules[2].getLoad() + modules[3].getLoad()) / 4;
+  }
+
 }

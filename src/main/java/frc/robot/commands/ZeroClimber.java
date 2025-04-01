@@ -31,10 +31,10 @@ public class ZeroClimber extends Command {
   @Override
   public void execute() {
     if (climber.getEncoderPosition() > 0.04){
-      velocity = -10;
+      velocity = -30;
     }
     else{
-      velocity = 10;
+      velocity = 30;
     }
 
     climber.setCommandedVelocity(velocity);

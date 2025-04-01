@@ -27,7 +27,7 @@ public class DisengageClimber extends Command
   @Override
   public void execute() 
   {
-    climber.setCommandedVelocity(10);
+    climber.setCommandedVelocity(30);
   }
 
   @Override

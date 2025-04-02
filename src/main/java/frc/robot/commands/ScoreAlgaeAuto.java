@@ -5,18 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeCollector;
 import frc.robot.subsystems.AlgaePivot;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ScoreAlgaeAuto extends Command {
-  AlgaeCollector algaeCollector;
   AlgaePivot algaePivot;
 
   /** Creates a new ScoreAlgaeAuto. */
-  public ScoreAlgaeAuto(AlgaeCollector algaeCollector, AlgaePivot algaePivot) {
+  public ScoreAlgaeAuto( AlgaePivot algaePivot) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeCollector = algaeCollector;
     this.algaePivot = algaePivot;
   }
 
@@ -28,19 +25,17 @@ public class ScoreAlgaeAuto extends Command {
   @Override
   public void execute() {
     algaePivot.setRotatorPos(28.476);
-    algaeCollector.setCollectorVel(-30);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeCollector.setCollectorVel(0);
     algaePivot.setRotatorPos(8.7);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(algaeCollector.getCollectorLoad()) >= 25;
+    return false;
   }
 }

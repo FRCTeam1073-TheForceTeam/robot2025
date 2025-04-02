@@ -20,6 +20,7 @@ import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -29,7 +30,7 @@ import frc.robot.subsystems.Localizer;
 
 public class CenterScoreCoral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, int branchLevel)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, CommandStates state, int branchLevel)  
     {
         int slot;
         if (branchLevel == 1)
@@ -82,7 +83,7 @@ public class CenterScoreCoral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path, localizer)
             ),
-            new AlignToTagRelative(drivetrain, finder, tagID, slot),
+            new AlignToTagRelative(drivetrain, finder, state, tagID, slot),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

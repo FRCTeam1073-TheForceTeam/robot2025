@@ -10,6 +10,7 @@ import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.Localizer;
 /** Add your docs here. */
 public class AutoRightStart 
 {
-    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder) 
+    public static Command create(int level, boolean isRed, Drivetrain drivetrain, Localizer localizer, FieldMap map, Climber climber, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, CommandStates state) 
     {
         switch(level) 
         {
@@ -33,7 +34,7 @@ public class AutoRightStart
             case 4:
                 return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
-                return RightScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, finder, lidar, 4);
+                return RightScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, finder, lidar, state, 4);
             default:
                 return new WaitCommand(0);
         }

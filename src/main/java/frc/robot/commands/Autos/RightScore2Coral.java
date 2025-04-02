@@ -20,6 +20,7 @@ import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -29,7 +30,7 @@ import frc.robot.subsystems.Localizer;
 
 public class RightScore2Coral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AprilTagFinder finder, Lidar lidar, int branchLevel)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AprilTagFinder finder, Lidar lidar, CommandStates state, int branchLevel)  
     {
         Pose2d tag8RightPose = map.getTagRelativePose(8, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag9LeftPose = map.getTagRelativePose(9, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
@@ -133,7 +134,7 @@ public class RightScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
-            new AlignToTagRelative(drivetrain, finder, localTagID, -1),
+            new AlignToTagRelative(drivetrain, finder, state, localTagID, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
@@ -146,7 +147,7 @@ public class RightScore2Coral
             // TODO: Load and drive should be parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new AlignToTagRelative(drivetrain, finder, localTagID2, 1),
+            new AlignToTagRelative(drivetrain, finder, state, localTagID2, 1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),

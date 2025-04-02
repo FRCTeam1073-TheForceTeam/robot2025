@@ -88,14 +88,14 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_coralElevatorToHighA = new CoralElevatorToHeight(m_coralElevator, 6, false);
   private final CoralElevatorToHeight cmd_coralElevatorToBarge = new CoralElevatorToHeight(m_coralElevator, 7, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_commandStates, true, 0, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI, m_commandStates, m_drivetrain);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain, m_commandStates);
-  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_commandStates, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector);
   private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector);
@@ -240,7 +240,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_CANdleControl.clearAnim();
   }
 
-  public Command getAutonomousCommand() 
+    public Command getAutonomousCommand() 
   {
    // return Commands.print("No autonomous command configured");
    // -1 to indicate no auto select
@@ -283,13 +283,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_commandStates);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_commandStates);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, false);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, m_commandStates, false);
       case centerPositionX:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, true);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, m_commandStates, true);
       case testAuto:
         return TestAuto.create(m_drivetrain, m_localizer, m_fieldMap);
       default:

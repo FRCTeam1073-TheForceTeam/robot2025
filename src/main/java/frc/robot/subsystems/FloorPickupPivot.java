@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -45,6 +46,8 @@ public class FloorPickupPivot extends SubsystemBase {
   private double commandedRotatePos;
   private double rotatePos;
   private double rotateLoad;
+  private double encoderPos;
+  private double rotations;
 
   private boolean rotateBrakeMode = true;
   private boolean isUp = true;
@@ -54,9 +57,14 @@ public class FloorPickupPivot extends SubsystemBase {
   private VelocityVoltage rotateVelocityVoltage;
   private MotionMagicVoltage rotatePositionController;
   private LinearFilter filter;
+  private DutyCycleEncoder encoder;
 
   public FloorPickupPivot() {
     filter = LinearFilter.singlePoleIIR(0.5, 0.02);
+    encoder = new DutyCycleEncoder(3);
+    encoder.setDutyCycleRange(1, 1024);
+    encoder.setAssumedFrequency(975.6);
+    
     rotateMotor = new TalonFX(28, KCANbus);
     rotateBrakeMode = true;
     velocityMode = true;
@@ -76,38 +84,23 @@ public class FloorPickupPivot extends SubsystemBase {
     rotateVel = rotateMotor.getVelocity().getValueAsDouble(); 
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
     rotateLoad = rotateMotor.getTorqueCurrent().getValueAsDouble();
-    
+    rotations = encoder.get();
+
     commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
     rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
 
-
-    // if (rotatePos >= rotateMaxPos){
-    //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
-    // }
-    // if (rotatePos <= rotateMinPos){
-    //   commandedRotateVel = Math.max(commandedRotateVel, 0);
-    // }
-
-    // if(rotatePos >= 8.7) {
-    //   isUp = false;
-    // }
-    // else if(rotatePos < 8.7) {
-    //   isUp = true;
-    // }
-
-    // if(velocityMode) {
-    //   rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
-    // }
-    // else {
-    //   rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
+    // if(Math.abs(commandedRotatePos - rotations) > 20) {
+    //   commandedRotatePos = rotations;
     // }
 
     SmartDashboard.putNumber("FloorPivot/Rotate Velocity", rotateVel);
     SmartDashboard.putNumber("FloorPivot/Rotate Commanded Velocity", commandedRotateVel);
     SmartDashboard.putNumber("FloorPivot/Rotate Position", rotatePos);
     SmartDashboard.putNumber("FloorPivot/Rotate Motor Load", rotateLoad);
+    SmartDashboard.putNumber("FloorPivot/Rotations", rotations);
     SmartDashboard.putBoolean("FloorPivot/Rotate Break Mode", !rotateBrakeMode);
     SmartDashboard.putBoolean("FloorPivot/Is Up", isUp);
+
   }
 
   public void setRotatorVel(double newVel){

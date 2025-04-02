@@ -37,7 +37,7 @@ public class FloorPickupPivotTeleop extends Command {
   public void execute() {
      //first test with this because its a little easier to see if properly move
      //after can try a button command
-    floorPickupPivot.setRotatorVel(oi.getOperatorLeftX() * 10.0);
+    //floorPickupPivot.setRotatorVel(oi.getOperatorLeftX() * 10.0);
 
     // if(oi.getOperatorMiddleRedButton()){
     //   togglePositions++;

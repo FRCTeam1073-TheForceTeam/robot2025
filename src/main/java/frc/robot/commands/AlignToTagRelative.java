@@ -19,11 +19,13 @@ import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CommandStates;
 
 public class AlignToTagRelative extends Command 
 {
   Drivetrain drivetrain;
   AprilTagFinder finder;
+  CommandStates state;
   int aprilTagID;
   // Localizer localizer;
   // FieldMap fieldMap;
@@ -50,11 +52,12 @@ public class AlignToTagRelative extends Command
   private final static double maximumRotationVelocity = 1.5; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, int tagID, int slot) 
+  public AlignToTagRelative(Drivetrain drivetrain, AprilTagFinder finder, CommandStates state, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.finder = finder; 
+    this.state = state;
     this.slot = slot;
     this.currentPose = new Pose2d();
     aprilTagID = tagID;
@@ -109,6 +112,7 @@ public class AlignToTagRelative extends Command
     
     double yOffset = 0.165;
     double endEffectorOffset = 0.1905;
+    state.setIsLocalAligning(true);
 
     xController.reset();
     yController.reset();
@@ -216,6 +220,7 @@ public class AlignToTagRelative extends Command
 
     // We have no target location
     targetLocation = null;
+    state.setIsLocalAligned(true);
   }
 
   // Returns true when the command should end.

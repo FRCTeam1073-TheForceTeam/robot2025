@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeEject;
+import frc.robot.commands.AlgaeGrab;
 import frc.robot.commands.AlgaePivotTeleop;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.AlignToTagRelative;
@@ -95,6 +97,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain, m_commandStates);
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
+  private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector);
+  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector);
   private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer, m_lidar);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
@@ -223,6 +227,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
+    
+    Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+      loadAlgae.whileTrue(cmd_algaeGrab);
+
+    Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+      ejectAlgae.whileTrue(cmd_algaeEject);
   } 
 
   public void autonomousInit()

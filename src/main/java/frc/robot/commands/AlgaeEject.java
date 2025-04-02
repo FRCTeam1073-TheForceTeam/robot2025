@@ -28,7 +28,7 @@ public class AlgaeEject extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralEndeffector.setVelocity(30);
+    coralEndeffector.setVelocity(-15);
   }
 
   // Called once the command ends or is interrupted.

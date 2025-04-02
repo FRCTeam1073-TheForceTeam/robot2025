@@ -24,8 +24,8 @@ public class AlgaeGrab extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(coralEndeffector.getLoad() < 10){
-      coralEndeffector.setVelocity(-30);
+    if(coralEndeffector.getLoad() < 16){
+      coralEndeffector.setVelocity(15);
     }
     else{
       coralEndeffector.setVelocity(0);

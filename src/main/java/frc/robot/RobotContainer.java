@@ -232,7 +232,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       loadAlgae.whileTrue(cmd_algaeGrab);
 
     Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-      ejectAlgae.whileTrue(cmd_algaeEject);
+      ejectAlgae.onTrue(cmd_algaeEject);
   } 
 
   public void autonomousInit()

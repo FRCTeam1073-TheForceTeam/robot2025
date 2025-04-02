@@ -132,7 +132,7 @@ public class CoralEndeffector extends SubsystemBase {
     }
 
     public double getLoad() {
-        return load;
+        return Math.abs(load);
     }
 
     public double getCoralDistance() {

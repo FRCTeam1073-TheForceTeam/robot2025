@@ -39,7 +39,7 @@ public class AutoCenterStart
             case 5:
                return CenterScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 6:
-               return CenterCoralAndBarge.create(isRed, drivetrain, map, localizer, endEffector, elevator, algaePivot, lidar, 4);
+               return CenterCoralAndBarge.create(isRed, drivetrain, map, localizer, endEffector, elevator, algaeCollector, algaePivot, finder, lidar, 4);
             default:
                return new WaitCommand(0);
         }

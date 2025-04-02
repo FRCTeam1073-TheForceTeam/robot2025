@@ -44,11 +44,11 @@ public class CenterCoralAndBarge extends Command {
     int slot;
     if (branchLevel == 1)
     {
-        slot = 0;
+      slot = 0;
     }
     else
     {
-        slot = -1;
+      slot = -1;
     }
 
     // tag 14 is the blue barge half from the blue side
@@ -107,7 +107,7 @@ public class CenterCoralAndBarge extends Command {
     int tagID;
 
     if(isRed) 
-{
+    {
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag10, tag5, tag5Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
@@ -121,7 +121,7 @@ public class CenterCoralAndBarge extends Command {
 
     }
     else 
-{
+    {
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag21, tag14, tag14Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
@@ -134,10 +134,12 @@ public class CenterCoralAndBarge extends Command {
       tagID = 21;
     }
 
-    if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) {
+    if(FieldMap.algaeHeight.get((isRed) ? 10 : 21) == 0) 
+    {
       height = 5;
     }
-    else {
+    else 
+    {
       height = 6;
     }
 
@@ -164,8 +166,8 @@ public class CenterCoralAndBarge extends Command {
           ),
           new AlignToTagRelative(drivetrain, finder, tagID, 0),
           new ParallelCommandGroup(
-            new CoralElevatorToHeight(elevator, algaeHeight, true),
-            new LoadAlgaeAuto(algaeClaw)
+            new CoralElevatorToHeight(elevator, height, true),
+            new LoadAlgaeAuto(algaeCollector, algaePivot)
           ),
           new ParallelCommandGroup(
             new ZeroElevator(elevator),
@@ -175,7 +177,7 @@ public class CenterCoralAndBarge extends Command {
             new CoralElevatorToHeight(elevator, 5, true),
             new DetectElevatorHeight(elevator, 5, 0.1)
           ),
-          new ScoreAlgaeAuto(algaeClaw)
+          new ScoreAlgaeAuto(algaeCollector, algaePivot)
         ),
         new WaitCommand(13) // complete the rest of the sequence in 13s or quit to get off starting line
       ),

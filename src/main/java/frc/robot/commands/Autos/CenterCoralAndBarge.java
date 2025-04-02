@@ -27,7 +27,7 @@ import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
-import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
@@ -39,7 +39,7 @@ import frc.robot.subsystems.Localizer;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CenterCoralAndBarge extends Command {
   /** Creates a new CenterCoralAndBarge. */
-  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AlgaeCollector algaeCollector, AlgaePivot algaePivot, AprilTagFinder finder, Lidar lidar, int branchLevel) {
+  public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, CommandStates state, AlgaePivot algaePivot, AprilTagFinder finder, Lidar lidar, int branchLevel) {
     int height;
     int slot;
     if (branchLevel == 1)
@@ -151,7 +151,7 @@ public class CenterCoralAndBarge extends Command {
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path, localizer) 
           ),
-          new AlignToTagRelative(drivetrain, finder, tagID, slot), 
+          new AlignToTagRelative(drivetrain, finder, state, tagID, slot), 
           new CoralElevatorToHeight(elevator, branchLevel, true),
           new ParallelRaceGroup( 
             new CoralElevatorToHeight(elevator, branchLevel, false),
@@ -164,10 +164,10 @@ public class CenterCoralAndBarge extends Command {
             new ZeroElevator(elevator),
             new DrivePath(drivetrain, path2, localizer)
           ),
-          new AlignToTagRelative(drivetrain, finder, tagID, 0),
+          new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
           new ParallelCommandGroup(
             new CoralElevatorToHeight(elevator, height, true),
-            new LoadAlgaeAuto(algaeCollector, algaePivot)
+            new LoadAlgaeAuto(algaePivot)
           ),
           new ParallelCommandGroup(
             new ZeroElevator(elevator),
@@ -177,7 +177,7 @@ public class CenterCoralAndBarge extends Command {
             new CoralElevatorToHeight(elevator, 5, true),
             new DetectElevatorHeight(elevator, 5, 0.1)
           ),
-          new ScoreAlgaeAuto(algaeCollector, algaePivot)
+          new ScoreAlgaeAuto(algaePivot)
         ),
         new WaitCommand(13) // complete the rest of the sequence in 13s or quit to get off starting line
       ),

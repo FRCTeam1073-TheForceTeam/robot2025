@@ -75,30 +75,21 @@ public class AlgaePivot extends SubsystemBase {
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
     rotateLoad = rotateMotor.getTorqueCurrent().getValueAsDouble();
     
-    commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
-    rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
+    //commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
 
+    if (rotatePos >= rotateMaxPos){
+      commandedRotateVel = Math.min(commandedRotateVel, 0); 
+    }
+    if (rotatePos <= rotateMinPos){
+      commandedRotateVel = Math.max(commandedRotateVel, 0);
+    }
 
-    // if (rotatePos >= rotateMaxPos){
-    //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
-    // }
-    // if (rotatePos <= rotateMinPos){
-    //   commandedRotateVel = Math.max(commandedRotateVel, 0);
-    // }
-
-    // if(rotatePos >= 8.7) {
-    //   isUp = false;
-    // }
-    // else if(rotatePos < 8.7) {
-    //   isUp = true;
-    // }
-
-    // if(velocityMode) {
-    //   rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
-    // }
-    // else {
-    //   rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
-    // }
+    if(velocityMode) {
+      rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
+    }
+    else {
+      rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
+    }
 
     SmartDashboard.putNumber("AlgaeClaw/Rotate Velocity", rotateVel);
     SmartDashboard.putNumber("AlgaeClaw/Rotate Commanded Velocity", commandedRotateVel);
@@ -142,7 +133,7 @@ public class AlgaePivot extends SubsystemBase {
   }
 
   public double getRotatorLoad(){
-    return rotateLoad;
+    return Math.abs(rotateLoad);
   }
 
   public boolean getIsAtZero(){

@@ -125,6 +125,10 @@ public class FieldMap
         {
             tagPose = tagPose.plus(new Transform2d(0, yOffset + endEffectorOffset, new Rotation2d()));
         }
+        else if (slot == 2)
+        {
+            tagPose = tagPose.plus(new Transform2d(0, -endEffectorOffset, new Rotation2d()));
+        }
 
         tagPose = tagPose.plus(offset);
 

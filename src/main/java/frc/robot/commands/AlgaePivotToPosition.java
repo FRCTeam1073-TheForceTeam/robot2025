@@ -33,7 +33,9 @@ public class AlgaePivotToPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.setRotatorPos(targetPosition);
+    if(Math.abs(pivot.getRotatorPosition() - targetPosition) >= 0.5){
+      pivot.setRotatorPos(targetPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.

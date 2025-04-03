@@ -34,7 +34,7 @@ public class AlgaeAutoGrab {
                 new AlgaeGrab(endeffector, true),
                 new AlgaePivotGrab(pivot)
             ),
-            new AlgaePivotToPosition(pivot, -1, false)
+            new HoldPivotPosition(pivot)
         );
     }
 }

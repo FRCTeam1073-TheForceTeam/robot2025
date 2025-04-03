@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AlgaeAutoGrab;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DetectElevatorHeight;
@@ -110,12 +111,12 @@ public class CenterCoralAndBarge extends Command {
     {
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      segments3.add(new Segment(tag10, tag5, tag5Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments3.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments4.add(new Segment(tag5, tag5End, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag10Pose.getRotation().getRadians());
       path2 = new Path(segments2, tag10ApproachPose.getRotation().getRadians());
-      path3 = new Path(segments3, tag5Pose.getRotation().getRadians());
+      path3 = new Path(segments3, tag10ApproachPose.getRotation().getRadians());
       path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
       tagID = 10;
 
@@ -124,12 +125,12 @@ public class CenterCoralAndBarge extends Command {
     {
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      segments3.add(new Segment(tag21, tag14, tag14Pose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments3.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments4.add(new Segment(tag14, tag14End, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag21Pose.getRotation().getRadians());
       path2 = new Path(segments2, tag21ApproachPose.getRotation().getRadians());
-      path3 = new Path(segments3, tag14Pose.getRotation().getRadians());
+      path3 = new Path(segments3, tag21ApproachPose.getRotation().getRadians());
       path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
       tagID = 21;
     }
@@ -164,27 +165,30 @@ public class CenterCoralAndBarge extends Command {
             new ZeroElevator(elevator),
             new DrivePath(drivetrain, path2, localizer)
           ),
-          new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
           new ParallelCommandGroup(
-            new CoralElevatorToHeight(elevator, height, true),
-            new LoadAlgaeAuto(algaePivot)
+            new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+            AlgaeAutoGrab.create(algaePivot, endEffector)
           ),
+          // new ParallelCommandGroup(
+            // new CoralElevatorToHeight(elevator, height, true),
+            // new LoadAlgaeAuto(algaePivot)
+          // ),
           new ParallelCommandGroup(
-            new ZeroElevator(elevator),
+            // new ZeroElevator(elevator),
             new DrivePath(drivetrain, path3, localizer)
-          ),
-          new ParallelRaceGroup(
-            new CoralElevatorToHeight(elevator, 5, true),
-            new DetectElevatorHeight(elevator, 5, 0.1)
-          ),
-          new ScoreAlgaeAuto(algaePivot)
-        ),
-        new WaitCommand(13) // complete the rest of the sequence in 13s or quit to get off starting line
-      ),
-      new ParallelCommandGroup(
-        new ZeroElevator(elevator),
-        new DrivePath(drivetrain, path4, localizer)
-      ) 
+          )))
+      //     new ParallelRaceGroup(
+      //       new CoralElevatorToHeight(elevator, 5, true),
+      //       new DetectElevatorHeight(elevator, 5, 0.1)
+      //     ),
+      //     new ScoreAlgaeAuto(algaePivot)
+      //   ),
+      //   new WaitCommand(13) // complete the rest of the sequence in 13s or quit to get off starting line
+      // ),
+      // new ParallelCommandGroup(
+      //   new ZeroElevator(elevator),
+      //   new DrivePath(drivetrain, path4, localizer)
+      // ) 
     );
   }
 }

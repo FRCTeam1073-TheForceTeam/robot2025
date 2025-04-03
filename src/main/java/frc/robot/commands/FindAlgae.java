@@ -8,15 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeGrab extends Command {
-  /** Creates a new AlgaeGrab. */
-  CoralEndeffector coralEndeffector;
-  boolean terminate;
-  public AlgaeGrab(CoralEndeffector coralEndeffector, boolean terminate) {
-    this.coralEndeffector = coralEndeffector;
-    this.terminate = terminate;
+public class FindAlgae extends Command {
+  /** Creates a new FindAlgae. */
+  CoralEndeffector endeffector;
+  public FindAlgae(CoralEndeffector endeffector) {
+    this.endeffector = endeffector;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(coralEndeffector);
   }
 
   // Called when the command is initially scheduled.
@@ -26,26 +23,16 @@ public class AlgaeGrab extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(coralEndeffector.getLoad() < 10){
-      coralEndeffector.setAlgaeVelocity(15);
-    }
-    else{
-      coralEndeffector.setAlgaeVelocity(0);
-    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    coralEndeffector.setAlgaeVelocity(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(terminate){
-      return coralEndeffector.getLoad() > 10;
-    }
-    return false;
+    return endeffector.getLoad() > 10;
   }
 }

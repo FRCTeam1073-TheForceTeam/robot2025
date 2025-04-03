@@ -125,7 +125,7 @@ public class FieldMap
         {
             tagPose = tagPose.plus(new Transform2d(0, yOffset + endEffectorOffset, new Rotation2d()));
         }
-        else if (slot == 2)
+        else if (slot == 2) // coral station
         {
             tagPose = tagPose.plus(new Transform2d(0, -endEffectorOffset, new Rotation2d()));
         }

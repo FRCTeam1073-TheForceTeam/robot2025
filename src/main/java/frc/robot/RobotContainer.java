@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeAutoEject;
+import frc.robot.commands.AlgaeAutoGrab;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeGrab;
 import frc.robot.commands.AlgaePivotTeleop;
@@ -35,6 +37,7 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
@@ -95,13 +98,16 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain, m_commandStates);
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_commandStates, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
-  private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector);
-  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector);
+  private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector, false);
+  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector, m_algaePivot);
   private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
+  private final ZeroAlgaePivot cmd_zeroAlgaePivot = new ZeroAlgaePivot(m_algaePivot);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer, m_lidar);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
   private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
+  private final Command cmd_algaeAutoGrab = AlgaeAutoGrab.create(m_algaePivot, m_coralEndeffector);
+  private final Command cmd_algaeAutoEject = AlgaeAutoEject.create(m_coralEndeffector, m_algaePivot);
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
   private boolean isRed;
   private int level;
@@ -226,11 +232,20 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
     
-    Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
-      loadAlgae.whileTrue(cmd_algaeGrab);
+    // Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+    //   loadAlgae.whileTrue(cmd_algaeGrab);
 
-    Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-      ejectAlgae.onTrue(cmd_algaeEject);
+    // Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+    //   ejectAlgae.onTrue(cmd_algaeEject);
+    
+    Trigger zeroAlgaePivot = new Trigger(m_OI::getOperatorTwoPlayerButton);
+      zeroAlgaePivot.onTrue(cmd_zeroAlgaePivot);
+
+    Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorScoreAlgae);
+      ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
+    
+    Trigger loadAlgaeAuto = new Trigger(m_OI::getOperatorLoadAlgae);
+      loadAlgaeAuto.onTrue(cmd_algaeAutoGrab);
   } 
 
   public void autonomousInit()

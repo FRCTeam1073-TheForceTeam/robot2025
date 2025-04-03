@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.ConfigurationFailedException;
 import edu.wpi.first.epilogue.logging.LazyBackend;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,26 +38,33 @@ public class CoralEndeffector extends SubsystemBase {
     private double position;
     private double load;
     private double commandedVelocity;
+    private double commandedAlgaeVel;
+    private double commandedPosition;
     private double coralDistance;
     private boolean hasCoral = false;
     private boolean coralFed = false;
     private boolean lastCoralFed = false;
+    private boolean velocityMode = true;
 
     private double funnelDistance;
     private boolean ConfigurationFailedException = false;
 
     private TalonFX motor;
     private VelocityVoltage motorVelocityVoltage;
+    private PositionVoltage motorPositionVoltage;
    
     // LaserCAN Sensor:
     private LaserCan laserCANCoral;
     private LaserCan laserCANReef;
+    private LinearFilter filter;
 
     public CoralEndeffector() {
         hasCoral = false;
         motor = new TalonFX(21, kCANbus);
+        filter = LinearFilter.singlePoleIIR(0.5, 0.02);
         
         motorVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+        motorPositionVoltage = new PositionVoltage(0).withSlot(0);
 
         // Sensor setup:
         laserCANCoral = new LaserCan(22);
@@ -72,7 +80,8 @@ public class CoralEndeffector extends SubsystemBase {
         velocity = motor.getVelocity().getValueAsDouble();
         position = motor.getPosition().getValueAsDouble();
 
-        load = motor.getTorqueCurrent().getValueAsDouble();
+        load = filter.calculate(Math.abs(motor.getTorqueCurrent().getValueAsDouble()));
+        commandedPosition = commandedPosition + (commandedAlgaeVel * 0.02);
         
         // Read the coral sensor.
         LaserCan.Measurement coral_measurement = laserCANCoral.getMeasurement();
@@ -96,7 +105,12 @@ public class CoralEndeffector extends SubsystemBase {
             lastCoralFed = funnelDistance <= maxFedDistance;
         }
         // Send motor command:
-        motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
+        if(velocityMode){
+            motor.setControl(motorVelocityVoltage.withVelocity(commandedVelocity));
+        }
+        else{
+            motor.setControl(motorPositionVoltage.withPosition(commandedPosition));
+        }
 
         SmartDashboard.putNumber("Coral End Effector/Coral Distance", coralDistance);
         SmartDashboard.putBoolean("Coral End Effector/Has Coral", hasCoral);
@@ -124,7 +138,13 @@ public class CoralEndeffector extends SubsystemBase {
 
     public void setVelocity(double velocity){
         // TODO: Scale factors.
+        velocityMode = true;
         this.commandedVelocity = -velocity;
+    }
+
+    public void setAlgaeVelocity(double vel){
+        velocityMode = false;
+        commandedAlgaeVel = -vel;
     }
 
     public double getVelocity() {

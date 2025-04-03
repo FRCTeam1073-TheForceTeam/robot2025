@@ -36,6 +36,6 @@ public class AlgaePivotToPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(pivot.getRotatorPosition() - targetPosition) < 0.05;
+    return Math.abs(pivot.getRotatorPosition() - targetPosition) < 0.5;
   }
 }

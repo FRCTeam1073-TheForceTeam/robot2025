@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaePivot;
 
@@ -11,6 +12,7 @@ import frc.robot.subsystems.AlgaePivot;
 public class ZeroAlgaePivot extends Command {
   /** Creates a new ZeroAlgaePivot. */
   AlgaePivot algaePivot;
+  int count;
   public ZeroAlgaePivot(AlgaePivot algaePivot) {
     this.algaePivot = algaePivot;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -19,13 +21,25 @@ public class ZeroAlgaePivot extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    count = 0;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     System.out.println("Zeroooo");
     algaePivot.setRotatorVel(-15);
+    if(algaePivot.getRotatorLoad() > 8){
+      count++;
+    }
+    else if(algaePivot.getRotatorLoad() <= 8 && count > 0){
+      count--;
+    }  
+    // else{
+    //   count = 0;
+    // }
+    SmartDashboard.putNumber("AlgaePivot/Count", count);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +53,6 @@ public class ZeroAlgaePivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return algaePivot.getRotatorLoad() > 25;
+    return count > 5;
   }
 }

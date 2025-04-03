@@ -14,7 +14,7 @@ import frc.robot.subsystems.CoralEndeffector;
 
 /** Add your docs here. */
 public class AlgaeAutoGrab {
-    public static Command create(AlgaePivot pivot, CoralEndeffector endeffector, CoralElevator elevator, int level){
+    public static Command create(AlgaePivot pivot, CoralEndeffector endeffector){
         /* 
          * 1. pivot out
          * 2. coral elevator to height
@@ -23,13 +23,16 @@ public class AlgaeAutoGrab {
          */
         return new SequentialCommandGroup(
             //TODO Fix TargetPosition
-            new AlgaePivotToPosition(pivot, 0),
+            //Zero, Find Algae, Load Algae, Eject, Zero
+            new ZeroAlgaePivot(pivot),
+            new AlgaePivotToPosition(pivot, 12.0),
             new ParallelRaceGroup(
-                new CoralElevatorToHeight(elevator, level, false),
-                new SequentialCommandGroup(
-                    new AlgaeGrab(endeffector, true),
-                    new AlgaePivotGrab(pivot)
-                )
+                new FindAlgae(endeffector),
+                new AlgaeGrab(endeffector, false)
+            ),
+            new ParallelCommandGroup(
+                new AlgaeGrab(endeffector, false),
+                new AlgaePivotGrab(pivot)
             )
         );
     }

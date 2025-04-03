@@ -34,6 +34,6 @@ public class AlgaePivotGrab extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pivot.getRotatorLoad() > 10;
+    return pivot.getRotatorLoad() > 12;
   }
 }

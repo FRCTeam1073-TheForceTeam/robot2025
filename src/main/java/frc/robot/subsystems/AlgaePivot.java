@@ -33,7 +33,7 @@ public class AlgaePivot extends SubsystemBase {
   private final double rotateVelKA = 0.01;
 
   private final double rotatePosKP = 0.2;
-  private final double rotatePosKI = 0.01;
+  private final double rotatePosKI = 0.05;
   private final double rotatePosKD = 0.0;
   private final double rotatePosKV = 0.12;
   private final double rotatePosKA = 0.01;
@@ -186,7 +186,7 @@ public class AlgaePivot extends SubsystemBase {
 
     rotateMotor.getConfigurator().apply(rotateMotorConfig, 0.5);
 
-    rotateMotor.setNeutralMode(NeutralModeValue.Coast);
+    rotateMotor.setNeutralMode(NeutralModeValue.Brake);
    
     rotateMotor.setPosition(0);
 

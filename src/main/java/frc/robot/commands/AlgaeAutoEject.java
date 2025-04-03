@@ -14,10 +14,7 @@ import frc.robot.subsystems.CoralEndeffector;
 public class AlgaeAutoEject {
     public static Command create(CoralEndeffector endeffector, AlgaePivot pivot){
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new AlgaePivotToPosition(pivot, pivot.getRotatorPosition() + 1),
-                new AlgaeEject(endeffector)
-            ),   
+            new AlgaeEject(endeffector, pivot),
             new ZeroAlgaePivot(pivot)
         );
     }

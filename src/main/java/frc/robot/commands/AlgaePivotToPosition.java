@@ -12,8 +12,11 @@ public class AlgaePivotToPosition extends Command {
   /** Creates a new AlgaePivotToPosition. */
   AlgaePivot pivot;
   double targetPosition;
-  public AlgaePivotToPosition(AlgaePivot pivot, double targetPosition) {
+  boolean terminate;
+  public 
+  AlgaePivotToPosition(AlgaePivot pivot, double targetPosition, boolean terminate) {
     this.pivot = pivot;
+    this.terminate = terminate;
     this.targetPosition = targetPosition;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
@@ -21,7 +24,11 @@ public class AlgaePivotToPosition extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if(targetPosition == -1){
+      targetPosition = pivot.getRotatorPosition() - 0.5;
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,6 +43,11 @@ public class AlgaePivotToPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(pivot.getRotatorPosition() - targetPosition) < 0.5;
+    if(terminate){
+      return Math.abs(pivot.getRotatorPosition() - targetPosition) < 0.5;
+    }
+    else{
+      return false;
+    }
   }
 }

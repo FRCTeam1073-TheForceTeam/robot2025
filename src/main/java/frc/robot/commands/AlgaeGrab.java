@@ -27,17 +27,17 @@ public class AlgaeGrab extends Command {
   @Override
   public void execute() {
     if(coralEndeffector.getLoad() < 10){
-      coralEndeffector.setVelocity(15);
+      coralEndeffector.setAlgaeVelocity(15);
     }
     else{
-      coralEndeffector.setVelocity(0);
+      coralEndeffector.setAlgaeVelocity(0);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    coralEndeffector.setVelocity(0);
+    coralEndeffector.setAlgaeVelocity(0);
   }
 
   // Returns true when the command should end.

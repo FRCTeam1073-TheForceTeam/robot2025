@@ -99,7 +99,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_commandStates, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
   private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector, false);
-  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector);
+  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector, m_algaePivot);
   private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
   private final ZeroAlgaePivot cmd_zeroAlgaePivot = new ZeroAlgaePivot(m_algaePivot);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer, m_lidar);

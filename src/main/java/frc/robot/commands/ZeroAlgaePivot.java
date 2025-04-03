@@ -28,9 +28,8 @@ public class ZeroAlgaePivot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Zeroooo");
     algaePivot.setRotatorVel(-15);
-    if(algaePivot.getRotatorLoad() > 8){
+    if(algaePivot.getRotatorLoad() > 5){
       count++;
     }
     else if(algaePivot.getRotatorLoad() <= 8 && count > 0){
@@ -53,6 +52,6 @@ public class ZeroAlgaePivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return count > 5;
+    return count > 3;
   }
 }

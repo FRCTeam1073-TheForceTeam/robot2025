@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -13,7 +14,9 @@ public class AlgaeEject extends Command {
   /** Creates a new AlgaeEject. */
   CoralEndeffector coralEndeffector;
   double timeAtInit;
-  public AlgaeEject(CoralEndeffector coralEndeffector) {
+  AlgaePivot pivot;
+  public AlgaeEject(CoralEndeffector coralEndeffector, AlgaePivot pivot) {
+    this.pivot = pivot;
     this.coralEndeffector = coralEndeffector;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(coralEndeffector);
@@ -28,6 +31,9 @@ public class AlgaeEject extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(pivot.getRotatorLoad() > 6){
+      pivot.setRotatorVel(-6);
+    }
     coralEndeffector.setVelocity(-15);
   }
 

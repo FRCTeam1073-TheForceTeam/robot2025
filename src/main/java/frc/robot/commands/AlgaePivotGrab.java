@@ -29,11 +29,13 @@ public class AlgaePivotGrab extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    pivot.setRotatorPos(pivot.getRotatorPosition() - 0.5);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pivot.getRotatorLoad() > 12;
+    return pivot.getRotatorLoad() > 5;
   }
 }

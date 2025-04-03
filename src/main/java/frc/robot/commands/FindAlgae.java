@@ -33,6 +33,6 @@ public class FindAlgae extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return endeffector.getLoad() > 25;
+    return endeffector.getLoad() > 10;
   }
 }

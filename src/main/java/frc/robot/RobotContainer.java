@@ -53,7 +53,6 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OpenMVCAN;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -72,7 +71,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final AlgaePivot m_algaePivot = new AlgaePivot();
-  private final OpenMVCAN m_openMVCAN = new OpenMVCAN(1);
   private final CommandStates m_commandStates = new CommandStates();
 
 

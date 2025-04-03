@@ -264,11 +264,11 @@ public class OI extends SubsystemBase
   }
 
   public void rumble() {
-    // OI.driverController.setRumble(RumbleType.kBothRumble, 1);
+    driverController.setRumble(RumbleType.kBothRumble, 1);
   }
 
   public void stopRumble() {
-    // OI.driverController.setRumble(RumbleType.kBothRumble, 0);
+    driverController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void zeroOperatorControllers() 

@@ -88,8 +88,8 @@ public class CANdleObserver extends Command {
       candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - grey
     }
 
-    if(state.getIsLidarAligning() && drivetrain.getAverageLoad() > 50) {
-        candleControl.setRGB(255, 255, 0, 8, 58);
+    if((state.getIsLidarAligning() || state.getIsLocalAligning()) && drivetrain.getAverageLoad() > 50) {
+        candleControl.setRGB(255, 0, 0, 8, 83);
     }
 
     SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());

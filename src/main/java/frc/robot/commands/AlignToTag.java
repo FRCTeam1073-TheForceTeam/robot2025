@@ -163,7 +163,7 @@ public class AlignToTag extends Command
     //aprilTagID = -1;
     targetPose = null;
     System.out.println("Terminated Global Align");
-    state.setIsGlobalAligned(true);
+    state.setIsGlobalAligning(false);
   }
 
   // Returns true when the command should end.

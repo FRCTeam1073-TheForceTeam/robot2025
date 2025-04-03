@@ -78,8 +78,7 @@ public class LidarAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     drivetrain.setTargetChassisSpeeds( new ChassisSpeeds(0, 0, 0));
-    state.setIsLidarAligned(true);
-
+    state.setIsLidarAligning(false);
   }
 
   // Returns true when the command should end.

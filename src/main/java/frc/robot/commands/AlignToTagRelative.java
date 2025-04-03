@@ -205,7 +205,6 @@ public class AlignToTagRelative extends Command
     SmartDashboard.putNumber("AlignToTagRelative/ErrorX", xError);
     SmartDashboard.putNumber("AlignToTagRelative/ErrorY", yError);
     SmartDashboard.putNumber("AlignToTagRelative/ErrorW", wError);
-
   }
 
   // Called once the command ends or is interrupted.
@@ -220,7 +219,7 @@ public class AlignToTagRelative extends Command
 
     // We have no target location
     targetLocation = null;
-    state.setIsLocalAligned(true);
+    state.setIsLocalAligning(false);
   }
 
   // Returns true when the command should end.

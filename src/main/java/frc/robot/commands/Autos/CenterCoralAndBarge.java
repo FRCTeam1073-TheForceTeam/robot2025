@@ -166,17 +166,24 @@ public class CenterCoralAndBarge extends Command {
             new DrivePath(drivetrain, path2, localizer)
           ),
           new ParallelCommandGroup(
-            new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
-            AlgaeAutoGrab.create(algaePivot, endEffector)
-          ),
+            AlgaeAutoGrab.create(algaePivot, endEffector),
+            new SequentialCommandGroup(
+              new WaitCommand(1),
+              new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+              new WaitCommand(2), 
+              new DrivePath(drivetrain, path3, localizer)
+            )
+          )
+        )
+      )
           // new ParallelCommandGroup(
             // new CoralElevatorToHeight(elevator, height, true),
             // new LoadAlgaeAuto(algaePivot)
           // ),
-          new ParallelCommandGroup(
-            // new ZeroElevator(elevator),
-            new DrivePath(drivetrain, path3, localizer)
-          )))
+          // new ParallelCommandGroup(
+          //   // new ZeroElevator(elevator),
+            
+          // )))
       //     new ParallelRaceGroup(
       //       new CoralElevatorToHeight(elevator, 5, true),
       //       new DetectElevatorHeight(elevator, 5, 0.1)

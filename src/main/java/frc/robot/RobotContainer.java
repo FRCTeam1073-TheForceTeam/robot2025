@@ -131,6 +131,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String scoreL3 = "Score L3";
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
+  private static final String algaeGrab = "Algae Grab";
   private static final String bargeScore = "Barge Score";
   
   private static final String zeroClawAndLift = "Zero Claw And Lift";
@@ -164,6 +165,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_levelChooser.addOption("Score L3", scoreL3);
     m_levelChooser.addOption("Score L4", scoreL4);
     m_levelChooser.addOption("Score 2 L4", score2L4);
+    m_levelChooser.addOption("Algae Grab", algaeGrab);
     m_levelChooser.addOption("Barge Score", bargeScore);
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
@@ -280,8 +282,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case score2L4:
         level = 5;
         break;
-      case bargeScore:
+      case algaeGrab:
         level = 6;
+        break;
+      case bargeScore:
+        level = 7;
         break;
       default:
         level = -1;
@@ -369,12 +374,14 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         if (alliance == Alliance.Blue)
        {
           isRed = false;
+          SmartDashboard.putString("Alliance", "Blue");
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
           startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
         }
         else if (alliance == Alliance.Red)
         { 
           isRed = true;
+          SmartDashboard.putString("Alliance", "Red");
           startPos = new Pose2d(centerX + startLineOffset, centerY, new Rotation2d(0)); //startline
         }
         else

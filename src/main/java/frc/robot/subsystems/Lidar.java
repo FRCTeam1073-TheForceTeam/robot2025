@@ -44,6 +44,7 @@ public class Lidar extends SubsystemBase {
         private final int minAcceptedAngle2 = 325; // In degrees, for the second range of accepted angles
         private final int maxAcceptedAngle2 = 360; // In degrees, for the second range of accepted angles
         private final int minAcceptedQuality = 5;
+        private final double mountingOffset = -2.0; //in degrees
 
 
         // Transformation of points into robot coordinates:
@@ -222,7 +223,7 @@ public class Lidar extends SubsystemBase {
                 if (quality < minAcceptedQuality) recordScan = false;
                 // angle = Math.pow(2, 7) * angle[14:7] + angle[6:0]
                 float angle_deg = ((Byte.toUnsignedInt(rawData[offset + 2]) & 0x0FF) << 7) | ((Byte.toUnsignedInt(rawData[offset + 1]) & 0x0FE) >> 1);
-                angle_deg /= 64.0f;
+                angle_deg /= 64.0f + mountingOffset;
                 // range = Math.pow(2, 8) * distance[15:8] + distance[7:0]
                 float range_mm = ((rawData[offset + 4] & 0x0FF) << 8) | (rawData[offset + 3] & 0x0FF);
                 float angle_rad = 3.141592f * angle_deg / 180.0f;

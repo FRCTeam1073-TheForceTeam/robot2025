@@ -13,7 +13,7 @@ public class CommandStates extends SubsystemBase {
   private boolean isGlobalAligning;
   private boolean isLocalAligning;
   private boolean isLidarAligning;
-
+  private boolean algae;
 
   public CommandStates() {
     isCollecting = false;

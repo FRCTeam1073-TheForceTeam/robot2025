@@ -87,7 +87,7 @@ public class CenterScoreCoral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(0.5))),
+                                                              new WaitCommand(AutoConstants.elevatorDelay))),
             new ZeroElevator(elevator)
         );
     }

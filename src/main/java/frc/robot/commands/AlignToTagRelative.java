@@ -48,7 +48,7 @@ public class AlignToTagRelative extends Command
   ChassisSpeeds speeds;
 
 
-  private final static double maximumLinearVelocity = 1.5;   // Meters/second
+  private final static double maximumLinearVelocity = 1.7;   // Meters/second
   private final static double maximumRotationVelocity = 1.5; // Radians/second
 
   /** Creates a new alignToTag. */

@@ -47,7 +47,7 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 1.92;
+  private final double maxPosition = 1.84;
   public final double minPosition = 0.3467; //WINDHAM
 
 

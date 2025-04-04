@@ -157,8 +157,8 @@ public class AlgaePivot extends SubsystemBase {
 
     var rotatemmConfigs = rotateMotorConfig.MotionMagic;
     rotatemmConfigs.MotionMagicCruiseVelocity = 75; //TODO: tune numbers
-    rotatemmConfigs.MotionMagicAcceleration = 100;
-    rotatemmConfigs.MotionMagicJerk = 800;
+    rotatemmConfigs.MotionMagicAcceleration = 150;
+    rotatemmConfigs.MotionMagicJerk = 800;  
     
     var collectMotorClosedLoop0Config = collectMotorConfig.Slot0;
     var rotateMotorClosedLoop0Config = rotateMotorConfig.Slot0;

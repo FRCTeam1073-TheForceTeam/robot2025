@@ -63,13 +63,13 @@ public class AlignToTag extends Command
     this.slot = slot;
 
     xController = new PIDController(
-      1.5, 
+      2, 
       0.0, 
       0.03
     );
 
     yController = new PIDController(
-      1.5, 
+      2, 
       0.0, 
       0.03
     );

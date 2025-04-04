@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,6 +20,7 @@ import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DetectElevatorHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadAlgaeAuto;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
@@ -38,7 +40,7 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CenterCoralAndBarge extends Command {
+public class GrabAlgae extends Command {
   /** Creates a new CenterCoralAndBarge. */
   public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, CommandStates state, AlgaePivot algaePivot, AprilTagFinder finder, Lidar lidar, int branchLevel) {
     int height;
@@ -59,9 +61,11 @@ public class CenterCoralAndBarge extends Command {
 
     Pose2d tag10Pose = map.getTagRelativePose(10, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
     Pose2d tag10ApproachPose = map.getTagRelativePose(10, slot, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
+    Pose2d tag10AlgaePose = map.getTagRelativePose(10, 0, new Transform2d(AutoConstants.algaeOffsetX, 0, new Rotation2d(Math.PI)));
 
     Pose2d tag21Pose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI))); 
     Pose2d tag21ApproachPose = map.getTagRelativePose(21, slot, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
+    Pose2d tag21AlgaePose = map.getTagRelativePose(21, 0, new Transform2d(AutoConstants.algaeOffsetX, 0, new Rotation2d(Math.PI)));
 
     Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
@@ -78,10 +82,12 @@ public class CenterCoralAndBarge extends Command {
     Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
     tag10.blend_radius = AutoConstants.blendRadius;
     Point tag10Approach = new Point(tag10ApproachPose.getX(), tag10ApproachPose.getY());
+    Point tag10Algae = new Point(tag10AlgaePose.getX(), tag10AlgaePose.getY());
 
     Point tag21 = new Point(tag21Pose.getX(), tag21Pose.getY());
     tag21.blend_radius = AutoConstants.blendRadius;
     Point tag21Approach = new Point(tag21ApproachPose.getX(), tag21ApproachPose.getY());
+    Point tag21Algae = new Point(tag21AlgaePose.getX(), tag21AlgaePose.getY());
 
     Point tag14 = new Point(tag14Pose.getX(), tag14Pose.getY());
     tag14.blend_radius = AutoConstants.blendRadius;
@@ -110,13 +116,13 @@ public class CenterCoralAndBarge extends Command {
     if(isRed) 
     {
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments2.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      segments3.add(new Segment(tag10, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments2.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments4.add(new Segment(tag5, tag5End, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      path = new Path(segments, tag10Pose.getRotation().getRadians());
-      path2 = new Path(segments2, tag10ApproachPose.getRotation().getRadians());
-      path3 = new Path(segments3, tag10ApproachPose.getRotation().getRadians());
+      path = new Path(segments, tag10ApproachPose.getRotation().getRadians());
+      path2 = new Path(segments2, tag10AlgaePose.getRotation().getRadians());
+      path3 = new Path(segments3, tag10AlgaePose.getRotation().getRadians());
       path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
       tagID = 10;
 
@@ -124,13 +130,13 @@ public class CenterCoralAndBarge extends Command {
     else 
     {
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments2.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      segments3.add(new Segment(tag21, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
+      segments2.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments4.add(new Segment(tag14, tag14End, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      path = new Path(segments, tag21Pose.getRotation().getRadians());
-      path2 = new Path(segments2, tag21ApproachPose.getRotation().getRadians());
-      path3 = new Path(segments3, tag21ApproachPose.getRotation().getRadians());
+      path = new Path(segments, tag21ApproachPose.getRotation().getRadians());
+      path2 = new Path(segments2, tag21AlgaePose.getRotation().getRadians());
+      path3 = new Path(segments3, tag21AlgaePose.getRotation().getRadians());
       path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
       tagID = 21;
     }
@@ -143,7 +149,6 @@ public class CenterCoralAndBarge extends Command {
     {
       height = 6;
     }
-
 
     return new SequentialCommandGroup(
       new ParallelRaceGroup(
@@ -158,7 +163,7 @@ public class CenterCoralAndBarge extends Command {
             new CoralElevatorToHeight(elevator, branchLevel, false),
             new SequentialCommandGroup(
               new ScoreCoral(endEffector),
-              new WaitCommand(0.5) 
+              new WaitCommand(AutoConstants.elevatorDelay) 
             )
           ),
           new ParallelCommandGroup(
@@ -170,7 +175,11 @@ public class CenterCoralAndBarge extends Command {
             new SequentialCommandGroup(
               new WaitCommand(1),
               new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
-              new WaitCommand(2), 
+              new ParallelRaceGroup(
+                new WaitCommand(2),
+                new LidarAlign(lidar, drivetrain, state)
+              ),
+               
               new DrivePath(drivetrain, path3, localizer)
             )
           )

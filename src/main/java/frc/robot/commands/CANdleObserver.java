@@ -88,7 +88,7 @@ public class CANdleObserver extends Command {
       candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - grey
     }
 
-    if((state.getIsLidarAligning() || state.getIsLocalAligning()) && drivetrain.getAverageLoad() > 50) {
+    if((state.getIsLidarAligning() || state.getIsLocalAligning()) && drivetrain.getAverageLoad() > 65) {
         candleControl.setRGB(255, 0, 0, 8, 83);
     }
 

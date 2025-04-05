@@ -91,12 +91,13 @@ public class AlgaePivot extends SubsystemBase {
       rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
     }
 
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Velocity", rotateVel);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Commanded Velocity", commandedRotateVel);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Position", rotatePos);
-    SmartDashboard.putNumber("AlgaeClaw/Rotate Motor Load", rotateLoad);
-    SmartDashboard.putBoolean("AlgaeClaw/Rotate Break Mode", !rotateBrakeMode);
-    SmartDashboard.putBoolean("AlgaeClaw/Is Up", isUp);
+    SmartDashboard.putNumber("Algae Pivot/Rotate Velocity", rotateVel);
+    SmartDashboard.putNumber("Algae Pivot/Rotate Commanded Velocity", commandedRotateVel);
+    SmartDashboard.putNumber("Algae Pivot/Rotate Commanded Position", commandedRotatePos);
+    SmartDashboard.putNumber("Algae Pivot/Rotate Position", rotatePos);
+    SmartDashboard.putNumber("Algae Pivot/Rotate Motor Load", rotateLoad);
+    SmartDashboard.putBoolean("Algae Pivot/Rotate Break Mode", !rotateBrakeMode);
+    SmartDashboard.putBoolean("Algae Pivot/Is Up", isUp);
   }
 
   public void setRotatorVel(double newVel){

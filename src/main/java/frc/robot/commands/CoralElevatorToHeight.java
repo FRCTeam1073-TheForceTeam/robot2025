@@ -45,7 +45,7 @@ public class CoralElevatorToHeight extends Command {
       targetHeight = 0.745;
     }
     else if (branchLevel == 7) { //barge
-      targetHeight = 1.82;
+      targetHeight = 1.84;
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);

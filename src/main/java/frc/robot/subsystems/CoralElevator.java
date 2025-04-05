@@ -96,7 +96,7 @@ public class CoralElevator extends SubsystemBase {
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
     load = Math.max(backLoad, frontLoad);
 
-    boolean hitHardStop = (velocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
+    boolean hitHardStop = (commandedVelocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
     isAtZero = zeroDebouncer.calculate(!zeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
     if (isAtZero){

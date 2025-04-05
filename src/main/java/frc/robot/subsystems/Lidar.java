@@ -44,7 +44,7 @@ public class Lidar extends SubsystemBase {
         private final int minAcceptedAngle2 = 325; // In degrees, for the second range of accepted angles
         private final int maxAcceptedAngle2 = 360; // In degrees, for the second range of accepted angles
         private final int minAcceptedQuality = 5;
-        private final double mountingOffset = -2.0; //in degrees
+        private final double mountingOffset = -1.0; //in degrees
 
 
         // Transformation of points into robot coordinates:

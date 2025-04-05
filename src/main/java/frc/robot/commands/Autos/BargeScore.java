@@ -71,12 +71,8 @@ public class BargeScore extends Command {
 
     Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
-    
-
-    Pose2d tag14Pose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeScoreOffsetX, 0, new Rotation2d(Math.PI)));
-    // Pose2d tag15Pose = map.getTagRelativePose(15, 0, new Transform2d(AutoConstants.algaeScoreOffsetX, 0, new Rotation2d(Math.PI))); //TODO: implement a way to pick which side go to
-    // Pose2d tag4Pose = map.getTagRelativePose(4, 0, new Transform2d(AutoConstants.algaeScoreOffsetX, 0, new Rotation2d(Math.PI)));
-    Pose2d tag5Pose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeScoreOffsetX, 0, new Rotation2d(Math.PI)));
+    Pose2d tag14Pose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.bargeScoreOffsetX, 0, new Rotation2d(Math.PI)));
+    Pose2d tag5Pose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.bargeScoreOffsetX, 0, new Rotation2d(Math.PI)));
 
     Pose2d tag14BackPose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeEndOffsetX - 0.5, 0, new Rotation2d()));
     Pose2d tag5BackPose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeEndOffsetX - 0.5, 0, new Rotation2d()));
@@ -86,9 +82,6 @@ public class BargeScore extends Command {
 
     Pose2d tag5LineUpPose = map.getTagRelativePose(5, 0, new Transform2d(0.5, 0, new Rotation2d()));
     Pose2d tag14LineUpPose = map.getTagRelativePose(14, 0, new Transform2d(0.5, 0, new Rotation2d()));
-
-    Pose2d tag5ClosePose = map.getTagRelativePose(5, 0, new Transform2d(0.25, 0, new Rotation2d()));
-    Pose2d tag14ClosePose = map.getTagRelativePose(14, 0, new Transform2d(0.25, 0, new Rotation2d()));
 
     Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
     tag10.blend_radius = AutoConstants.blendRadius;
@@ -115,23 +108,18 @@ public class BargeScore extends Command {
     Point tag5End = new Point(tag5EndPose.getX(), tag5EndPose.getY());
     Point tag14End = new Point(tag14EndPose.getX(), tag14EndPose.getY());
 
-    Point tag5LineUp = new Point(tag5LineUpPose.getX(), tag5LineUpPose.getY());
-    Point tag14LineUp = new Point(tag14LineUpPose.getX(), tag14LineUpPose.getY());
-
-    Point tag5Close = new Point(tag5ClosePose.getX(), tag5ClosePose.getY());
-    Point tag14Close = new Point(tag14ClosePose.getX(), tag14ClosePose.getY());
+    Point tag5Offset = new Point(tag5LineUpPose.getX(), tag5LineUpPose.getY());
+    Point tag14Offset = new Point(tag14LineUpPose.getX(), tag14LineUpPose.getY());
 
     ArrayList<Segment> segments = new ArrayList<Segment>();
     ArrayList<Segment> segments2 = new ArrayList<Segment>();
     ArrayList<Segment> segments3 = new ArrayList<Segment>();
     ArrayList<Segment> segments4 = new ArrayList<Segment>();
-    ArrayList<Segment> segments5 = new ArrayList<Segment>();
 
     Path path;
     Path path2;
     Path path3;
     Path path4;
-    Path path5;
 
     int tagID;
 
@@ -142,22 +130,15 @@ public class BargeScore extends Command {
       segments2.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       segments3.add(new Segment(tag10, tag10Algae, tag5BackPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments3.add(new Segment(tag10Algae, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      
+      segments3.add(new Segment(tag10Algae, tag5Offset, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
+      segments4.add(new Segment(tag5, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      // segments4.add(new Segment(tag5, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag5Back, tag5End, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag5End, tag5LineUp, tag5LineUpPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag5LineUp, tag5Close, tag5ClosePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-
-      // segments5.add(new Segment(tag5LineUp, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag10ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag10AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag5BackPose.getRotation().getRadians());
       path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
-      path5 = new Path(segments5, tag5BackPose.getRotation().getRadians());
       tagID = 10;
     }
     else 
@@ -168,19 +149,14 @@ public class BargeScore extends Command {
 
       segments3.add(new Segment(tag21, tag21Algae, tag14BackPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments3.add(new Segment(tag21Algae, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag10Algae, tag5Offset, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      // segments4.add(new Segment(tag14, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag14Back, tag14End, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag14End, tag14LineUp, tag14LineUpPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      // segments4.add(new Segment(tag14LineUp, tag14Close, tag14ClosePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity - 0.5));
-
-      segments5.add(new Segment(tag14LineUp, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments4.add(new Segment(tag14, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag21ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag21AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag14BackPose.getRotation().getRadians());
       path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
-      path5 = new Path(segments5, tag14BackPose.getRotation().getRadians());
       tagID = 21;
     }
 
@@ -197,7 +173,9 @@ public class BargeScore extends Command {
       new ParallelRaceGroup(
         new WaitCommand(13),
         new ParallelRaceGroup(
-          new SequentialCommandGroup( // scores coral 
+          new SequentialCommandGroup(
+
+          // load, drive to reef, and score
             new ParallelCommandGroup( 
               new LoadCoral(endEffector),
               new DrivePath(drivetrain, path, localizer) 
@@ -211,10 +189,14 @@ public class BargeScore extends Command {
                 new WaitCommand(AutoConstants.elevatorDelay) 
               )
             ),
+
+            //zero elevator and go back
             new ParallelCommandGroup(
               new ZeroElevator(elevator),
               new DrivePath(drivetrain, path2, localizer)
             ),
+
+            //run the algae grab, go to reef and align
             new ParallelCommandGroup(
               AlgaeAutoGrab.create(algaePivot, endEffector),
               new SequentialCommandGroup(
@@ -223,26 +205,26 @@ public class BargeScore extends Command {
                 new ParallelRaceGroup(
                   new WaitCommand(2),
                   new LidarAlign(lidar, drivetrain, state)
-                ),
-                
-                new DrivePath(drivetrain, path3, localizer),
-                new DrivePath(drivetrain, path4, localizer),
-                new CoralElevatorToHeight(elevator, 7, true),
-                new ParallelRaceGroup( 
-                  new CoralElevatorToHeight(elevator, 7, false),
-                  new SequentialCommandGroup(
-                    new AlgaeEject(endEffector, algaePivot),
-                    new WaitCommand(AutoConstants.elevatorDelay), 
-                    new ZeroAlgaePivot(algaePivot)
-                  )
+                )
+              ),
+              //drive to barge and score
+              new DrivePath(drivetrain, path3, localizer),
+              new CoralElevatorToHeight(elevator, 7, true),
+              new ParallelRaceGroup( 
+                new CoralElevatorToHeight(elevator, 7, false),
+                new SequentialCommandGroup(
+                  new AlgaeEject(endEffector, algaePivot),
+                  new WaitCommand(AutoConstants.elevatorDelay), 
+                  new ZeroAlgaePivot(algaePivot)
                 )
               )
             )
           )
         )
       ),
+      //no matter what zero and leave the climb area
       new ZeroElevator(elevator),
-      new DrivePath(drivetrain, path5, localizer)
+      new DrivePath(drivetrain, path4, localizer)
     );
   }
 }

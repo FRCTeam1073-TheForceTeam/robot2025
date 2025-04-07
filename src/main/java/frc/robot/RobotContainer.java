@@ -16,9 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeAutoGrabCommand;
-import frc.robot.commands.AlgaeAutoReleaseCommand;
-import frc.robot.commands.AlgaeCollectorTeleop;
+import frc.robot.commands.AlgaeAutoEject;
+import frc.robot.commands.AlgaeAutoGrab;
+import frc.robot.commands.AlgaeEject;
+import frc.robot.commands.AlgaeGrab;
 import frc.robot.commands.AlgaePivotTeleop;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.AlignToTagRelative;
@@ -36,12 +37,12 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
-import frc.robot.subsystems.AlgaeCollector;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.commands.Autos.TestAuto;
 import frc.robot.subsystems.AprilTagFinder;
@@ -55,7 +56,6 @@ import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
 import frc.robot.subsystems.OI;
-import frc.robot.subsystems.OpenMVCAN;
 import frc.robot.subsystems.CANdleControl;
 
 public class RobotContainer implements Consumer<String> // need the interface for onChange
@@ -73,9 +73,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   //private final Lidar m_lidar = null; // Disabled temporarily.
   private final CANdleControl m_CANdleControl = new CANdleControl();
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
-  private final AlgaeCollector m_algaeCollector = new AlgaeCollector();
   private final AlgaePivot m_algaePivot = new AlgaePivot();
-  private final OpenMVCAN m_openMVCAN = new OpenMVCAN(1);
   private final CommandStates m_commandStates = new CommandStates();
 
 
@@ -91,25 +89,26 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralElevatorToHeight cmd_coralElevatorToHighA = new CoralElevatorToHeight(m_coralElevator, 6, false);
   private final CoralElevatorToHeight cmd_coralElevatorToBarge = new CoralElevatorToHeight(m_coralElevator, 7, false);
   private final CancelLoadCoral cmd_cancelLoadCoral = new CancelLoadCoral(m_coralEndeffector);
-  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, true, 0, -1);
+  private final AlignToTag cmd_alignToTag = new AlignToTag(m_drivetrain, m_localizer, m_fieldMap, m_MapDisplay, m_commandStates, true, 0, -1);
   private final ClimberTeleop cmd_climberTeleop = new ClimberTeleop(m_climber, m_OI);
   private final ZeroClimber cmd_zeroClimber = new ZeroClimber(m_climber);
   private final EngageClimber cmd_engageClimber = new EngageClimber(m_climber);
   private final DisengageClimber cmd_disengageClimber = new DisengageClimber(m_climber);
   private final CANdleObserver cmd_candleObserver = new CANdleObserver(m_CANdleControl, m_coralEndeffector, m_climber, m_OI, m_commandStates, m_drivetrain);
   private final LidarAlign cmd_lidarAlign = new LidarAlign(m_lidar, m_drivetrain, m_commandStates);
-  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, 0, 0);
+  private final AlignToTagRelative cmd_localAlign = new AlignToTagRelative(m_drivetrain, m_aprilTagFinder, m_commandStates, 0, 0);
   private final StowElevator cmd_stowElevator = new StowElevator(m_coralElevator);
-  private final AlgaeCollectorTeleop cmd_algaeCollectorTeleop = new AlgaeCollectorTeleop(m_algaeCollector, m_OI);
+  private final AlgaeGrab cmd_algaeGrab = new AlgaeGrab(m_coralEndeffector, false);
+  private final AlgaeEject cmd_algaeEject = new AlgaeEject(m_coralEndeffector, m_algaePivot);
   private final AlgaePivotTeleop cmd_algaePivotTeleop = new AlgaePivotTeleop(m_OI, m_algaePivot);
+  private final ZeroAlgaePivot cmd_zeroAlgaePivot = new ZeroAlgaePivot(m_algaePivot);
   private final TeleopDrive cmd_teleopDrive = new TeleopDrive(m_drivetrain, m_OI, m_aprilTagFinder, m_localizer, m_lidar);
   private final SmartAlign cmd_smartAlignReefLeft = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, -1);
   private final SmartAlign cmd_smartAlignReefRight = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 1);
   private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
+  private final Command cmd_algaeAutoGrab = AlgaeAutoGrab.create(m_algaePivot, m_coralEndeffector);
+  private final Command cmd_algaeAutoEject = AlgaeAutoEject.create(m_coralEndeffector, m_algaePivot);
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
-  private final AlgaeAutoGrabCommand cmd_algaeGrabCommand = new AlgaeAutoGrabCommand(m_algaeCollector, m_commandStates);
-  private final AlgaeAutoReleaseCommand cmd_algaeReleaseCommand = new AlgaeAutoReleaseCommand(m_algaeCollector);
-
   private boolean isRed;
   private int level;
   private boolean isRainbow = false;
@@ -132,6 +131,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private static final String scoreL3 = "Score L3";
   private static final String scoreL4 = "Score L4";
   private static final String score2L4 = "Score 2 L4";
+  private static final String algaeGrab = "Algae Grab";
   private static final String bargeScore = "Barge Score";
   
   private static final String zeroClawAndLift = "Zero Claw And Lift";
@@ -143,7 +143,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_coralEndeffector, cmd_coralEndeffectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
-    CommandScheduler.getInstance().setDefaultCommand(m_algaeCollector, cmd_algaeCollectorTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_algaePivot, cmd_algaePivotTeleop);
 
     SmartDashboard.putData(m_drivetrain);
@@ -166,6 +165,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_levelChooser.addOption("Score L3", scoreL3);
     m_levelChooser.addOption("Score L4", scoreL4);
     m_levelChooser.addOption("Score 2 L4", score2L4);
+    m_levelChooser.addOption("Algae Grab", algaeGrab);
     m_levelChooser.addOption("Barge Score", bargeScore);
 
     SmartDashboard.putData("Position Chooser", m_positionChooser);
@@ -224,12 +224,6 @@ public class RobotContainer implements Consumer<String> // need the interface fo
 
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
-
-    Trigger algaeLoad = new Trigger(m_OI::getOperatorLoadAlgae);
-      algaeLoad.onTrue(cmd_algaeGrabCommand);
-
-    Trigger algaeRelease = new Trigger(m_OI::getOperatorScoreAlgae);
-      algaeRelease.onTrue(cmd_algaeReleaseCommand);
     
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
       zeroElevator.onTrue(cmd_zeroElevator);
@@ -239,6 +233,21 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     
     Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
       elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
+    
+    // Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
+    //   loadAlgae.whileTrue(cmd_algaeGrab);
+
+    // Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
+    //   ejectAlgae.onTrue(cmd_algaeEject);
+    
+    Trigger zeroAlgaePivot = new Trigger(m_OI::getOperatorTwoPlayerButton);
+      zeroAlgaePivot.onTrue(cmd_zeroAlgaePivot);
+
+    Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorScoreAlgae);
+      ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
+    
+    Trigger loadAlgaeAuto = new Trigger(m_OI::getOperatorLoadAlgae);
+      loadAlgaeAuto.onTrue(cmd_algaeAutoGrab);
   } 
 
   public void autonomousInit()
@@ -246,7 +255,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     m_CANdleControl.clearAnim();
   }
 
-  public Command getAutonomousCommand() 
+    public Command getAutonomousCommand() 
   {
    // return Commands.print("No autonomous command configured");
    // -1 to indicate no auto select
@@ -273,8 +282,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case score2L4:
         level = 5;
         break;
-      case bargeScore:
+      case algaeGrab:
         level = 6;
+        break;
+      case bargeScore:
+        level = 7;
         break;
       default:
         level = -1;
@@ -289,13 +301,13 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       case noPosition:
         return null;
       case leftPosition:
-        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
+        return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_commandStates);
       case rightPosition:
-        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder);
+        return AutoRightStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_commandStates);
       case centerPosition:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaeCollector, m_algaePivot, false);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, m_commandStates, false);
       case centerPositionX:
-        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaeCollector, m_algaePivot, true);
+        return AutoCenterStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_algaePivot, m_commandStates, true);
       case testAuto:
         return TestAuto.create(m_drivetrain, m_localizer, m_fieldMap);
       default:
@@ -362,12 +374,14 @@ public class RobotContainer implements Consumer<String> // need the interface fo
         if (alliance == Alliance.Blue)
        {
           isRed = false;
+          SmartDashboard.putString("Alliance", "Blue");
           // startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
           startPos = new Pose2d(centerX - startLineOffset, centerY, new Rotation2d(Math.PI)); //startline
         }
         else if (alliance == Alliance.Red)
         { 
           isRed = true;
+          SmartDashboard.putString("Alliance", "Red");
           startPos = new Pose2d(centerX + startLineOffset, centerY, new Rotation2d(0)); //startline
         }
         else

@@ -20,6 +20,7 @@ import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
@@ -29,21 +30,21 @@ import frc.robot.subsystems.Localizer;
 
 public class LeftScore2Coral 
 {
-    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, int branchLevel)  
+    public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, CommandStates state, int branchLevel)  
     {
         Pose2d tag6LeftPose = map.getTagRelativePose(6, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag11RightPose = map.getTagRelativePose(11, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag11RightApproachPose = map.getTagRelativePose(11, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag6LeftApproachPose = map.getTagRelativePose(6, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(11, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
-        Pose2d tag1Pose = map.getTagRelativePose(1, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
+        Pose2d tag1Pose = map.getTagRelativePose(1, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Pose2d tag19LeftPose = map.getTagRelativePose(19, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag20RightPose = map.getTagRelativePose(20, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag20RightApproachPose = map.getTagRelativePose(20, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag19LeftApproachPose = map.getTagRelativePose(19, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(20, 0, new Transform2d(AutoConstants.intermediateOffsetX, AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
-        Pose2d tag13Pose = map.getTagRelativePose(13, 0, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
+        Pose2d tag13Pose = map.getTagRelativePose(13, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
@@ -134,11 +135,11 @@ public class LeftScore2Coral
                 new LoadCoral(endEffector),
                 new DrivePath(drivetrain, path1, localizer)
             ),
-            new AlignToTagRelative(drivetrain, finder, localTagID, 1),
+            new AlignToTagRelative(drivetrain, finder, state, localTagID, 1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(0.5))),
+                                                              new WaitCommand(AutoConstants.elevatorDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path2, localizer)
@@ -147,11 +148,11 @@ public class LeftScore2Coral
             // TODO: Load and drive in parallel. Every second counts.
             new LoadCoral(endEffector),
             new DrivePath(drivetrain, path3, localizer),
-            new AlignToTagRelative(drivetrain, finder, localTagID2, -1),
+            new AlignToTagRelative(drivetrain, finder, state, localTagID2, -1),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(0.5))),
+                                                              new WaitCommand(AutoConstants.elevatorDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path4, localizer)

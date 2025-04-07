@@ -4,21 +4,12 @@
 
 package frc.robot.subsystems;
 
-import java.util.PrimitiveIterator;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// Free drive controller buttons: press left joystick, press right joystick
-// Free operator controller buttons: Right joystick y, left joystick x, right joystick x
-import frc.robot.commands.DisengageClimber;
-import frc.robot.commands.EngageClimber;
-import frc.robot.commands.ZeroClimber;
-import frc.robot.commands.ZeroElevator;
 
 public class OI extends SubsystemBase
 {
@@ -63,7 +54,7 @@ public class OI extends SubsystemBase
     L4(2),
     BargeScore(1),
     IntakeAlgae(6),
-    TwoPlayer(7),
+    MiddleRed(7),
     ProccessorScore(8);
 
     private int buttonValue;
@@ -84,7 +75,7 @@ public class OI extends SubsystemBase
     LeftJoystickX(0),
     ZeroElevator(1),
     LoadCoral(5),
-    MiddleRed(6),
+    TwoPlayer(6),
     ScoreCoral(7),
     HighAlgae(3),
     LoadAlgae(2),
@@ -115,6 +106,8 @@ public class OI extends SubsystemBase
   public Debouncer xDriverButtonDebouncer = new Debouncer(0.05);
   public Debouncer menuOperatorButtonDebouncer = new Debouncer(0.13);
   public Debouncer viewDriverButtonDebouncer = new Debouncer(0.05);
+  public Debouncer middleRedOperatorButtonDebouncer = new Debouncer(0.05);
+
 
   // Declares the "zero" value variables (which allow us to compensate for joysticks that are a little off)
   private double LEFT_X_ZERO;
@@ -264,11 +257,11 @@ public class OI extends SubsystemBase
   }
 
   public void rumble() {
-    // OI.driverController.setRumble(RumbleType.kBothRumble, 1);
+    driverController.setRumble(RumbleType.kBothRumble, 1);
   }
 
   public void stopRumble() {
-    // OI.driverController.setRumble(RumbleType.kBothRumble, 0);
+    driverController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void zeroOperatorControllers() 
@@ -367,7 +360,7 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorTwoPlayerButton() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.TwoPlayer.getButtonVal());
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.TwoPlayer.getButtonVal());
   }
 
   public boolean getOperatorZeroElevator() {
@@ -375,7 +368,7 @@ public class OI extends SubsystemBase
   }
 
   public boolean getOperatorMiddleRedButton() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.MiddleRed.getButtonVal());
+    return middleRedOperatorButtonDebouncer.calculate(getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.MiddleRed.getButtonVal()));
   }
 
   @Override

@@ -8,34 +8,48 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaePivot;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreAlgaeAuto extends Command {
-  AlgaePivot algaePivot;
-
-  /** Creates a new ScoreAlgaeAuto. */
-  public ScoreAlgaeAuto( AlgaePivot algaePivot) {
+public class AlgaePivotToPosition extends Command {
+  /** Creates a new AlgaePivotToPosition. */
+  AlgaePivot pivot;
+  double targetPosition;
+  boolean terminate;
+  public 
+  AlgaePivotToPosition(AlgaePivot pivot, double targetPosition, boolean terminate) {
+    this.pivot = pivot;
+    this.terminate = terminate;
+    this.targetPosition = targetPosition;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaePivot = algaePivot;
+    addRequirements(pivot);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if(targetPosition == -1){
+      targetPosition = pivot.getRotatorPosition() - 0.5;
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaePivot.setRotatorPos(28.476);
+    if(Math.abs(pivot.getRotatorPosition() - targetPosition) >= 0.5){
+      pivot.setRotatorPos(targetPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    algaePivot.setRotatorPos(8.7);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(terminate){
+      return Math.abs(pivot.getRotatorPosition() - targetPosition) < 0.5;
+    }
+    else{
+      return false;
+    }
   }
 }

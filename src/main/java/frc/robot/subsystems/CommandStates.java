@@ -4,16 +4,39 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CommandStates extends SubsystemBase {
   /** Creates a new CommandStates. */
   private boolean isCollecting;
+  private boolean isGlobalAligning;
+  private boolean isLocalAligning;
   private boolean isLidarAligning;
+  private boolean algae;
 
   public CommandStates() {
     isCollecting = false;
+
+    isGlobalAligning = false;
+    isLocalAligning = false;
     isLidarAligning = false;
+  }
+
+  public void setIsGlobalAligning(boolean val) {
+    isGlobalAligning = val;
+  }
+
+  public boolean getIsGlobalAligning() {
+    return isGlobalAligning;
+  }
+
+  public void setIsLocalAligning(boolean val) {
+    isLocalAligning = val;
+  }
+
+  public boolean getIsLocalAligning() {
+    return isLocalAligning;
   }
 
   public void setIsLidarAligning(boolean val) {
@@ -34,6 +57,9 @@ public class CommandStates extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("States/isCollecting", isCollecting);
+    SmartDashboard.putBoolean("States/isGlobalAligning", isGlobalAligning);
+    SmartDashboard.putBoolean("States/isLocalAligning", isLocalAligning);
+    SmartDashboard.putBoolean("States/isLidarAligning", isLidarAligning);
   }
 }

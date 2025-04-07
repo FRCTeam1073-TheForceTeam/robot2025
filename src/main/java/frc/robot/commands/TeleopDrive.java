@@ -67,7 +67,7 @@ public class TeleopDrive extends Command
   double backRightTorque;
   double avgTorque;
 
-  double torqueGate = 50; 
+  double torqueGate = 65; 
 
   /** Creates a new Teleop. */
   public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer, Lidar lidar) 

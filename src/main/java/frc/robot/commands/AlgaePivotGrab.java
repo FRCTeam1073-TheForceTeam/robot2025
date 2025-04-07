@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AlgaePivot;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreAlgaeAuto extends Command {
-  AlgaePivot algaePivot;
-
-  /** Creates a new ScoreAlgaeAuto. */
-  public ScoreAlgaeAuto( AlgaePivot algaePivot) {
+public class AlgaePivotGrab extends Command {
+  /** Creates a new AlgaePivotGrab. */
+  AlgaePivot pivot;
+  public AlgaePivotGrab(AlgaePivot pivot) {
+    this.pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaePivot = algaePivot;
+    addRequirements(pivot);
   }
 
   // Called when the command is initially scheduled.
@@ -24,18 +24,18 @@ public class ScoreAlgaeAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaePivot.setRotatorPos(28.476);
+    pivot.setRotatorVel(-10);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaePivot.setRotatorPos(8.7);
+    pivot.setRotatorPos(pivot.getRotatorPosition() - 0.5);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return pivot.getRotatorLoad() > 5;
   }
 }

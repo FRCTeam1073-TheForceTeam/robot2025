@@ -4,46 +4,47 @@
 
 package frc.robot.commands;
 
-import java.security.Timestamp;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeCollector;
+import frc.robot.subsystems.AlgaePivot;
+import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeAutoReleaseCommand extends Command {
-  /** Creates a new AlgaeAutoReleaseCommand. */
-  AlgaeCollector algaeCollector;
+public class AlgaeEject extends Command {
+  /** Creates a new AlgaeEject. */
+  CoralEndeffector coralEndeffector;
   double timeAtInit;
-  public AlgaeAutoReleaseCommand(AlgaeCollector algaeCollector) {
-    this.algaeCollector = algaeCollector;
+  AlgaePivot pivot;
+  public AlgaeEject(CoralEndeffector coralEndeffector, AlgaePivot pivot) {
+    this.pivot = pivot;
+    this.coralEndeffector = coralEndeffector;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(algaeCollector);
+    addRequirements(coralEndeffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeAtInit = Timer.getFPGATimestamp();    
+    timeAtInit = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeCollector.setCollectorVel(-85);
-    //algaeClaw.setRotatorVel(15);
+    if(pivot.getRotatorLoad() > 5){
+      pivot.setRotatorVel(-6);
+    }
+    coralEndeffector.setVelocity(-15);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    algaeCollector.setCollectorVel(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Timer.getFPGATimestamp() - timeAtInit > 2.0) {
+    if(Timer.getFPGATimestamp() - timeAtInit > 2.5) {
       return true;
     }
     return false;

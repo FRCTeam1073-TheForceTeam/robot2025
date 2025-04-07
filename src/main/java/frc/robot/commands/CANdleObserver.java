@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.CANdleControl;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandStates;
@@ -28,6 +27,8 @@ public class CANdleObserver extends Command {
   int numTotalLED;
   int candleNum;
 
+  private boolean defenseMode;
+
   public CANdleObserver(CANdleControl CandleControl, CoralEndeffector Endeffector, Climber Climber, OI Oi, CommandStates state, Drivetrain drivetrain) {
     candleControl = CandleControl;
     endeffector = Endeffector;
@@ -38,6 +39,7 @@ public class CANdleObserver extends Command {
     numPerStrip = candleControl.getStripLED();
     numTotalLED = candleControl.getTotalLED();
     candleNum = candleControl.getCandleNum();
+    defenseMode = false;
     addRequirements(candleControl);
   }
 
@@ -58,39 +60,49 @@ public class CANdleObserver extends Command {
     //   candleControl.setRGB(255, 0, 0, candleNum, numPerStrip + 3);//elevator forward - red
     // }
 
-    if (endeffector.getHasCoral()){
-      candleControl.setRGB(255, 0, 0, candleNum, 15);//sides of funnel - light on
+    if(defenseMode) {
+      candleControl.setRGB(255, 255, 0, 8, 83); //set to purple
     }
-    else{
-      candleControl.setRGB(0, 0, 0, candleNum, 15);//sides of funnel - light off
+    else {
+      if (endeffector.getHasCoral()){
+        candleControl.setRGB(255, 0, 0, candleNum, 15);//sides of funnel - light on
+      }
+      else{
+        candleControl.setRGB(0, 0, 0, candleNum, 15);//sides of funnel - light off
+      }
+  
+      if (RobotController.getBatteryVoltage() > 12){
+        candleControl.setRGB(0, 255, 0, 0, candleNum);//CANdle - green
+      }
+      else if(RobotController.getBatteryVoltage() > 10){
+        candleControl.setRGB(128, 128, 0, 0, candleNum);//CANdle - yellow
+      }
+      else{
+        candleControl.setRGB(255, 0, 0, 0, candleNum);//CANdle - red
+      }
+  
+      if (climber.getIsDisengaged()){
+        candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - blue
+      }
+      else if (climber.getIsEngaged()){
+        candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - orange
+      }
+      else if (climber.getIsAtZero()){
+        candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - purple
+      }
+      else{
+        candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - grey
+      }
+  
+      if((state.getIsLidarAligning() || state.getIsLocalAligning()) && drivetrain.getAverageLoad() > 65) {
+          candleControl.setRGB(255, 0, 0, 8, 83);
+      }
     }
 
-    if (RobotController.getBatteryVoltage() > 12){
-      candleControl.setRGB(0, 255, 0, 0, candleNum);//CANdle - green
+    if(oi.getOperatorMiddleRedButton()) {
+      defenseMode = !defenseMode;
     }
-    else if(RobotController.getBatteryVoltage() > 10){
-      candleControl.setRGB(128, 128, 0, 0, candleNum);//CANdle - yellow
-    }
-    else{
-      candleControl.setRGB(255, 0, 0, 0, candleNum);//CANdle - red
-    }
-
-    if (climber.getIsDisengaged()){
-      candleControl.setRGB(0, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - blue
-    }
-    else if (climber.getIsEngaged()){
-      candleControl.setRGB(245, 146, 0, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - orange
-    }
-    else if (climber.getIsAtZero()){
-      candleControl.setRGB(150, 0, 255, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - purple
-    }
-    else{
-      candleControl.setRGB(128, 128, 128, candleNum + numPerStrip + 3, numPerStrip + 2);//elevator side - grey
-    }
-
-    if(state.getIsLidarAligning() && drivetrain.getAverageLoad() > 50) {
-        candleControl.setRGB(255, 255, 0, 8, 58);
-    }
+    
 
     SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());
     SmartDashboard.putBoolean("is Engaged", climber.getIsEngaged());

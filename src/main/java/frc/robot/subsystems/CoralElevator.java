@@ -47,7 +47,7 @@ public class CoralElevator extends SubsystemBase {
   private final double positionKS = 0.15;
 
   private final double maxLoad = 60.0; // TODO: Tune max load.
-  private final double maxPosition = 1.92;
+  private final double maxPosition = 1.84;
   public final double minPosition = 0.3467; //WINDHAM
 
 
@@ -96,7 +96,7 @@ public class CoralElevator extends SubsystemBase {
     backLoad = backElevatorMotor.getTorqueCurrent().getValueAsDouble();
     load = Math.max(backLoad, frontLoad);
 
-    boolean hitHardStop = (velocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
+    boolean hitHardStop = (commandedVelocity < 0.0) && (Math.abs(load) > maxLoad); // MOving down, peak load => reset.
     isAtZero = zeroDebouncer.calculate(!zeroSensor.get() | hitHardStop); // Compute debounced logical or.
 
     if (isAtZero){
@@ -192,9 +192,9 @@ public class CoralElevator extends SubsystemBase {
     frontElevatorMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     var mmConfigs = frontElevatorMotorConfig.MotionMagic;
-    mmConfigs.MotionMagicCruiseVelocity = 75;
-    mmConfigs.MotionMagicAcceleration = 100;
-    mmConfigs.MotionMagicJerk = 800;
+    mmConfigs.MotionMagicCruiseVelocity = 83;
+    mmConfigs.MotionMagicAcceleration = 150;
+    mmConfigs.MotionMagicJerk = 900;
 
     var frontElevatorMotorClosedLoop0Config =  frontElevatorMotorConfig.Slot0;
     var frontElevatorMotorClosedLoop1Config = frontElevatorMotorConfig.Slot1;

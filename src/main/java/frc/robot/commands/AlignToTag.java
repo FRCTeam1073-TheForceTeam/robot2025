@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
@@ -26,6 +27,7 @@ public class AlignToTag extends Command
   Localizer localizer;
   FieldMap fieldMap;
   MapDisplay mapDisplay;
+  CommandStates state;
   int aprilTagID;
   Pose2d targetPose;
   PIDController xController;
@@ -45,13 +47,14 @@ public class AlignToTag extends Command
   private final static double maximumRotationVelocity = 3.0; // Radians/second
 
   /** Creates a new alignToTag. */
-  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, boolean terminate, int tagID, int slot) 
+  public AlignToTag(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CommandStates state, boolean terminate, int tagID, int slot) 
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.localizer = localizer;
     this.fieldMap = fieldMap;
     this.mapDisplay = mapDisplay;
+    this.state = state;
     this.terminate = terminate;
     aprilTagID = tagID;
     xVelocity = 0;
@@ -60,13 +63,13 @@ public class AlignToTag extends Command
     this.slot = slot;
 
     xController = new PIDController(
-      1.5, 
+      2, 
       0.0, 
       0.03
     );
 
     yController = new PIDController(
-      1.5, 
+      2, 
       0.0, 
       0.03
     );
@@ -100,6 +103,8 @@ public class AlignToTag extends Command
   @Override
   public void initialize() 
   {
+    state.setIsGlobalAligning(true);
+
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -158,6 +163,7 @@ public class AlignToTag extends Command
     //aprilTagID = -1;
     targetPose = null;
     System.out.println("Terminated Global Align");
+    state.setIsGlobalAligning(false);
   }
 
   // Returns true when the command should end.

@@ -53,8 +53,8 @@ public class SmartAlign extends Command {
 
   public Command create(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, boolean isRed, int slot){
     return new SequentialCommandGroup(
-      new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, true, tagID, slot),
-      new AlignToTagRelative(drivetrain, aprilTagFinder, tagID, slot),
+      new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, state, true, tagID, slot),
+      new AlignToTagRelative(drivetrain, aprilTagFinder, state, tagID, slot),
       new LidarAlign(lidar, drivetrain, state)
     );
     // return new ParallelRaceGroup(
@@ -68,7 +68,7 @@ public class SmartAlign extends Command {
   }
 
   public Command createSource(Drivetrain drivetrain, Localizer localizer, FieldMap fieldMap, MapDisplay mapDisplay, CoralElevator coralElevator, Lidar lidar, AprilTagFinder aprilTagFinder, int tagID, int slot){
-      return new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, false, tagID, slot);
+      return new AlignToTag(drivetrain, localizer, fieldMap, mapDisplay, state, false, tagID, slot);
   }
   // Called when the command is initially scheduled.
   @Override

@@ -29,7 +29,6 @@ public class LidarAlign extends Command {
   PIDController thetaController;
   PIDController xController;
   LinearFilter filter;
-  double angleOffset = (-2.0 * Math.PI)/180;
   CommandStates state;
   
   public LidarAlign(Lidar lidar, Drivetrain drivetrain, CommandStates state) {
@@ -61,7 +60,7 @@ public class LidarAlign extends Command {
     vx = -xController.calculate(lidar.getAvgX(), 0.4);
 
     vx = MathUtil.clamp(vx, 0, 2);
-    thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate + angleOffset);
+    thetaVelocity = thetaController.calculate(drivetrain.getGyroHeadingRadians(), drivetrain.getGyroHeadingRadians() + angleToRotate);
 
     if(thetaVelocity < 0){
       thetaVelocity = MathUtil.clamp(thetaVelocity, -3, 0);
@@ -70,7 +69,7 @@ public class LidarAlign extends Command {
       thetaVelocity = MathUtil.clamp(thetaVelocity, 0, 3);
     }
     drivetrain.setTargetChassisSpeeds(new ChassisSpeeds(vx, 0, thetaVelocity));
-    SmartDashboard.putNumber("Lidar/Angle", angleToRotate + angleOffset);
+    SmartDashboard.putNumber("Lidar/Angle", angleToRotate);
 
   }
 
@@ -84,10 +83,10 @@ public class LidarAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (lidar.getAvgX() <= 0.42 && Math.abs(lidar.getSlope()) <= 0.05){ //TODO change values or add vaiable in smartdashboard
+    if (lidar.getAvgX() <= 0.427 && Math.abs(lidar.getSlope()) <= 0.05){ //TODO change values or add vaiable in smartdashboard
       return true;
     }
-    if (lidar.getAvgX() < 0.42){
+    if (lidar.getAvgX() < 0.427){
       return true;
     }
     return false;

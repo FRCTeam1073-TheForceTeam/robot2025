@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeCollector;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.OI;
 
@@ -26,7 +25,6 @@ public class AlgaePivotTeleop extends Command {
 
   @Override
   public void initialize() {
-
   }
 
   @Override
@@ -42,13 +40,14 @@ public class AlgaePivotTeleop extends Command {
     // }
     if(oi.getOperatorLeftX() > 0){
       velocity = oi.getOperatorLeftX() * 6.0;
+      algaePivot.setRotatorVel(velocity);
     } else if(oi.getOperatorLeftX() < 0){
       velocity = oi.getOperatorLeftX() * 4.0;
+      algaePivot.setRotatorVel(velocity);
     } else{
-      velocity = 0;
+      algaePivot.setRotatorVel(0);
     }
 
-      algaePivot.setRotatorVel(velocity);
     // if(oi.getOperatorLoadAlgae()) {
     //   algaeClaw.setCollectorVel(algaeVel);
     // }

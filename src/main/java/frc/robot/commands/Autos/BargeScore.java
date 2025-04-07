@@ -148,8 +148,7 @@ public class BargeScore extends Command {
       segments2.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       segments3.add(new Segment(tag21, tag21Algae, tag14BackPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments3.add(new Segment(tag21Algae, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
-      segments3.add(new Segment(tag10Algae, tag5Offset, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag21Algae, tag14Offset, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       segments4.add(new Segment(tag14, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
@@ -208,7 +207,10 @@ public class BargeScore extends Command {
                 )
               ),
               //drive to barge and score
-              new DrivePath(drivetrain, path3, localizer),
+              new ParallelCommandGroup(
+                new DrivePath(drivetrain, path3, localizer),
+                new CoralElevatorToHeight(elevator, 2, true)
+              ),
               new CoralElevatorToHeight(elevator, 7, true),
               new ParallelRaceGroup( 
                 new CoralElevatorToHeight(elevator, 7, false),

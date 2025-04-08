@@ -171,7 +171,7 @@ public class BargeScore extends Command {
     return new SequentialCommandGroup(
       new ParallelRaceGroup(
         new WaitCommand(13),
-          new SequentialCommandGroup(
+        new SequentialCommandGroup(
           // load, drive to reef, and score
           new ParallelCommandGroup( 
             new LoadCoral(endEffector),

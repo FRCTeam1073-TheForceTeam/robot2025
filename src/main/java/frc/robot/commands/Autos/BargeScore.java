@@ -171,55 +171,55 @@ public class BargeScore extends Command {
     return new SequentialCommandGroup(
       new ParallelRaceGroup(
         new WaitCommand(13),
-        new ParallelRaceGroup(
           new SequentialCommandGroup(
-
           // load, drive to reef, and score
-            new ParallelCommandGroup( 
-              new LoadCoral(endEffector),
-              new DrivePath(drivetrain, path, localizer) 
-            ),
-            new AlignToTagRelative(drivetrain, finder, state, tagID, slot), 
-            new CoralElevatorToHeight(elevator, branchLevel, true),
-            new ParallelRaceGroup( 
-              new CoralElevatorToHeight(elevator, branchLevel, false),
-              new SequentialCommandGroup(
-                new ScoreCoral(endEffector),
-                new WaitCommand(AutoConstants.elevatorDelay) 
-              )
-            ),
+          new ParallelCommandGroup( 
+            new LoadCoral(endEffector),
+            new DrivePath(drivetrain, path, localizer),
+            new CoralElevatorToHeight(elevator, 3, true) 
+          ),
+          new AlignToTagRelative(drivetrain, finder, state, tagID, slot), 
+          new CoralElevatorToHeight(elevator, branchLevel, true),
+          new ParallelRaceGroup( 
+            new CoralElevatorToHeight(elevator, branchLevel, false),
+            new SequentialCommandGroup(
+              new ScoreCoral(endEffector),
+              new WaitCommand(AutoConstants.elevatorDelay) 
+            )
+          ),
 
-            //zero elevator and go back
-            new ParallelCommandGroup(
-              new ZeroElevator(elevator),
-              new DrivePath(drivetrain, path2, localizer)
-            ),
+          //zero elevator and go back
+          new ParallelRaceGroup(
+            new ZeroElevator(elevator),
+            new DrivePath(drivetrain, path2, localizer),
+            AlgaeAutoGrab.create(algaePivot, endEffector),
+            new WaitCommand(2.4)
+          ),
 
-            //run the algae grab, go to reef and align
-            new ParallelCommandGroup(
-              AlgaeAutoGrab.create(algaePivot, endEffector),
-              new SequentialCommandGroup(
-                new WaitCommand(1),
-                new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
-                new ParallelRaceGroup(
-                  new WaitCommand(2),
-                  new LidarAlign(lidar, drivetrain, state)
-                )
-              ),
-              //drive to barge and score
-              new ParallelCommandGroup(
-                new DrivePath(drivetrain, path3, localizer),
-                new CoralElevatorToHeight(elevator, 2, true)
-              ),
-              new CoralElevatorToHeight(elevator, 7, true),
-              new ParallelRaceGroup( 
-                new CoralElevatorToHeight(elevator, 7, false),
-                new SequentialCommandGroup(
-                  new AlgaeEject(endEffector, algaePivot),
-                  new WaitCommand(AutoConstants.elevatorDelay), 
-                  new ZeroAlgaePivot(algaePivot)
-                )
-              )
+          //run the algae grab, go to reef and align
+          // new ParallelCommandGroup(
+          //   AlgaeAutoGrab.create(algaePivot, endEffector),
+          new SequentialCommandGroup(
+            //new WaitCommand(0.8),
+            new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+            new ParallelRaceGroup(
+              new WaitCommand(2),
+              new LidarAlign(lidar, drivetrain, state)
+            )
+          ),
+          // ),
+          //drive to barge and score
+          new ParallelCommandGroup(
+            new DrivePath(drivetrain, path3, localizer),
+            new CoralElevatorToHeight(elevator, 2, true)
+          ),
+          new CoralElevatorToHeight(elevator, 7, true),
+          new ParallelRaceGroup( 
+            new CoralElevatorToHeight(elevator, 7, false),
+            new SequentialCommandGroup(
+              new AlgaeEject(endEffector, algaePivot),
+              new WaitCommand(AutoConstants.elevatorDelay),
+              new ZeroAlgaePivot(algaePivot)
             )
           )
         )

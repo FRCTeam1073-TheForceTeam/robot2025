@@ -132,22 +132,21 @@ public class LeftScore2Coral
         
 
         return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(
-                new ParallelCommandGroup(
-                    new LoadCoral(endEffector),
-                    new DrivePath(drivetrain, path1, localizer)),
+            new ParallelCommandGroup(
+                new LoadCoral(endEffector),
+                new DrivePath(drivetrain, path1, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),
             new ParallelDeadlineGroup(
                 new AlignToTagRelative(drivetrain, finder, state, localTagID, 1),
-                new CoralElevatorToHeight(elevator, 3, true)
+                new CoralElevatorToHeight(elevator, 4, true)
             ),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(AutoConstants.elevatorDelay))),
-            new ParallelRaceGroup(
-                new CoralElevatorToHeight(elevator, 5, false),
+            new ParallelCommandGroup(
+                new CoralElevatorToHeight(elevator, 5, true),
                 new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.

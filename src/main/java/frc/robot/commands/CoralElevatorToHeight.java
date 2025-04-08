@@ -14,7 +14,7 @@ public class CoralElevatorToHeight extends Command {
   CoralElevator elevator;
   int branchLevel;
   double velocity;
-  double targetHeight = 0.0;
+  double targetHeight = 0.0;//in metres
   boolean terminate = false;
 
   /** Creates a new CoralElevatorToHeight. */
@@ -25,26 +25,23 @@ public class CoralElevatorToHeight extends Command {
     
     if(branchLevel == 1){
       targetHeight = 0.45;
-
     }
     else if(branchLevel == 2){
       targetHeight = 0.72;
-
     }
     else if (branchLevel == 3){
       targetHeight = 1.11;
-
     }
     else if (branchLevel == 4){
       targetHeight = 1.73;
     }
-    else if (branchLevel == 5) { //low algae
-      targetHeight = 0.0;
+    else if (branchLevel == 5){ //low algae
+      targetHeight = 0.35;
     }
-    else if (branchLevel == 6) { //high algae
+    else if (branchLevel == 6){ //high algae
       targetHeight = 0.745;
     }
-    else if (branchLevel == 7) { //barge
+    else if (branchLevel == 7){ //barge
       targetHeight = 1.84;
     }
     // Use addRequirements() here to declare subsystem dependencies.

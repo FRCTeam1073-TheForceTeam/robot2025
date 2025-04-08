@@ -36,4 +36,6 @@ public class AutoConstants {
     public static final double stowedDrivingVelocity = 2.6;
 
     public static final double elevatorDelay = 0.25;
+
+    public static final double scoreDelay = .15;
 }

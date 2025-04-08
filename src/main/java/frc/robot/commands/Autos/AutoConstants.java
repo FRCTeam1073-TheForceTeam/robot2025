@@ -35,5 +35,5 @@ public class AutoConstants {
     // Open-space driving with stowed elevator velocity:
     public static final double stowedDrivingVelocity = 2.6;
 
-    public static final double elevatorDelay = 0.5;
+    public static final double elevatorDelay = 0.25;
 }

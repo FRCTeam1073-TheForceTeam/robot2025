@@ -70,8 +70,7 @@ public class TeleopDrive extends Command
   double torqueGate = 65; 
 
   /** Creates a new Teleop. */
-  public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer, Lidar lidar) 
-  {
+  public TeleopDrive(Drivetrain drivetrain, OI oi, AprilTagFinder finder, Localizer localizer, Lidar lidar){
     this.lidar = lidar;
     this.drivetrain = drivetrain;
     this.localizer = localizer;

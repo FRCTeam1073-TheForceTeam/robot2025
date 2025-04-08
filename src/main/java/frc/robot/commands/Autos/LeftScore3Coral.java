@@ -29,7 +29,7 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
-public class LeftScore2Coral 
+public class LeftScore3Coral 
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, Lidar lidar, AprilTagFinder finder, CommandStates state, int branchLevel)  
     {
@@ -146,8 +146,8 @@ public class LeftScore2Coral
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(AutoConstants.elevatorDelay))),
-            new ParallelRaceGroup(
-                new CoralElevatorToHeight(elevator, 5, false),
+            new ParallelCommandGroup(
+                new CoralElevatorToHeight(elevator, 5, true),
                 new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.

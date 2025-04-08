@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -130,17 +131,22 @@ public class RightScore2Coral
         
 
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new LoadCoral(endEffector),
-                new DrivePath(drivetrain, path1, localizer)
+            new ParallelDeadlineGroup(
+                new ParallelCommandGroup(
+                    new LoadCoral(endEffector),
+                    new DrivePath(drivetrain, path1, localizer)),
+                new CoralElevatorToHeight(elevator, 2, true)
             ),
-            new AlignToTagRelative(drivetrain, finder, state, localTagID, -1),
+            new ParallelDeadlineGroup(
+                new AlignToTagRelative(drivetrain, finder, state, localTagID, 1),
+                new CoralElevatorToHeight(elevator, 3, true)
+            ),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(AutoConstants.elevatorDelay))),
-            new ParallelCommandGroup(
-                new ZeroElevator(elevator),
+            new ParallelRaceGroup(
+                new CoralElevatorToHeight(elevator, 5, false),
                 new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.

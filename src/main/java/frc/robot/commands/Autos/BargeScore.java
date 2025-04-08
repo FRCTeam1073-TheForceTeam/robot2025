@@ -203,7 +203,7 @@ public class BargeScore extends Command {
             //new WaitCommand(0.8),
             new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
             new ParallelRaceGroup(
-              new WaitCommand(2),
+              new WaitCommand(0.8),
               new LidarAlign(lidar, drivetrain, state)
             )
           ),

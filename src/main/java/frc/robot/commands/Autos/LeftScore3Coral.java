@@ -97,7 +97,7 @@ public class LeftScore3Coral
 
         if (isRed)
         {
-            segments1.add(new Segment(start, tag11RApproach, tag11RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            segments1.add(new Segment(start, tag11RApproach, tag11RightApproachPose.getRotation().getRadians(), AutoConstants.autoReefApproachVelocity));
             // segments1.add(new Segment(tag11RApproach, tag11R, tag11RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag11R, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
@@ -120,7 +120,7 @@ public class LeftScore3Coral
         }
         else
         {
-            segments1.add(new Segment(start, tag20RApproach, tag20RightApproachPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+            segments1.add(new Segment(start, tag20RApproach, tag20RightApproachPose.getRotation().getRadians(), AutoConstants.autoReefApproachVelocity));
             // segments1.add(new Segment(tag20RApproach, tag20R, tag20RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag20R, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));

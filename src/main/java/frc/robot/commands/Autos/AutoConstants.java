@@ -21,7 +21,7 @@ public class AutoConstants {
     public static final double intermediateOffsetX = 0.8;
     public static  final double intermediateOffsetY = 1.2;
 
-    public static final double algaeOffsetX = 1.3;
+    public static final double algaeOffsetX = 1.1;
 
 
     // Scoring velocity when aligning to reef:

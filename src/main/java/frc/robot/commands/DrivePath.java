@@ -121,7 +121,7 @@ public class DrivePath extends Command
     PathFeedback pathFeedback = path.getPathFeedback(currentSegmentIndex, robotPose);
 
     maxVelocity = pathFeedback.velocity.norm();
-    maxAngularVelocity = pathFeedback.velocity.norm();
+    maxAngularVelocity = pathFeedback.velocity.norm() * 1.75;
     
 
     if (currentSegmentIndex >= path.segments.size() - 1)

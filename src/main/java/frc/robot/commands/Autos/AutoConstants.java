@@ -37,5 +37,5 @@ public class AutoConstants {
 
     public static final double elevatorDelay = 0.25;
 
-    public static final double scoreDelay = .15;
+    public static final double scoreDelay = .2;
 }

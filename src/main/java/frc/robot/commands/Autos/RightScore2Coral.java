@@ -144,9 +144,9 @@ public class RightScore2Coral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
-            new ParallelRaceGroup(
-                new CoralElevatorToHeight(elevator, 5, false),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
+            new ParallelCommandGroup(
+                new CoralElevatorToHeight(elevator, 5, true),
                 new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.
@@ -157,7 +157,7 @@ public class RightScore2Coral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path4, localizer)

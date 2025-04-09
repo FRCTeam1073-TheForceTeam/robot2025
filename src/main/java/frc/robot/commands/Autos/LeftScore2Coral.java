@@ -144,7 +144,7 @@ public class LeftScore2Coral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new CoralElevatorToHeight(elevator, 5, true),
                 new DrivePath(drivetrain, path2, localizer)
@@ -157,7 +157,7 @@ public class LeftScore2Coral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path4, localizer)

@@ -185,9 +185,10 @@ public class RightScore3Coral
                 new DrivePath(drivetrain, path5, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),
-            
-            new AlignToTagRelative(drivetrain, finder, state, localTagID2, -1),
-            new CoralElevatorToHeight(elevator, branchLevel, true),
+            new ParallelRaceGroup(
+                new AlignToTagRelative(drivetrain, finder, state, localTagID2, -1),
+                new CoralElevatorToHeight(elevator, 4, false)
+            ),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(AutoConstants.scoreDelay)))

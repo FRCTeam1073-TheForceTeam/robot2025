@@ -46,7 +46,6 @@ public class DrivePath extends Command
   */
   public DrivePath(Drivetrain ds, Path path, Localizer localizer) 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = ds;
     this.path = path;
     this.localizer = localizer;
@@ -107,7 +106,6 @@ public class DrivePath extends Command
     {
       SmartDashboard.putString("DrivePath/Status","Invalid segment index.");
 
-      // System.out.println("DrivePathSchema: Invalid segment index.");
       // Stop:
       //TODO: send command to the drivetrain
       return; // Don't run.

@@ -35,6 +35,8 @@ public class AutoRightStart
                 return RightScoreCoral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, 4);
             case 5:
                 return RightScore2Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, finder, lidar, state, 4);
+            case 11:
+                return RightScore3Coral.create(isRed, drivetrain, map, localizer, endEffector, elevator, lidar, finder, state, 4);
             default:
                 return new WaitCommand(0);
         }

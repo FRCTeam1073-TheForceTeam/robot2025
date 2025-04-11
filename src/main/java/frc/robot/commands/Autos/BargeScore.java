@@ -214,7 +214,6 @@ public class BargeScore extends Command {
           ),
           //zero elevator and go back
           
-          // ),
           //drive to barge and score
           new ParallelCommandGroup(
             new DrivePath(drivetrain, path3, localizer),

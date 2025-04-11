@@ -77,8 +77,8 @@ public class BargeScore extends Command {
     Pose2d tag14BackPose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeEndOffsetX - 0.5, 0, new Rotation2d(Math.PI)));
     Pose2d tag5BackPose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeEndOffsetX - 0.5, 0, new Rotation2d(Math.PI)));
 
-    Pose2d tag14EndPose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d(Math.PI)));
-    Pose2d tag5EndPose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d(Math.PI)));
+    Pose2d tag14EndPose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d()));
+    Pose2d tag5EndPose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d()));
 
     Pose2d tag5LineUpPose = map.getTagRelativePose(5, 0, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));
     Pose2d tag14LineUpPose = map.getTagRelativePose(14, 0, new Transform2d(0.45, 0, new Rotation2d(Math.PI)));

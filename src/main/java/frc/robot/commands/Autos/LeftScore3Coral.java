@@ -165,7 +165,7 @@ public class LeftScore3Coral
             // TODO: Consider using wait in stead of using load as wait.
             // TODO: Load and drive in parallel. Every second counts.
             new LoadCoral(endEffector),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new DrivePath(drivetrain, path3, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),
@@ -181,13 +181,14 @@ public class LeftScore3Coral
                 new DrivePath(drivetrain, path4, localizer)
             ),
             new LoadCoral(endEffector),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new DrivePath(drivetrain, path5, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),
-            
-            new AlignToTagRelative(drivetrain, finder, state, localTagID2, 1),
-            new CoralElevatorToHeight(elevator, branchLevel, true),
+            new ParallelRaceGroup(
+                new AlignToTagRelative(drivetrain, finder, state, localTagID2, 1),
+                new CoralElevatorToHeight(elevator, branchLevel, false)
+            ),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
                                                               new WaitCommand(AutoConstants.scoreDelay)))

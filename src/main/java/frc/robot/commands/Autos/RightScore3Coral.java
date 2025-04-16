@@ -40,7 +40,7 @@ public class RightScore3Coral
         Pose2d tag8LeftApproachPose = map.getTagRelativePose(8, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag8RightApproachPose = map.getTagRelativePose(8, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d redIntermediatePose = map.getTagRelativePose(9, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
-        Pose2d tag1Pose = map.getTagRelativePose(2, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
+        Pose2d tag2Pose = map.getTagRelativePose(2, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Pose2d tag17LeftPose = map.getTagRelativePose(17, 1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
         Pose2d tag17RightPose = map.getTagRelativePose(17, -1, new Transform2d(AutoConstants.scoreOffsetX, 0, new Rotation2d(Math.PI)));
@@ -49,7 +49,7 @@ public class RightScore3Coral
         Pose2d tag17LeftApproachPose = map.getTagRelativePose(17, 1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d tag17RightApproachPose = map.getTagRelativePose(17, -1, new Transform2d(AutoConstants.scoreApproachOffsetX, -AutoConstants.scoreApproachOffsetY, new Rotation2d(Math.PI)));
         Pose2d blueIntermediatePose = map.getTagRelativePose(22, 0, new Transform2d(AutoConstants.intermediateOffsetX, -AutoConstants.intermediateOffsetY, new Rotation2d(Math.PI)));
-        Pose2d tag13Pose = map.getTagRelativePose(12, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
+        Pose2d tag12Pose = map.getTagRelativePose(12, 2, new Transform2d(AutoConstants.loadOffsetX, 0, new Rotation2d()));
 
         Point start = new Point(localizer.getPose().getX(), localizer.getPose().getY());
 
@@ -61,8 +61,8 @@ public class RightScore3Coral
         Point tag9RApproach = new Point(tag9RightApproachPose.getX(), tag9RightApproachPose.getY());
         Point redI1 = new Point(redIntermediatePose.getX(), redIntermediatePose.getY());
         // redI1.blend_radius = AutoConstants.blendRadius;
-        Point tag1 = new Point(tag1Pose.getX(), tag1Pose.getY());
-        tag1.blend_radius = AutoConstants.blendRadius;
+        Point tag2 = new Point(tag2Pose.getX(), tag2Pose.getY());
+        tag2.blend_radius = AutoConstants.blendRadius;
         Point tag9R = new Point(tag9RightPose.getX(), tag9RightPose.getY());
         tag9R.blend_radius = AutoConstants.blendRadius;
 
@@ -75,8 +75,8 @@ public class RightScore3Coral
         Point tag22RApproach = new Point(tag22RightApproachPose.getX(), tag22RightApproachPose.getY());
         Point blueI1 = new Point(blueIntermediatePose.getX(), blueIntermediatePose.getY());
         // blueI1.blend_radius = AutoConstants.blendRadius;
-        Point tag13 = new Point(tag13Pose.getX(), tag13Pose.getY());
-        tag13.blend_radius = AutoConstants.blendRadius;
+        Point tag12 = new Point(tag12Pose.getX(), tag12Pose.getY());
+        tag12.blend_radius = AutoConstants.blendRadius;
         Point tag22R = new Point(tag22RightPose.getX(), tag22RightPose.getY());
         tag22R.blend_radius = AutoConstants.blendRadius;
 
@@ -101,18 +101,18 @@ public class RightScore3Coral
             // segments1.add(new Segment(tag9RApproach, tag9R, tag9RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag9R, redI1, redIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
-            segments2.add(new Segment(redI1, tag1, tag1Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments2.add(new Segment(redI1, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
-            segments3.add(new Segment(tag1, tag8LApproach, tag8LeftApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments3.add(new Segment(tag2, tag8LApproach, tag8LeftApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             
-            segments4.add(new Segment(tag8L, tag1, tag1Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
+            segments4.add(new Segment(tag8L, tag2, tag2Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
 
-            segments5.add(new Segment(tag1, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments5.add(new Segment(tag2, tag8RApproach, tag8RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
             path1 = new Path(segments1, tag9RightPose.getRotation().getRadians());
-            path2 = new Path(segments2, tag1Pose.getRotation().getRadians());
+            path2 = new Path(segments2, tag2Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag8LeftApproachPose.getRotation().getRadians());
-            path4 = new Path(segments4, tag1Pose.getRotation().getRadians());
+            path4 = new Path(segments4, tag2Pose.getRotation().getRadians());
             path5 = new Path(segments5, tag8RightApproachPose.getRotation().getRadians());
 
             localTagID = 9;
@@ -124,18 +124,18 @@ public class RightScore3Coral
             // segments1.add(new Segment(tag22RApproach, tag22R, tag22RightPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
 
             segments2.add(new Segment(tag22R, blueI1, blueIntermediatePose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
-            segments2.add(new Segment(blueI1, tag13, tag13Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments2.add(new Segment(blueI1, tag12, tag12Pose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
 
-            segments3.add(new Segment(tag13, tag17LApproach, tag17LeftApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments3.add(new Segment(tag12, tag17LApproach, tag17LeftApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             
-            segments4.add(new Segment(tag17L, tag13, tag13Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
+            segments4.add(new Segment(tag17L, tag12, tag12Pose.getRotation().getRadians(), AutoConstants.stowingElevatorVelocity));
 
-            segments5.add(new Segment(tag13, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
+            segments5.add(new Segment(tag12, tag17RApproach, tag17RightApproachPose.getRotation().getRadians(), AutoConstants.stowedDrivingVelocity));
             
             path1 = new Path(segments1, tag22RightPose.getRotation().getRadians());
-            path2 = new Path(segments2, tag13Pose.getRotation().getRadians());
+            path2 = new Path(segments2, tag12Pose.getRotation().getRadians());
             path3 = new Path(segments3, tag17LeftApproachPose.getRotation().getRadians());
-            path4 = new Path(segments4, tag13Pose.getRotation().getRadians());
+            path4 = new Path(segments4, tag12Pose.getRotation().getRadians());
             path5 = new Path(segments5, tag17RightApproachPose.getRotation().getRadians());
 
             localTagID = 22;
@@ -165,7 +165,7 @@ public class RightScore3Coral
             // TODO: Consider using wait in stead of using load as wait.
             // TODO: Load and drive in parallel. Every second counts.
             new LoadCoral(endEffector),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new DrivePath(drivetrain, path3, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),
@@ -181,7 +181,7 @@ public class RightScore3Coral
                 new DrivePath(drivetrain, path4, localizer)
             ),
             new LoadCoral(endEffector),
-            new ParallelRaceGroup(
+            new ParallelCommandGroup(
                 new DrivePath(drivetrain, path5, localizer),
                 new CoralElevatorToHeight(elevator, 2, true)
             ),

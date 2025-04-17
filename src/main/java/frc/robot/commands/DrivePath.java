@@ -63,7 +63,7 @@ public class DrivePath extends Command
     );
 
     thetaController = new PIDController(
-      1.2, 
+      1.5, 
       0.0,
       0.01
     );
@@ -119,7 +119,7 @@ public class DrivePath extends Command
     PathFeedback pathFeedback = path.getPathFeedback(currentSegmentIndex, robotPose);
 
     maxVelocity = pathFeedback.velocity.norm();
-    maxAngularVelocity = pathFeedback.velocity.norm() * 1.75;
+    maxAngularVelocity = pathFeedback.velocity.norm() * 2;
     
 
     if (currentSegmentIndex >= path.segments.size() - 1)

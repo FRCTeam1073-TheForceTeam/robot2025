@@ -5,7 +5,7 @@ public class AutoConstants {
     public static final double scoreOffsetX = 0.4;
     public static final double scoreApproachOffsetX = 0.8;
 
-    public static final double scoreApproachOffsetY = 0.1;
+    public static final double scoreApproachOffsetY = 0.2;
 
     public static final double algaeScoreOffsetX = 0.38;
     public static final double bargeScoreOffsetX = 0.32;
@@ -30,13 +30,13 @@ public class AutoConstants {
     // Velocity for approaching the reef
     public static final double reefApproachVelocity = 2.0;
 
-    public static final double autoReefApproachVelocity = 2.2;
+    public static final double autoReefApproachVelocity = 2.4;
 
     // Driving velocity when lowering elevator:
-    public static final double stowingElevatorVelocity = 2.2;
+    public static final double stowingElevatorVelocity = 2.3;
 
     // Open-space driving with stowed elevator velocity:
-    public static final double stowedDrivingVelocity = 2.6;
+    public static final double stowedDrivingVelocity = 2.8;
 
     public static final double elevatorDelay = 0.25;
 

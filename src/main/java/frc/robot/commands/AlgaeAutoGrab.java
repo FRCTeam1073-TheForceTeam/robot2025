@@ -25,7 +25,7 @@ public class AlgaeAutoGrab {
             //TODO Fix TargetPosition
             //Zero, Find Algae, Load Algae, Eject, Zero
             new ZeroAlgaePivot(pivot),
-            new AlgaePivotToPosition(pivot, 10.0, true),
+            new AlgaePivotToPosition(pivot, 9.3, true),
             new ParallelRaceGroup(
                 new FindAlgae(endeffector),
                 new AlgaeGrab(endeffector, false)

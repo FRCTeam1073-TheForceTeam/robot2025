@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
+import frc.robot.commands.DetectCoral;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.Path;
@@ -164,10 +165,16 @@ public class RightScore3Coral
             ),
             // TODO: Consider using wait in stead of using load as wait.
             // TODO: Load and drive in parallel. Every second counts.
-            new LoadCoral(endEffector),
+            new ParallelRaceGroup(
+                new LoadCoral(endEffector),
+                new DetectCoral(endEffector)
+            ),
             new ParallelCommandGroup(
                 new DrivePath(drivetrain, path3, localizer),
-                new CoralElevatorToHeight(elevator, 2, true)
+                new SequentialCommandGroup(
+                    new LoadCoral(endEffector),
+                    new CoralElevatorToHeight(elevator, 2, true)
+                )
             ),
             new ParallelRaceGroup(
                 new AlignToTagRelative(drivetrain, finder, state, localTagID2, 1),
@@ -180,10 +187,16 @@ public class RightScore3Coral
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path4, localizer)
             ),
-            new LoadCoral(endEffector),
+            new ParallelRaceGroup(
+                new LoadCoral(endEffector),
+                new DetectCoral(endEffector)
+            ),
             new ParallelCommandGroup(
-                new DrivePath(drivetrain, path5, localizer),
-                new CoralElevatorToHeight(elevator, 2, true)
+                new DrivePath(drivetrain, path3, localizer),
+                new SequentialCommandGroup(
+                    new LoadCoral(endEffector),
+                    new CoralElevatorToHeight(elevator, 2, true)
+                )
             ),
             new ParallelRaceGroup(
                 new AlignToTagRelative(drivetrain, finder, state, localTagID2, -1),

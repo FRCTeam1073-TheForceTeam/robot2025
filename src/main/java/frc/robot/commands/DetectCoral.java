@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralEndeffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FindAlgae extends Command {
-  /** Creates a new FindAlgae. */
-  CoralEndeffector endeffector;
-  public FindAlgae(CoralEndeffector endeffector) {
-    this.endeffector = endeffector;
+public class DetectCoral extends Command {
+  CoralEndeffector endEffector;
+  /** Creates a new DetectCoral. */
+  public DetectCoral(CoralEndeffector endEffector) 
+  {
+    this.endEffector = endEffector;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -22,9 +23,7 @@ public class FindAlgae extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -33,6 +32,6 @@ public class FindAlgae extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return endeffector.getLoad() > 20;
+    return endEffector.getCoralFed();
   }
 }

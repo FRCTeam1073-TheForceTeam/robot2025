@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlgaeAutoEject;
 import frc.robot.commands.AlgaeAutoGrab;
@@ -334,7 +335,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       // case zeroClawAndLift:
       //   return ZeroClawAndLift.create(m_climberClaw, m_climberLift);
       case noPosition:
-        return null;
+        return new WaitCommand(20.0);
       case leftPosition:
         return AutoLeftStart.create(level, isRed, m_drivetrain, m_localizer, m_fieldMap, m_climber, m_coralEndeffector, m_coralElevator, m_lidar, m_aprilTagFinder, m_commandStates);
       case rightPosition:

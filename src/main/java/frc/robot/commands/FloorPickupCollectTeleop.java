@@ -28,8 +28,8 @@ public class FloorPickupCollectTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(collect.getLoad() <= 10) {
-      velocity = -5;
+    if(collect.getLoad() <= 13) {
+      velocity = 15;
     }
     else {
       velocity = 0;

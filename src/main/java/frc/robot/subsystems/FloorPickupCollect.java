@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class FloorPickupCollect extends SubsystemBase {
   /** Creates a new FloorPickupCollect. */
   private String kCANbus = "rio";
-  private double rollerkP = 0.2;
+  private double rollerkP = 0.5;
   private double rollerkI = 0.0;
   private double rollerkD = 0.02;
   private double rollerkV = 0.12;

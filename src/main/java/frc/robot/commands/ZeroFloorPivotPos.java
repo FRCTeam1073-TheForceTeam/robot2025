@@ -31,7 +31,7 @@ public class ZeroFloorPivotPos extends Command {
   @Override
   public void execute() {
     pivot.setRotatorVel(-5);
-    if(pivot.getRotatorLoad() > 5){
+    if(pivot.getRotatorLoad() > 9){
       count++;
     }
     else if(pivot.getRotatorLoad() <= 8 && count > 0){
@@ -43,7 +43,6 @@ public class ZeroFloorPivotPos extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pivot.setRotatorVel(0);
   }
 
   // Returns true when the command should end.

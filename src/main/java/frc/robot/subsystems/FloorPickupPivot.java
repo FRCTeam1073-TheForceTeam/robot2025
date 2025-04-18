@@ -26,16 +26,13 @@ public class FloorPickupPivot extends SubsystemBase {
 
   private final String KCANbus = "rio";
 
-  private final double rotateMinPos = 0;
-  private final double rotateMaxPos = 41.9;
-
   private final double rotateVelKP = 0.4;
   private final double rotateVelKI = 0.01;
   private final double rotateVelKD = 0.01;
   private final double rotateVelKV = 0.12;
   private final double rotateVelKA = 0.01;
 
-  private final double rotatePosKP = 0.4;
+  private final double rotatePosKP = 0.6;
   private final double rotatePosKI = 0.01;
   private final double rotatePosKD = 0.01;
   private final double rotatePosKV = 0.12;
@@ -89,9 +86,9 @@ public class FloorPickupPivot extends SubsystemBase {
     commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
     rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
 
-    if (rotatePos >= rotateMaxPos || rotatePos <= rotateMinPos){
-      commandedRotateVel = Math.min(commandedRotateVel, 0); 
-    }
+    // if (rotatePos >= rotateMaxPos || rotatePos <= rotateMinPos){
+    //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
+    // }
 
     if(velocityMode) {
       rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));

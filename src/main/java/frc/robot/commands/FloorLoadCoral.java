@@ -12,24 +12,21 @@ import frc.robot.subsystems.FloorPickupPivot;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class FloorLoadCoral extends Command {
   /** Creates a new FloorIntake. */
-  FloorPickupCollect floorPickupCollect;
   FloorPickupPivot floorPickupPivot;
 
-  double pickUpPos = 2.5;
+  double pickUpPos = 20.509;
   double timeStart;
 
-  public FloorLoadCoral(FloorPickupCollect floorPickupCollect, FloorPickupPivot floorPickupPivot) {
-    this.floorPickupCollect = floorPickupCollect;
+  public FloorLoadCoral(FloorPickupPivot floorPickupPivot) {
     this.floorPickupPivot = floorPickupPivot;
 
-    addRequirements(floorPickupCollect, floorPickupPivot);
+    addRequirements(floorPickupPivot);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeStart = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -99,9 +99,9 @@ public class CANdleObserver extends Command {
       }
     }
 
-    if(oi.getOperatorZeroFloorMech()) {
-      defenseMode = !defenseMode;
-    }
+    // if(oi.getOperatorZeroFloorMech()) {
+    //   defenseMode = !defenseMode;
+    // }
     
 
     SmartDashboard.putBoolean("is Disengaged", climber.getIsDisengaged());

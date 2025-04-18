@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorPickupCollect;
@@ -15,27 +16,29 @@ public class FloorScoreCoral extends Command {
   FloorPickupCollect floorPickupCollect;
   FloorPickupPivot floorPickupPivot;
 
-  double timeStart = Timer.getFPGATimestamp();
-  double scorePos = 1.5;
+  double startTime;
+
+  double scorePos = 6.581;
 
   public FloorScoreCoral(FloorPickupCollect floorPickupCollect, FloorPickupPivot floorPickupPivot) {
     this.floorPickupCollect = floorPickupCollect;
     this.floorPickupCollect = floorPickupCollect;
 
-    addRequirements(floorPickupCollect, floorPickupPivot);
+    addRequirements(floorPickupPivot);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     floorPickupPivot.setRotatorPos(scorePos);
-    floorPickupCollect.setVelocity(5);
+    floorPickupCollect.setVelocity(-5);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +49,6 @@ public class FloorScoreCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return (Timer.getFPGATimestamp() - startTime > 3.0);
   }
 }

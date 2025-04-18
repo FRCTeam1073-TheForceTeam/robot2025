@@ -277,7 +277,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       floorLoadCoral.whileTrue(cmd_floorLoadCoral);
     
     Trigger zeroFloorMech = new Trigger(m_OI::getOperatorZeroFloorMech);
-      zeroFloorMech.onTrue(cmd_zeroFloorPivotPos);
+      zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);
     
   } 
 

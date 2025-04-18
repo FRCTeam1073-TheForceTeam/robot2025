@@ -47,9 +47,11 @@ public class FloorPickupPivot extends SubsystemBase {
   private double rotations;
 
 
-  private double encoderOffset = 0.413;
+  private double encoderOffset = 0.258;
   private double encoderRatio = 45.19;
-  private double encoderDiffThreshold = 1.5;
+  private double encoderDiffThreshold = 0.2;
+  private double encoderRotatePos;
+  private double deltaPos;
   private int motorCorrect;
 
   private boolean rotateBrakeMode = true;
@@ -91,11 +93,12 @@ public class FloorPickupPivot extends SubsystemBase {
     rotateLoad = filter.calculate(Math.abs(rotateMotor.getTorqueCurrent().getValueAsDouble()));
     encoderPos = encoder.get();
 
-    double encoderRotatePos = (encoderPos - encoderOffset) * encoderRatio;
+    encoderRotatePos = (encoderPos - encoderOffset) * encoderRatio;
+    deltaPos = encoderRotatePos - rotatePos;
 
     if(encoderRotatePos - rotatePos > encoderDiffThreshold) {
       motorCorrect++;
-      rotateMotor.setPosition(encoderRotatePos);
+      rotateMotor.setPosition(rotatePos + (deltaPos * 0.1));
     }
 
     if(velocityMode) {

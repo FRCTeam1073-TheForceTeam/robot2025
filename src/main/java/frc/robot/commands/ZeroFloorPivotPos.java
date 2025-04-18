@@ -30,13 +30,14 @@ public class ZeroFloorPivotPos extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.setRotatorVel(-5);
-    if(pivot.getRotatorLoad() > 9){
-      count++;
-    }
-    else if(pivot.getRotatorLoad() <= 8 && count > 0){
-      count--;
-    }  
+    // pivot.setRotatorVel(-5);
+    // if(pivot.getRotatorLoad() > 9){
+    //   count++;
+    // }
+    // else if(pivot.getRotatorLoad() <= 8 && count > 0){
+    //   count--;
+    // }
+    pivot.setRotatorPos(0);
     SmartDashboard.putNumber("FloorPivot/Count", count);
   }
 

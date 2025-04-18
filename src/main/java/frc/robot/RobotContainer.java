@@ -20,6 +20,8 @@ import frc.robot.commands.AlgaeAutoEject;
 import frc.robot.commands.AlgaeAutoGrab;
 import frc.robot.commands.AlgaeEject;
 import frc.robot.commands.AlgaeGrab;
+import frc.robot.commands.AlgaeHold;
+import frc.robot.commands.AlgaeOpen;
 import frc.robot.commands.AlgaePivotTeleop;
 import frc.robot.commands.AlignToTag;
 import frc.robot.commands.AlignToTagRelative;
@@ -108,6 +110,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final SmartAlign cmd_smartAlignSource = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 2);
   private final Command cmd_algaeAutoGrab = AlgaeAutoGrab.create(m_algaePivot, m_coralEndeffector);
   private final Command cmd_algaeAutoEject = AlgaeAutoEject.create(m_coralEndeffector, m_algaePivot);
+  private final Command cmd_algaeOpen = AlgaeOpen.create(m_algaePivot,m_coralEndeffector, m_OI);
+  private final Command cmd_algaeHold = AlgaeHold.create(m_algaePivot, m_coralEndeffector);
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
   private boolean isRed;
   private int level;
@@ -233,23 +237,22 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
       elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
     
-    Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
-      elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
-    
-    // Trigger loadAlgae = new Trigger(m_OI::getOperatorLoadAlgae);
-    //   loadAlgae.whileTrue(cmd_algaeGrab);
-
-    // Trigger ejectAlgae = new Trigger(m_OI::getOperatorScoreAlgae);
-    //   ejectAlgae.onTrue(cmd_algaeEject);
+    // Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
+    //   elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
     
     Trigger zeroAlgaePivot = new Trigger(m_OI::getOperatorTwoPlayerButton);
       zeroAlgaePivot.onTrue(cmd_zeroAlgaePivot);
 
-    Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorScoreAlgae);
+    Trigger algaeOpen = new Trigger(m_OI::getOperatorAlgaeOpen);
+    algaeOpen.onTrue(cmd_algaeOpen);
+
+    Trigger algaeHold = new Trigger(m_OI::getOperatorAlgaeHold);
+    algaeHold.onTrue(cmd_algaeHold);
+
+    Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorAlgaeEject);
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
-    Trigger loadAlgaeAuto = new Trigger(m_OI::getOperatorLoadAlgae);
-      loadAlgaeAuto.onTrue(cmd_algaeAutoGrab);
+    
   } 
 
   public void autonomousInit()

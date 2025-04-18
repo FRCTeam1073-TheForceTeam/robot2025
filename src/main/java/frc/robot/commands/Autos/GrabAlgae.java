@@ -16,10 +16,14 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlgaeAutoGrab;
+import frc.robot.commands.AlgaeGrab;
+import frc.robot.commands.AlgaePivotGrab;
+import frc.robot.commands.AlgaePivotToPosition;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DetectElevatorHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.HoldPivotPosition;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadAlgaeAuto;
 import frc.robot.commands.LoadCoral;
@@ -28,6 +32,7 @@ import frc.robot.commands.ScoreAlgaeAuto;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.CommandStates;
@@ -168,10 +173,15 @@ public class GrabAlgae extends Command {
           ),
           new ParallelCommandGroup(
             new ZeroElevator(elevator),
-            new DrivePath(drivetrain, path2, localizer)
+            new DrivePath(drivetrain, path2, localizer),
+            new SequentialCommandGroup(
+              new ZeroAlgaePivot(algaePivot),
+              new AlgaePivotToPosition(algaePivot, 11, true)
+              //new AlgaeGrab(endEffector, true)
+            )
           ),
           new ParallelCommandGroup(
-            AlgaeAutoGrab.create(algaePivot, endEffector),
+           // AlgaeAutoGrab.create(algaePivot, endEffector),
             new SequentialCommandGroup(
               new WaitCommand(1),
               new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
@@ -179,8 +189,14 @@ public class GrabAlgae extends Command {
                 new WaitCommand(2),
                 new LidarAlign(lidar, drivetrain, state)
               ),
-               
-              new DrivePath(drivetrain, path3, localizer)
+              new ParallelCommandGroup(
+                  new AlgaeGrab(endEffector, true),
+                  new AlgaePivotGrab(algaePivot)
+              ),
+              new ParallelRaceGroup(
+                new HoldPivotPosition(algaePivot),
+                new DrivePath(drivetrain, path3, localizer)
+              )
             )
           )
         )

@@ -30,13 +30,13 @@ public class AutoConstants {
     // Velocity for approaching the reef
     public static final double reefApproachVelocity = 2.0;
 
-    public static final double autoReefApproachVelocity = 2.4;
+    public static final double autoReefApproachVelocity = 2.5;
 
     // Driving velocity when lowering elevator:
-    public static final double stowingElevatorVelocity = 2.3;
+    public static final double stowingElevatorVelocity = 2.4;
 
     // Open-space driving with stowed elevator velocity:
-    public static final double stowedDrivingVelocity = 2.8;
+    public static final double stowedDrivingVelocity = 2.9;
 
     public static final double elevatorDelay = 0.25;
 

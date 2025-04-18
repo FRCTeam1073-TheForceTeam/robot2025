@@ -99,7 +99,7 @@ public class CANdleObserver extends Command {
       }
     }
 
-    if(oi.getOperatorMiddleRedButton()) {
+    if(oi.getOperatorZeroFloorMech()) {
       defenseMode = !defenseMode;
     }
     

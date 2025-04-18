@@ -33,15 +33,21 @@ import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
+import frc.robot.commands.FloorLoadCoral;
+import frc.robot.commands.FloorPickupCollectTeleop;
+import frc.robot.commands.FloorPickupPivotTeleop;
+import frc.robot.commands.FloorScoreCoral;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
 import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.SetFloorPivotPos;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroClimber;
 import frc.robot.commands.ZeroElevator;
+import frc.robot.commands.ZeroFloorPivotPos;
 import frc.robot.commands.Autos.AutoCenterStart;
 import frc.robot.commands.Autos.AutoLeftStart;
 import frc.robot.commands.Autos.AutoRightStart;
@@ -54,6 +60,8 @@ import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FieldMap;
+import frc.robot.subsystems.FloorPickupCollect;
+import frc.robot.subsystems.FloorPickupPivot;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 import frc.robot.subsystems.MapDisplay;
@@ -77,6 +85,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final CoralEndeffector m_coralEndeffector = new CoralEndeffector();
   private final AlgaePivot m_algaePivot = new AlgaePivot();
   private final CommandStates m_commandStates = new CommandStates();
+  private final FloorPickupPivot m_floorPickupPivot = new FloorPickupPivot();
+  private final FloorPickupCollect m_floorPickupCollect = new FloorPickupCollect();
 
 
   private final ZeroElevator cmd_zeroElevator = new ZeroElevator(m_coralElevator);
@@ -113,6 +123,12 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final Command cmd_algaeOpen = AlgaeOpen.create(m_algaePivot,m_coralEndeffector, m_OI);
   private final Command cmd_algaeHold = AlgaeHold.create(m_algaePivot, m_coralEndeffector);
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
+  private final FloorPickupCollectTeleop cmd_floorPickupCollectTeleop = new FloorPickupCollectTeleop(m_floorPickupCollect);
+  private final FloorPickupPivotTeleop cmd_floorPickupPivotTeleop = new FloorPickupPivotTeleop(m_floorPickupPivot, m_OI);
+  private final ZeroFloorPivotPos cmd_zeroFloorPivotPos = new ZeroFloorPivotPos(m_floorPickupPivot);
+  private final FloorScoreCoral cmd_floorScoreCoral = new FloorScoreCoral(m_floorPickupCollect, m_floorPickupPivot);
+  private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupCollect, m_floorPickupPivot);
+
   private boolean isRed;
   private int level;
   private boolean isRainbow = false;
@@ -149,6 +165,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     CommandScheduler.getInstance().setDefaultCommand(m_climber, cmd_climberTeleop);
     CommandScheduler.getInstance().setDefaultCommand(m_CANdleControl, cmd_candleObserver);
     CommandScheduler.getInstance().setDefaultCommand(m_algaePivot, cmd_algaePivotTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_floorPickupPivot, cmd_floorPickupPivotTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(m_floorPickupCollect, cmd_floorPickupCollectTeleop);
 
     SmartDashboard.putData(m_drivetrain);
     SmartDashboard.putData(m_OI);
@@ -252,12 +270,21 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorAlgaeEject);
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
+    Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScoreCoral);
+      floorScoreCoral.whileTrue(cmd_floorScoreCoral);
+    
+    Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
+      floorLoadCoral.whileTrue(cmd_floorLoadCoral);
+    
+    Trigger zeroFloorMech = new Trigger(m_OI::getOperatorZeroFloorMech);
+      zeroFloorMech.onTrue(cmd_zeroFloorPivotPos);
     
   } 
 
   public void autonomousInit()
   {
     m_CANdleControl.clearAnim();
+    m_floorPickupPivot.setRotatorPos(0);
   }
 
     public Command getAutonomousCommand() 

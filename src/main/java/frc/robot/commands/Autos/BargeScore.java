@@ -80,8 +80,8 @@ public class BargeScore extends Command {
     Pose2d tag14EndPose = map.getTagRelativePose(14, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d()));
     Pose2d tag5EndPose = map.getTagRelativePose(5, 0, new Transform2d(AutoConstants.algaeEndOffsetX, 0, new Rotation2d()));
 
-    Pose2d tag5LineUpPose = map.getTagRelativePose(5, 0, new Transform2d(0.45, 0, new Rotation2d()));
-    Pose2d tag14LineUpPose = map.getTagRelativePose(14, 0, new Transform2d(0.45, 0, new Rotation2d()));
+    Pose2d tag5LineUpPose = map.getTagRelativePose(5, 0, new Transform2d(0.75, 0, new Rotation2d()));
+    Pose2d tag14LineUpPose = map.getTagRelativePose(14, 0, new Transform2d(0.75, 0, new Rotation2d()));
 
     Point tag10 = new Point(tag10Pose.getX(), tag10Pose.getY());
     tag10.blend_radius = AutoConstants.blendRadius;
@@ -105,23 +105,20 @@ public class BargeScore extends Command {
     Point tag5Back = new Point(tag5BackPose.getX(), tag5BackPose.getY());
     Point tag14Back = new Point(tag14BackPose.getX(), tag14BackPose.getY());
 
-    Point tag5OffsetOne = new Point(tag5LineUpPose.getX() - 0.2, tag5LineUpPose.getY());
-    Point tag14OffsetOne = new Point(tag14LineUpPose.getX() - 0.2, tag14LineUpPose.getY());
-
-    Point tag5OffsetTwo = new Point(tag5LineUpPose.getX(), tag5LineUpPose.getY());
-    Point tag14OffsetTwo = new Point(tag14LineUpPose.getX(), tag14LineUpPose.getY());
+    Point tag5LineUp = new Point(tag5LineUpPose.getX(), tag5LineUpPose.getY());
+    Point tag14LineUp = new Point(tag14LineUpPose.getX(), tag14LineUpPose.getY());
 
     ArrayList<Segment> segments = new ArrayList<Segment>();
     ArrayList<Segment> segments2 = new ArrayList<Segment>();
     ArrayList<Segment> segments3 = new ArrayList<Segment>();
     ArrayList<Segment> segments4 = new ArrayList<Segment>();
-    ArrayList<Segment> segment5 = new ArrayList<Segment>();
+    ArrayList<Segment> segments5 = new ArrayList<Segment>();
 
     Path path;
     Path path2;
     Path path3;
     Path path4;
-    Path pathSlight;
+    Path path5;
 
     int tagID;
 
@@ -132,18 +129,18 @@ public class BargeScore extends Command {
       segments2.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       segments3.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments3.add(new Segment(tag10Algae, tag5OffsetOne, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag10Algae, tag5LineUp, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      segment5.add(new Segment(tag5OffsetOne, tag5OffsetTwo, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments4.add(new Segment(tag5LineUp, tag5, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      segments4.add(new Segment(tag5, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments5.add(new Segment(tag5, tag5Back, tag5BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
 
       path = new Path(segments, tag10ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag10AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag5BackPose.getRotation().getRadians());
       path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
-      pathSlight = new Path(segment5, tag5EndPose.getRotation().getRadians());
+      path5 = new Path(segments5, tag5EndPose.getRotation().getRadians());
       tagID = 10;
     }
     else 
@@ -153,17 +150,17 @@ public class BargeScore extends Command {
       segments2.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       segments3.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments3.add(new Segment(tag21Algae, tag14OffsetOne, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments3.add(new Segment(tag21Algae, tag14LineUp, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      segment5.add(new Segment(tag14OffsetOne, tag14OffsetTwo, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments4.add(new Segment(tag14LineUp, tag14, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
-      segments4.add(new Segment(tag14, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
+      segments5.add(new Segment(tag14, tag14Back, tag14BackPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag21ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag21AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag14BackPose.getRotation().getRadians());
       path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
-      pathSlight = new Path(segment5, tag14EndPose.getRotation().getRadians());
+      path5 = new Path(segments5, tag14EndPose.getRotation().getRadians());
       tagID = 21;
     }
 
@@ -228,7 +225,7 @@ public class BargeScore extends Command {
             new CoralElevatorToHeight(elevator, 2, true)
           ),
           new CoralElevatorToHeight(elevator, 7, true),
-          new DrivePath(drivetrain, pathSlight, localizer),
+          new DrivePath(drivetrain, path4, localizer),
           new ParallelRaceGroup( 
             new CoralElevatorToHeight(elevator, 7, false),
             new SequentialCommandGroup(
@@ -242,7 +239,7 @@ public class BargeScore extends Command {
       //no matter what zero and leave the climb area
       new ParallelCommandGroup(
         new ZeroElevator(elevator),
-        new DrivePath(drivetrain, path4, localizer)
+        new DrivePath(drivetrain, path5, localizer)
       )
     );
   }

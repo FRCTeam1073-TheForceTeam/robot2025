@@ -8,7 +8,7 @@ public class AutoConstants {
     public static final double scoreApproachOffsetY = 0.2;
 
     public static final double algaeScoreOffsetX = 0.38;
-    public static final double bargeScoreOffsetX = 0.32;
+    public static final double bargeScoreOffsetX = 0.45;
 
     public static final double algaeEndOffsetX = 2.0;
 

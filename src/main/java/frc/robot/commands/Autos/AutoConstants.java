@@ -21,7 +21,7 @@ public class AutoConstants {
     public static final double intermediateOffsetX = 0.8;
     public static  final double intermediateOffsetY = 1.2;
 
-    public static final double algaeOffsetX = 1.1;
+    public static final double algaeOffsetX = 0.8;
 
 
     // Scoring velocity when aligning to reef:
@@ -30,13 +30,13 @@ public class AutoConstants {
     // Velocity for approaching the reef
     public static final double reefApproachVelocity = 2.0;
 
-    public static final double autoReefApproachVelocity = 2.4;
+    public static final double autoReefApproachVelocity = 2.5;
 
     // Driving velocity when lowering elevator:
-    public static final double stowingElevatorVelocity = 2.3;
+    public static final double stowingElevatorVelocity = 2.4;
 
     // Open-space driving with stowed elevator velocity:
-    public static final double stowedDrivingVelocity = 2.8;
+    public static final double stowedDrivingVelocity = 3;
 
     public static final double elevatorDelay = 0.25;
 

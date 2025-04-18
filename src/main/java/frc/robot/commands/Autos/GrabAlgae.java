@@ -110,12 +110,10 @@ public class GrabAlgae extends Command {
     ArrayList<Segment> segments = new ArrayList<Segment>();
     ArrayList<Segment> segments2 = new ArrayList<Segment>();
     ArrayList<Segment> segments3 = new ArrayList<Segment>();
-    ArrayList<Segment> segments4 = new ArrayList<Segment>();
 
     Path path;
     Path path2;
     Path path3;
-    Path path4;
 
     int tagID;
 
@@ -124,12 +122,10 @@ public class GrabAlgae extends Command {
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments4.add(new Segment(tag5, tag5End, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag10ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag10AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag10AlgaePose.getRotation().getRadians());
-      path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
       tagID = 10;
 
     }
@@ -138,12 +134,10 @@ public class GrabAlgae extends Command {
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments4.add(new Segment(tag14, tag14End, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag21ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag21AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag21AlgaePose.getRotation().getRadians());
-      path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
       tagID = 21;
     }
 
@@ -176,26 +170,31 @@ public class GrabAlgae extends Command {
             new ZeroElevator(elevator),
             new DrivePath(drivetrain, path2, localizer),
             new AlgaePivotToPosition(algaePivot, 10, true)
+            //new AlgaeGrab(endEffector, true)
           ),
           // AlgaeAutoGrab.create(algaePivot, endEffector),
           new SequentialCommandGroup(
-            new WaitCommand(1),
-            new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
             new ParallelRaceGroup(
-              new WaitCommand(2),
-              new LidarAlign(lidar, drivetrain, state)
+              new SequentialCommandGroup(
+                new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+                new ParallelRaceGroup(
+                  new WaitCommand(1.5),
+                  new LidarAlign(lidar, drivetrain, state)
+                )
+              ),
+              new AlgaeGrab(endEffector, false)
             ),
             new ParallelRaceGroup(
               new WaitCommand(2),
               new AlgaeGrab(endEffector, false),
-              new AlgaePivotToPosition(algaePivot, 8.5, true)
+              new AlgaePivotToPosition(algaePivot, 6.5, true)
             ),
             new ParallelRaceGroup(
               new HoldPivotPosition(algaePivot),
               new DrivePath(drivetrain, path3, localizer)
             )
-            )
           )
+        )
           
           // new ParallelCommandGroup(       old ending 4/17/25 worlds
           //  // AlgaeAutoGrab.create(algaePivot, endEffector),

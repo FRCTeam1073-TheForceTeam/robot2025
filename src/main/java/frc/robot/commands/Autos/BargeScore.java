@@ -17,10 +17,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlgaeAutoGrab;
 import frc.robot.commands.AlgaeEject;
+import frc.robot.commands.AlgaeGrab;
+import frc.robot.commands.AlgaePivotToPosition;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DetectElevatorHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.HoldPivotPosition;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadAlgaeAuto;
 import frc.robot.commands.LoadCoral;
@@ -194,35 +197,33 @@ public class BargeScore extends Command {
           ),
 
 
-          new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-              new ParallelCommandGroup(
-                new ZeroElevator(elevator),
-                new DrivePath(drivetrain, path2, localizer)
-                // AlgaeAutoGrab.create(algaePivot, endEffector),
-                // new WaitCommand(2.4)
-              ),
-
-              //run the algae grab, go to reef and align
-              // new ParallelCommandGroup(
-                // AlgaeAutoGrab.create(algaePivot, endEffector),
+          new ParallelCommandGroup(
+            new ZeroElevator(elevator),
+            new DrivePath(drivetrain, path2, localizer),
+            new AlgaePivotToPosition(algaePivot, 10, true)
+            //new AlgaeGrab(endEffector, true)
+          ),
+          // AlgaeAutoGrab.create(algaePivot, endEffector),
+          new SequentialCommandGroup(
+            new ParallelRaceGroup(
               new SequentialCommandGroup(
-                //new WaitCommand(0.8),
                 new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
                 new ParallelRaceGroup(
                   new WaitCommand(1.5),
                   new LidarAlign(lidar, drivetrain, state)
                 )
-              )
+              ),
+              new AlgaeGrab(endEffector, false)
             ),
-            AlgaeAutoGrab.create(algaePivot, endEffector)
-          ),
-          //zero elevator and go back
-          
-          //drive to barge and score
-          new ParallelCommandGroup(
-            new DrivePath(drivetrain, path3, localizer),
-            new CoralElevatorToHeight(elevator, 2, true)
+            new ParallelRaceGroup(
+              new WaitCommand(2),
+              new AlgaeGrab(endEffector, false),
+              new AlgaePivotToPosition(algaePivot, 6.5, true)
+            ),
+            new ParallelRaceGroup(
+              new HoldPivotPosition(algaePivot),
+              new DrivePath(drivetrain, path3, localizer)
+            )
           ),
           new CoralElevatorToHeight(elevator, 7, true),
           new DrivePath(drivetrain, path4, localizer),

@@ -151,7 +151,7 @@ public class GrabAlgae extends Command {
     }
 
     return new SequentialCommandGroup(
-      new WaitCommand(3),
+      new WaitCommand(4),
       new ParallelRaceGroup(
         new SequentialCommandGroup( // scores coral 
           new ParallelCommandGroup( 

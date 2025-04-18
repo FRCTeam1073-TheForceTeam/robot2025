@@ -18,7 +18,7 @@ public class FloorScoreCoral extends Command {
 
   double startTime;
 
-  double scorePos = 6.581;
+  double scorePos = 4.0;
 
   public FloorScoreCoral(FloorPickupCollect floorPickupCollect, FloorPickupPivot floorPickupPivot) {
     this.floorPickupCollect = floorPickupCollect;
@@ -38,7 +38,9 @@ public class FloorScoreCoral extends Command {
   @Override
   public void execute() {
     floorPickupPivot.setRotatorPos(scorePos);
-    floorPickupCollect.setVelocity(-5);
+    if(Timer.getFPGATimestamp() - startTime > 0.5) {
+      floorPickupCollect.setVelocity(-44);
+    }
   }
 
   // Called once the command ends or is interrupted.

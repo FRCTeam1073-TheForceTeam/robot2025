@@ -49,7 +49,7 @@ public class FloorPickupPivot extends SubsystemBase {
 
   private double encoderOffset = 0.0;
   private double encoderRatio = 0.0;
-  private double encoderDiffThreshold = 0.0;
+  private double encoderDiffThreshold = 0.75;
   private int motorCorrect;
 
   private boolean rotateBrakeMode = true;
@@ -65,7 +65,7 @@ public class FloorPickupPivot extends SubsystemBase {
   public FloorPickupPivot() {
     filter = LinearFilter.singlePoleIIR(0.5, 0.02);
     encoder = new DutyCycleEncoder(3);
-    encoder.setDutyCycleRange(1, 1024);
+    encoder.setDutyCycleRange(0.05, 0.95);
     encoder.setAssumedFrequency(975.6);
     
     rotateMotor = new TalonFX(28, KCANbus);
@@ -94,10 +94,10 @@ public class FloorPickupPivot extends SubsystemBase {
     commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
     rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
 
-    if((encoderPos - encoderOffset) * encoderRatio > encoderDiffThreshold) {
-      motorCorrect++;
-      rotatePos = (encoderPos - encoderOffset) * encoderRatio;
-    }
+    // if((encoderPos - encoderOffset) * encoderRatio > encoderDiffThreshold) {
+    //   motorCorrect++;
+    //   rotatePos = (encoderPos - encoderOffset) * encoderRatio;
+    // }
 
     if(velocityMode) {
       rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
@@ -113,6 +113,7 @@ public class FloorPickupPivot extends SubsystemBase {
     SmartDashboard.putNumber("FloorPivot/Encoder Pos", encoderPos);
     SmartDashboard.putBoolean("FloorPivot/Rotate Break Mode", !rotateBrakeMode);
     SmartDashboard.putBoolean("FloorPivot/Is Up", isUp);
+    SmartDashboard.putNumber("FloorPivot/Motor Corrections", motorCorrect);
 
   }
 

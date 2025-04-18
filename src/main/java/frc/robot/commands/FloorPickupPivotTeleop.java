@@ -13,7 +13,7 @@ public class FloorPickupPivotTeleop extends Command {
   /** Creates a new TeleopFloorPickup. */
   FloorPickupPivot floorPickupPivot;
   OI oi;
-  private double positionZero = 6.581; //Resting Position
+  private double positionZero = 4.0; //Resting Position
 
   public FloorPickupPivotTeleop(FloorPickupPivot floorPickupPivot, OI oi) {
     this.floorPickupPivot = floorPickupPivot;

@@ -46,6 +46,12 @@ public class FloorPickupPivot extends SubsystemBase {
   private double encoderPos;
   private double rotations;
 
+
+  private double encoderOffset = 0.0;
+  private double encoderRatio = 0.0;
+  private double encoderDiffThreshold = 0.0;
+  private int motorCorrect;
+
   private boolean rotateBrakeMode = true;
   private boolean isUp = true;
   private boolean velocityMode = true;
@@ -72,6 +78,8 @@ public class FloorPickupPivot extends SubsystemBase {
     rotateVelocityVoltage = new VelocityVoltage(0).withSlot(0);
     rotatePositionController = new MotionMagicVoltage(0).withSlot(1);
 
+    motorCorrect = 0;
+
     configureHardware();
   }
 
@@ -81,14 +89,15 @@ public class FloorPickupPivot extends SubsystemBase {
     rotateVel = rotateMotor.getVelocity().getValueAsDouble(); 
     rotatePos = rotateMotor.getPosition().getValueAsDouble();
     rotateLoad = filter.calculate(Math.abs(rotateMotor.getTorqueCurrent().getValueAsDouble()));
-    rotations = encoder.get();
+    encoderPos = encoder.get();
 
     commandedRotatePos = commandedRotatePos + (commandedRotateVel * 0.02); //calculating collect position based on velocity and time
     rotateMotor.setControl(rotatePositionController.withPosition(commandedRotatePos).withSlot(1));
 
-    // if (rotatePos >= rotateMaxPos || rotatePos <= rotateMinPos){
-    //   commandedRotateVel = Math.min(commandedRotateVel, 0); 
-    // }
+    if((encoderPos - encoderOffset) * encoderRatio > encoderDiffThreshold) {
+      motorCorrect++;
+      rotatePos = (encoderPos - encoderOffset) * encoderRatio;
+    }
 
     if(velocityMode) {
       rotateMotor.setControl(rotateVelocityVoltage.withVelocity(commandedRotateVel).withSlot(0));
@@ -101,7 +110,7 @@ public class FloorPickupPivot extends SubsystemBase {
     SmartDashboard.putNumber("FloorPivot/Rotate Commanded Velocity", commandedRotateVel);
     SmartDashboard.putNumber("FloorPivot/Rotate Position", rotatePos);
     SmartDashboard.putNumber("FloorPivot/Rotate Motor Load", rotateLoad);
-    SmartDashboard.putNumber("FloorPivot/Rotations", rotations);
+    SmartDashboard.putNumber("FloorPivot/Encoder Pos", encoderPos);
     SmartDashboard.putBoolean("FloorPivot/Rotate Break Mode", !rotateBrakeMode);
     SmartDashboard.putBoolean("FloorPivot/Is Up", isUp);
 

@@ -22,7 +22,7 @@ public class FloorScoreCoral extends Command {
 
   public FloorScoreCoral(FloorPickupCollect floorPickupCollect, FloorPickupPivot floorPickupPivot) {
     this.floorPickupCollect = floorPickupCollect;
-    this.floorPickupCollect = floorPickupCollect;
+    this.floorPickupPivot = floorPickupPivot;
 
     addRequirements(floorPickupPivot);
     // Use addRequirements() here to declare subsystem dependencies.

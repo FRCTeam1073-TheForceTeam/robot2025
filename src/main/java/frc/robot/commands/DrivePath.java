@@ -46,7 +46,6 @@ public class DrivePath extends Command
   */
   public DrivePath(Drivetrain ds, Path path, Localizer localizer) 
   {
-    // Use addRequirements() here to declare subsystem dependencies.
     drivetrain = ds;
     this.path = path;
     this.localizer = localizer;
@@ -64,7 +63,7 @@ public class DrivePath extends Command
     );
 
     thetaController = new PIDController(
-      1.2, 
+      1.5, 
       0.0,
       0.01
     );
@@ -107,7 +106,6 @@ public class DrivePath extends Command
     {
       SmartDashboard.putString("DrivePath/Status","Invalid segment index.");
 
-      // System.out.println("DrivePathSchema: Invalid segment index.");
       // Stop:
       //TODO: send command to the drivetrain
       return; // Don't run.
@@ -121,7 +119,7 @@ public class DrivePath extends Command
     PathFeedback pathFeedback = path.getPathFeedback(currentSegmentIndex, robotPose);
 
     maxVelocity = pathFeedback.velocity.norm();
-    maxAngularVelocity = pathFeedback.velocity.norm();
+    maxAngularVelocity = pathFeedback.velocity.norm() * 2;
     
 
     if (currentSegmentIndex >= path.segments.size() - 1)

@@ -9,32 +9,21 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.AlgaePivot;
-import frc.robot.subsystems.CoralElevator;
 import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.OI;
 
 /** Add your docs here. */
-public class AlgaeAutoGrab {
+public class AlgaeOpenAuto {
     public static Command create(AlgaePivot pivot, CoralEndeffector endeffector){
-        /* 
-         * 1. pivot out
-         * 2. coral elevator to height
-         * 3. roller until current spike
-         * 4. pivot until current spike
-         */
         return new SequentialCommandGroup(
-            //TODO Fix TargetPosition
-            //Zero, Find Algae, Load Algae, Eject, Zero
             new ZeroAlgaePivot(pivot),
-            new AlgaePivotToPosition(pivot, 9.3, true),
-            new ParallelRaceGroup(
-                new FindAlgae(endeffector),
-                new AlgaeGrab(endeffector, false)
-            ),
+            new AlgaePivotToPosition(pivot, 11, true),
+            new AlgaeGrab(endeffector, false),
+
             new ParallelCommandGroup(
-                new AlgaeGrab(endeffector, true),
-                new AlgaePivotGrab(pivot)
-            ),
-            new HoldPivotPosition(pivot)
+                new AlgaeGrab(endeffector, false),
+                new AlgaePivotToPosition(pivot, 9, true)
+            )
         );
     }
 }

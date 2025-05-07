@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import au.grapplerobotics.CanBridge;
 
 public class Robot extends TimedRobot {
+  private boolean firstInit = true;
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -28,12 +29,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.disabledInit();
+    if(firstInit){
+      m_robotContainer.disabledInit();
+    }
   }
 
   @Override
   public void disabledPeriodic() {
-    if(!m_robotContainer.haveInitStartPos) {
+    if(!m_robotContainer.haveInitStartPos && firstInit) {
       m_robotContainer.haveInitStartPos = m_robotContainer.disabledPeriodic();
     }
     SmartDashboard.putBoolean("Have Initialized Start Pos", m_robotContainer.haveInitStartPos);
@@ -44,6 +47,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    firstInit = false;
     m_robotContainer.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

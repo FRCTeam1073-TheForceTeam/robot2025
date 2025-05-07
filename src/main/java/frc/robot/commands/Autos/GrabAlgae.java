@@ -16,10 +16,15 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AlgaeAutoGrab;
+import frc.robot.commands.AlgaeGrab;
+import frc.robot.commands.AlgaeOpenAuto;
+import frc.robot.commands.AlgaePivotGrab;
+import frc.robot.commands.AlgaePivotToPosition;
 import frc.robot.commands.AlignToTagRelative;
 import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.DetectElevatorHeight;
 import frc.robot.commands.DrivePath;
+import frc.robot.commands.HoldPivotPosition;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadAlgaeAuto;
 import frc.robot.commands.LoadCoral;
@@ -28,6 +33,7 @@ import frc.robot.commands.ScoreAlgaeAuto;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ScoreCoral;
+import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroElevator;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.CommandStates;
@@ -104,12 +110,10 @@ public class GrabAlgae extends Command {
     ArrayList<Segment> segments = new ArrayList<Segment>();
     ArrayList<Segment> segments2 = new ArrayList<Segment>();
     ArrayList<Segment> segments3 = new ArrayList<Segment>();
-    ArrayList<Segment> segments4 = new ArrayList<Segment>();
 
     Path path;
     Path path2;
     Path path3;
-    Path path4;
 
     int tagID;
 
@@ -118,12 +122,10 @@ public class GrabAlgae extends Command {
       segments.add(new Segment(start, tag10Approach, tag10ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag10, tag10Algae, tag10AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments4.add(new Segment(tag5, tag5End, tag5EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag10ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag10AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag10AlgaePose.getRotation().getRadians());
-      path4 = new Path(segments4, tag5EndPose.getRotation().getRadians());
       tagID = 10;
 
     }
@@ -132,12 +134,10 @@ public class GrabAlgae extends Command {
       segments.add(new Segment(start, tag21Approach, tag21ApproachPose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
       segments2.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
       segments3.add(new Segment(tag21, tag21Algae, tag21AlgaePose.getRotation().getRadians(), AutoConstants.scoringAlignmentVelocity));
-      segments4.add(new Segment(tag14, tag14End, tag14EndPose.getRotation().getRadians(), AutoConstants.reefApproachVelocity));
 
       path = new Path(segments, tag21ApproachPose.getRotation().getRadians());
       path2 = new Path(segments2, tag21AlgaePose.getRotation().getRadians());
       path3 = new Path(segments3, tag21AlgaePose.getRotation().getRadians());
-      path4 = new Path(segments4, tag14EndPose.getRotation().getRadians());
       tagID = 21;
     }
 
@@ -168,43 +168,54 @@ public class GrabAlgae extends Command {
           ),
           new ParallelCommandGroup(
             new ZeroElevator(elevator),
-            new DrivePath(drivetrain, path2, localizer)
+            new DrivePath(drivetrain, path2, localizer),
+            new AlgaePivotToPosition(algaePivot, 10, true)
+            //new AlgaeGrab(endEffector, true)
           ),
-          new ParallelCommandGroup(
-            AlgaeAutoGrab.create(algaePivot, endEffector),
-            new SequentialCommandGroup(
-              new WaitCommand(1),
-              new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
-              new ParallelRaceGroup(
-                new WaitCommand(2),
-                new LidarAlign(lidar, drivetrain, state)
+          // AlgaeAutoGrab.create(algaePivot, endEffector),
+          new SequentialCommandGroup(
+            new ParallelRaceGroup(
+              new SequentialCommandGroup(
+                new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+                new ParallelRaceGroup(
+                  new WaitCommand(1.5),
+                  new LidarAlign(lidar, drivetrain, state)
+                )
               ),
-               
+              new AlgaeGrab(endEffector, false)
+            ),
+            new ParallelRaceGroup(
+              new WaitCommand(2),
+              new AlgaeGrab(endEffector, false),
+              new AlgaePivotToPosition(algaePivot, 6.5, true)
+            ),
+            new ParallelRaceGroup(
+              new HoldPivotPosition(algaePivot),
               new DrivePath(drivetrain, path3, localizer)
             )
           )
         )
-      )
-          // new ParallelCommandGroup(
-            // new CoralElevatorToHeight(elevator, height, true),
-            // new LoadAlgaeAuto(algaePivot)
-          // ),
-          // new ParallelCommandGroup(
-          //   // new ZeroElevator(elevator),
-            
-          // )))
-      //     new ParallelRaceGroup(
-      //       new CoralElevatorToHeight(elevator, 5, true),
-      //       new DetectElevatorHeight(elevator, 5, 0.1)
-      //     ),
-      //     new ScoreAlgaeAuto(algaePivot)
-      //   ),
-      //   new WaitCommand(13) // complete the rest of the sequence in 13s or quit to get off starting line
-      // ),
-      // new ParallelCommandGroup(
-      //   new ZeroElevator(elevator),
-      //   new DrivePath(drivetrain, path4, localizer)
-      // ) 
-    );
+          
+          // new ParallelCommandGroup(       old ending 4/17/25 worlds
+          //  // AlgaeAutoGrab.create(algaePivot, endEffector),
+          //   new SequentialCommandGroup(
+          //     new WaitCommand(1),
+          //     new AlignToTagRelative(drivetrain, finder, state, tagID, 0),
+          //     new ParallelRaceGroup(
+          //       new WaitCommand(2),
+          //       new LidarAlign(lidar, drivetrain, state)
+          //     ),
+          //     new ParallelCommandGroup(
+          //         new AlgaeGrab(endEffector, true),
+          //         new AlgaePivotGrab(algaePivot)
+          //     ),
+          //     new ParallelRaceGroup(
+          //       new HoldPivotPosition(algaePivot),
+          //       new DrivePath(drivetrain, path3, localizer)
+          //     )
+          //   )
+          // )
+        )
+      );
   }
 }

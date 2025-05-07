@@ -5,15 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralEndeffector;
+import frc.robot.subsystems.FloorPickupCollect;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FindAlgae extends Command {
-  /** Creates a new FindAlgae. */
-  CoralEndeffector endeffector;
-  public FindAlgae(CoralEndeffector endeffector) {
-    this.endeffector = endeffector;
+public class FloorPickupCollectTeleop extends Command {
+  FloorPickupCollect collect;
+  double velocity;
+
+  /** Creates a new FloorPickupCollectTeleop. */
+  public FloorPickupCollectTeleop(FloorPickupCollect floorPickupCollect) {
+    collect = floorPickupCollect;
+    velocity = 0;
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(collect);
   }
 
   // Called when the command is initially scheduled.
@@ -23,7 +28,13 @@ public class FindAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    if(collect.getLoad() <= 20) {
+      velocity = 25;
+    }
+    else {
+      velocity = 0;
+    }
+    collect.setVelocity(velocity);
   }
 
   // Called once the command ends or is interrupted.
@@ -33,6 +44,6 @@ public class FindAlgae extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return endeffector.getLoad() > 20;
+    return false;
   }
 }

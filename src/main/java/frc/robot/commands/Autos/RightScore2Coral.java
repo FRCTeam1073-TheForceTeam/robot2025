@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -28,7 +29,7 @@ import frc.robot.subsystems.FieldMap;
 import frc.robot.subsystems.Lidar;
 import frc.robot.subsystems.Localizer;
 
-public class RightScore2Coral 
+public class RightScore2Coral //UNTESTED!!!!!!!
 {
     public static Command create(boolean isRed, Drivetrain drivetrain, FieldMap map, Localizer localizer, CoralEndeffector endEffector, CoralElevator elevator, AprilTagFinder finder, Lidar lidar, CommandStates state, int branchLevel)  
     {
@@ -130,17 +131,22 @@ public class RightScore2Coral
         
 
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new LoadCoral(endEffector),
-                new DrivePath(drivetrain, path1, localizer)
+            new ParallelDeadlineGroup(
+                new ParallelCommandGroup(
+                    new LoadCoral(endEffector),
+                    new DrivePath(drivetrain, path1, localizer)),
+                new CoralElevatorToHeight(elevator, 2, true)
             ),
-            new AlignToTagRelative(drivetrain, finder, state, localTagID, -1),
+            new ParallelDeadlineGroup(
+                new AlignToTagRelative(drivetrain, finder, state, localTagID, 1),
+                new CoralElevatorToHeight(elevator, 3, true)
+            ),
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
-                new ZeroElevator(elevator),
+                new CoralElevatorToHeight(elevator, 5, true),
                 new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.
@@ -151,7 +157,7 @@ public class RightScore2Coral
             new CoralElevatorToHeight(elevator, branchLevel, true),
             new ParallelRaceGroup( new CoralElevatorToHeight(elevator, branchLevel, false),
                                    new SequentialCommandGroup(new ScoreCoral(endEffector),
-                                                              new WaitCommand(AutoConstants.elevatorDelay))),
+                                                              new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
                 new DrivePath(drivetrain, path4, localizer)

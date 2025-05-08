@@ -29,7 +29,6 @@ public class FloorPickupCollect extends SubsystemBase {
   private double commandedVelocity = 0.0;
   private double load;
   private double position;
-  private double commandedPosition;
   private LinearFilter filter;
 
   private TalonFX rollerMotor;
@@ -41,10 +40,7 @@ public class FloorPickupCollect extends SubsystemBase {
     filter = LinearFilter.singlePoleIIR(0.5, 0.02);
 
     commandedVelocity = 0.0;
-
-    // TODO: Separate slots if we're using both modes.
-    velocityVoltage = new VelocityVoltage(0).withSlot(0);
-    collectPositionVoltage = new PositionVoltage(0).withSlot(0);
+    velocityVoltage = new VelocityVoltage(0);
 
     configureHardware();
   }
@@ -53,16 +49,13 @@ public class FloorPickupCollect extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     velocity = rollerMotor.getVelocity().getValueAsDouble();
-    load = rollerMotor.getTorqueCurrent().getValueAsDouble();
+    load = filter.calculate(Math.abs(rollerMotor.getTorqueCurrent().getValueAsDouble()));
     position = rollerMotor.getPosition().getValueAsDouble();
-    commandedPosition = commandedPosition + (commandedVelocity * 0.02);
 
-    rollerMotor.setControl(collectPositionVoltage.withPosition(commandedPosition));
-    // rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity).withSlot(0));
+    rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity));
 
     SmartDashboard.putNumber("Floor Collect/Velocity", velocity);
     SmartDashboard.putNumber("Floor Collect/Commanded Velocity", commandedVelocity);
-    SmartDashboard.putNumber("Floor Collect/Commanded Position", commandedPosition);
     SmartDashboard.putNumber("Floor Collect/Load", load);
   }
 
@@ -80,10 +73,6 @@ public class FloorPickupCollect extends SubsystemBase {
 
   public double getPosition(){
     return position;
-  }
-
-  public void setPosition(double pos){
-    commandedPosition = pos;
   }
 
   public void configureHardware() {

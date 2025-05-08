@@ -33,7 +33,6 @@ public class FloorPickupCollect extends SubsystemBase {
 
   private TalonFX rollerMotor;
   private VelocityVoltage velocityVoltage;
-  private PositionVoltage collectPositionVoltage;
     
   public FloorPickupCollect() {
     rollerMotor = new TalonFX(27, kCANbus);

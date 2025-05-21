@@ -29,6 +29,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    if (m_autonomousCommand != null){
+      m_autonomousCommand.cancel();
+
+    }
     if(firstInit){
       m_robotContainer.disabledInit();
     }

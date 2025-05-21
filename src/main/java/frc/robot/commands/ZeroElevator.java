@@ -23,7 +23,7 @@ public class ZeroElevator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.setVelocity(-25);
+    elevator.setVelocity(-35);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

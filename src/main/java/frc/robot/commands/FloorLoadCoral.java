@@ -13,14 +13,17 @@ import frc.robot.subsystems.FloorPickupPivot;
 public class FloorLoadCoral extends Command {
   /** Creates a new FloorIntake. */
   FloorPickupPivot floorPickupPivot;
+  FloorPickupCollect floorPickupCollect;
 
   double pickUpPos = 20.509;
   double timeStart;
+  double velocity;
 
-  public FloorLoadCoral(FloorPickupPivot floorPickupPivot) {
-    this.floorPickupPivot = floorPickupPivot;
+  public FloorLoadCoral(FloorPickupPivot floorPickupPivot, FloorPickupCollect floorPickupCollect){
+    this.floorPickupPivot = floorPickupPivot; 
+    this.floorPickupCollect = floorPickupCollect;
 
-    addRequirements(floorPickupPivot);
+    addRequirements(floorPickupPivot, floorPickupCollect);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,12 +35,21 @@ public class FloorLoadCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+     if(floorPickupCollect.getLoad() <= 20) {
+      velocity = 25;
+    }
+    else {
+
+      velocity = 0;
+    } 
+      floorPickupCollect.setVelocity(velocity);
       floorPickupPivot.setRotatorPos(pickUpPos);
     }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    floorPickupCollect.setVelocity(0);
   }
 
   // Returns true when the command should end.

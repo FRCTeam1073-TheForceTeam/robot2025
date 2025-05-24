@@ -54,7 +54,7 @@ public class OI extends SubsystemBase
     L4(2),
     BargeScore(1),
     IntakeAlgae(8),
-    ZeroFloorMech(6),
+    FloorMechUp(6),
     floorScoreCoral(7);
 
     private int buttonValue;
@@ -367,8 +367,8 @@ public class OI extends SubsystemBase
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroElevator.getButtonVal());
   }
 
-  public boolean getOperatorZeroFloorMech() {
-    return middleRedOperatorButtonDebouncer.calculate(getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.ZeroFloorMech.getButtonVal()));
+  public boolean getOperatorFloorMechUp() {
+    return middleRedOperatorButtonDebouncer.calculate(getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.FloorMechUp.getButtonVal()));
   }
 
   @Override

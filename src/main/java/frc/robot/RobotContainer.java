@@ -128,7 +128,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final FloorPickupPivotTeleop cmd_floorPickupPivotTeleop = new FloorPickupPivotTeleop(m_floorPickupPivot, m_OI);
   private final ZeroFloorPivotPos cmd_zeroFloorPivotPos = new ZeroFloorPivotPos(m_floorPickupPivot);
   private final FloorScoreCoral cmd_floorScoreCoral = new FloorScoreCoral(m_floorPickupCollect, m_floorPickupPivot);
-  private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupPivot);
+  private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupPivot, m_floorPickupCollect);
 
   private boolean isRed;
   private int level;
@@ -277,7 +277,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
       floorLoadCoral.whileTrue(cmd_floorLoadCoral);
     
-    Trigger zeroFloorMech = new Trigger(m_OI::getOperatorZeroFloorMech);
+    Trigger zeroFloorMech = new Trigger(m_OI::getOperatorFloorMechUp);
       zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);
     
   } 

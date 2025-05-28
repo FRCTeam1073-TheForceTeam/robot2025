@@ -5,18 +5,22 @@
 package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorPickupCollect;
+import frc.robot.subsystems.FloorPickupPivot;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class FloorAlgaeCollect extends Command {
 
   FloorPickupCollect floorPickupCollect;
+  FloorPickupPivot floorPickupPivot;
+
   /** Creates a new FloorAlgaeCollect. */
-  public FloorAlgaeCollect(FloorPickupCollect qfloorPickupCollect) {
-    FloorPickupCollect floorPickupCollect = qfloorPickupCollect;
+  public FloorAlgaeCollect(FloorPickupCollect qfloorPickupCollect, FloorPickupPivot qfloorPickupPivot) {
+    floorPickupCollect = qfloorPickupCollect;
+    floorPickupPivot = qfloorPickupPivot;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(floorPickupCollect);
+    addRequirements(floorPickupCollect , floorPickupPivot);
   }
 
   // Called when the command is initially scheduled.

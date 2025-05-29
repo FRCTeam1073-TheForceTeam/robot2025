@@ -97,8 +97,8 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |Yellow Middle     |   Zero Climber           |
 |Yellow Right      |   Engage Climber         |
 |Red Top           |   Floor Mech Up          |
-|Red Middle        |   Score Floor Mech       |
-|Red Bottom        |   Load Floor Mech        |
+|Red Middle        |   Score Algae Processor  |
+|Red Bottom        |   Load Algae floor mech  |
 |Single Player     |   Load Coral             |
 |Two Player        |                          |
 |Coin Button       |   Score Coral            |

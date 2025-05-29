@@ -34,12 +34,14 @@ import frc.robot.commands.CoralElevatorToHeight;
 import frc.robot.commands.CoralEndeffectorTeleop;
 import frc.robot.commands.DisengageClimber;
 import frc.robot.commands.EngageClimber;
+import frc.robot.commands.FloorAlgaeCollect;
 import frc.robot.commands.FloorLoadCoral;
 import frc.robot.commands.FloorPickupCollectTeleop;
 import frc.robot.commands.FloorPickupPivotTeleop;
 import frc.robot.commands.FloorScoreCoral;
 import frc.robot.commands.LidarAlign;
 import frc.robot.commands.LoadCoral;
+import frc.robot.commands.ProcessorScore;
 import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SetFloorPivotPos;
 import frc.robot.commands.SmartAlign;
@@ -129,6 +131,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final ZeroFloorPivotPos cmd_zeroFloorPivotPos = new ZeroFloorPivotPos(m_floorPickupPivot);
   private final FloorScoreCoral cmd_floorScoreCoral = new FloorScoreCoral(m_floorPickupCollect, m_floorPickupPivot);
   private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupPivot, m_floorPickupCollect);
+  private final FloorAlgaeCollect cmd_floorAlgaeCollect = new FloorAlgaeCollect(m_floorPickupCollect, m_floorPickupPivot);
+  private final ProcessorScore cmd_processorScore = new ProcessorScore(m_floorPickupCollect, m_floorPickupPivot);
 
   private boolean isRed;
   private int level;
@@ -272,10 +276,10 @@ public class RobotContainer implements Consumer<String> // need the interface fo
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
     Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScoreCoral);
-      floorScoreCoral.whileTrue(cmd_floorScoreCoral);
+      floorScoreCoral.whileTrue(cmd_processorScore);
     
     Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
-      floorLoadCoral.whileTrue(cmd_floorLoadCoral);
+      floorLoadCoral.whileTrue(cmd_floorAlgaeCollect);
     
     Trigger zeroFloorMech = new Trigger(m_OI::getOperatorFloorMechUp);
       zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);

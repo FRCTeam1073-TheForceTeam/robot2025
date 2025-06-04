@@ -33,8 +33,11 @@ public class FloorAlgaeCollect extends Command {
   @Override
   public void execute() {
     floorPickupPivot.setRotatorPos(pos);
-    if (floorPickupCollect.getLoad() <= 20){
-      floorPickupCollect.setVelocity(-15);
+    if (floorPickupCollect.getLoad() <= 16){
+      floorPickupCollect.setVelocity(-30);
+    }
+    else{
+      floorPickupCollect.setVelocity(0);
     }
   }
 

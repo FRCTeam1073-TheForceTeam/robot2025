@@ -192,7 +192,7 @@ public class LeftScore3Coral
                 new DetectCoral(endEffector)
             ),
             new ParallelCommandGroup(
-                new DrivePath(drivetrain, path3, localizer),
+                new DrivePath(drivetrain, path5, localizer),
                 new SequentialCommandGroup(
                     new LoadCoral(endEffector),
                     new CoralElevatorToHeight(elevator, 2, true)

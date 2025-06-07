@@ -11,7 +11,7 @@ import frc.robot.subsystems.FloorPickupPivot;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ProcessorScore extends Command {
 
-  private final double pos = 9.03;
+  private final double pos = 5.03;
 
   FloorPickupCollect floorPickupCollect;
   FloorPickupPivot floorPickupPivot;

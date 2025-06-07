@@ -18,7 +18,7 @@ public class FloorScoreCoral extends Command {
 
   double startTime;
 
-  double scorePos = 4.0;
+  double scorePos = 3.0;
 
   public FloorScoreCoral(FloorPickupCollect floorPickupCollect, FloorPickupPivot floorPickupPivot) {
     this.floorPickupCollect = floorPickupCollect;

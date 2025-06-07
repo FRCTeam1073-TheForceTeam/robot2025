@@ -147,8 +147,8 @@ public class TeleopDrive extends Command
       if(!dPadUp && !dPadDown && !dPadLeft && !dPadRight) {
 
       //multiples the angle by a number from 1 to the square root of 30:
-        mult1 = 1.0 + (m_OI.getDriverLeftTrigger() * ((Math.sqrt(25)) - 1));
-        mult2 = 1.0 + (m_OI.getDriverRightTrigger() * ((Math.sqrt(25)) - 1));
+        mult1 = 1.0 + (m_OI.getDriverLeftTrigger() * ((Math.sqrt(36)) - 1));
+        mult2 = 1.0 + (m_OI.getDriverRightTrigger() * ((Math.sqrt(36)) - 1));
 
         //sets deadzones on the controller to extend to .05:
         if(Math.abs(leftY) < .15) {leftY = 0;}

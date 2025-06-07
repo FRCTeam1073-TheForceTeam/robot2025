@@ -20,7 +20,7 @@ public class StowElevator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.setPosition(elevator.minPosition - 0.01);
+    elevator.setPosition(elevator.minPosition - 0.01); //TODO: pos. change to greater to avoid slam at end
   }
 
   // Called every time the scheduler runs while the command is scheduled.

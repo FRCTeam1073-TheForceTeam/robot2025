@@ -281,11 +281,18 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorAlgaeEject);
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
-    Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScoreCoral);
+    // Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScore);
+      //floorScoreCoral.whileTrue(cmd_floorScoreCoral);
       floorScoreCoral.whileTrue(cmd_processorScore);
+
+    Trigger floorScoreAlgae = new Trigger(m_OI::getOperatorFloorScore);
+      floorScoreAlgae.whileTrue(cmd_processorScore);
     
-    Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
-      floorLoadCoral.whileTrue(cmd_floorAlgaeCollect);
+    // Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
+        //floorLoadCoral.whileTrue(cmd_floorLoadCoral);
+      
+    Trigger floorLoadAlgae = new Trigger(m_OI::getOperatorFloorIntake);
+      floorLoadAlgae.whileTrue(cmd_floorAlgaeCollect);
     
     Trigger zeroFloorMech = new Trigger(m_OI::getOperatorFloorMechUp);
       zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);

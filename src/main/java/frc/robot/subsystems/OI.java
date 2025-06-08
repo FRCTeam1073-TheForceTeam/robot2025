@@ -355,7 +355,7 @@ public class OI extends SubsystemBase
     return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
   }
 
-  public boolean getOperatorFloorScoreCoral() {
+  public boolean getOperatorFloorScore() {
     return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.floorScoreCoral.getButtonVal());
   }
 

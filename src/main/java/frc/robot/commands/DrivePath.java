@@ -183,7 +183,7 @@ public class DrivePath extends Command
   public boolean isFinished() 
   {
 
-  if (currentSegmentIndex < 0) 
+  if (currentSegmentIndex < 0 || currentSegmentIndex >= path.segments.size()) 
   {
     return true; // Finished if we don't have a good index.
   }

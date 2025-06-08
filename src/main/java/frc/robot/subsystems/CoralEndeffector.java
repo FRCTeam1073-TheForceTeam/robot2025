@@ -41,7 +41,7 @@ public class CoralEndeffector extends SubsystemBase {
     private double commandedAlgaeVel;
     private double commandedPosition;
     private double coralDistance;
-    private boolean hasCoral = false;
+    private static boolean hasCoral = false;
     private boolean coralFed = false;
     private boolean lastCoralFed = false;
     private boolean velocityMode = true;
@@ -159,7 +159,7 @@ public class CoralEndeffector extends SubsystemBase {
         return coralDistance;
     }
 
-    public boolean getHasCoral() {
+    public static boolean getHasCoral() {
         return hasCoral;
     }
 

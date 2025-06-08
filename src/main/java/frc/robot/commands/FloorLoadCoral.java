@@ -36,6 +36,14 @@ public class FloorLoadCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+     if(floorPickupCollect.getLoad() <= 20) {
+      velocity = 25;
+    }
+    else {
+
+      velocity = 0;
+    } 
+      floorPickupCollect.setVelocity(velocity);
       floorPickupPivot.setRotatorPos(pickUpPos);
       if(floorPickupCollect.getLoad() <= 20) {
         velocity = 25;
@@ -46,6 +54,7 @@ public class FloorLoadCoral extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    floorPickupCollect.setVelocity(0);
   }
 
   // Returns true when the command should end.

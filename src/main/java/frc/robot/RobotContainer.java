@@ -46,6 +46,7 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.SetFloorPivotPos;
 import frc.robot.commands.SmartAlign;
 import frc.robot.commands.StowElevator;
+import frc.robot.commands.StowSequence;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroAlgaePivot;
 import frc.robot.commands.ZeroClimber;
@@ -133,6 +134,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupPivot, m_floorPickupCollect);
   private final FloorAlgaeCollect cmd_floorAlgaeCollect = new FloorAlgaeCollect(m_floorPickupCollect, m_floorPickupPivot);
   private final ProcessorScore cmd_processorScore = new ProcessorScore(m_floorPickupCollect, m_floorPickupPivot);
+  private final StowSequence cmd_stowSequence = new StowSequence(m_coralElevator);
+
 
   private boolean isRed;
   private int level;
@@ -254,8 +257,11 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger localAlign = new Trigger(m_OI::getDriverMenuButton);
       localAlign.whileTrue(cmd_localAlign);
     
+    // Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
+    //   zeroElevator.onTrue(cmd_zeroElevator);
+
     Trigger zeroElevator = new Trigger(m_OI::getOperatorZeroElevator);
-      zeroElevator.onTrue(cmd_zeroElevator);
+    zeroElevator.onTrue(cmd_stowSequence.create());
 
     Trigger elevatorBarge = new Trigger(m_OI::getOperatorBargeScoreButton);
       elevatorBarge.whileTrue(cmd_coralElevatorToBarge);
@@ -275,11 +281,18 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorAlgaeEject);
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
-    Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScoreCoral);
+    // Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScore);
+      //floorScoreCoral.whileTrue(cmd_floorScoreCoral);
       floorScoreCoral.whileTrue(cmd_processorScore);
+
+    Trigger floorScoreAlgae = new Trigger(m_OI::getOperatorFloorScore);
+      floorScoreAlgae.whileTrue(cmd_processorScore);
     
-    Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
-      floorLoadCoral.whileTrue(cmd_floorAlgaeCollect);
+    // Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
+        //floorLoadCoral.whileTrue(cmd_floorLoadCoral);
+      
+    Trigger floorLoadAlgae = new Trigger(m_OI::getOperatorFloorIntake);
+      floorLoadAlgae.whileTrue(cmd_floorAlgaeCollect);
     
     Trigger zeroFloorMech = new Trigger(m_OI::getOperatorFloorMechUp);
       zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);
@@ -289,7 +302,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   public void autonomousInit()
   {
     m_CANdleControl.clearAnim();
-    m_floorPickupPivot.setRotatorPos(0);
+    // m_floorPickupPivot.setRotatorPos(0);
   }
 
     public Command getAutonomousCommand() 

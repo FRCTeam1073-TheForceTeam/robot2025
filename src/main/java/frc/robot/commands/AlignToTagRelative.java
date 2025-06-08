@@ -129,7 +129,7 @@ public class AlignToTagRelative extends Command
     }
     else if (slot == 1)
     {
-      offset = new Transform2d(0.42, yOffset + endEffectorOffset, new Rotation2d(Math.PI));
+      offset = new Transform2d(0.42, yOffset + endEffectorOffset - 0.02, new Rotation2d(Math.PI));
     }
     
     // When we start, assume a large error until we update it.

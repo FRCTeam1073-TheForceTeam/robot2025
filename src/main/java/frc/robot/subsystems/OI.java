@@ -53,9 +53,9 @@ public class OI extends SubsystemBase
     L3(3),
     L4(2),
     BargeScore(1),
-    IntakeAlgae(8),
+    processorScore(8),
     FloorMechUp(6),
-    floorScoreCoral(7);
+    floorLoadAlgae(7);
 
     private int buttonValue;
 
@@ -74,11 +74,11 @@ public class OI extends SubsystemBase
     LeftJoystickY(1),
     LeftJoystickX(0),
     ZeroElevator(1),
-    LoadCoral(5),
+    FirstPlayer(5),
     TwoPlayer(6),
     ScoreCoral(7),
     AlgaeOpen(3),
-    AlgaeHold(2),
+    ZeroAlgae(2),
     AlgaeEject(4);
 
 
@@ -322,8 +322,8 @@ public class OI extends SubsystemBase
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroClimber.getButtonVal());
   }
 
-  public boolean getOperatorLoadCoral() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.LoadCoral.getButtonVal());
+  public boolean getOperatorFirstPlayer() {
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.FirstPlayer.getButtonVal());
   }
 
   public boolean getOperatorScoralCoral() {
@@ -343,20 +343,20 @@ public class OI extends SubsystemBase
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.AlgaeOpen.getButtonVal());
   }
 
-  public boolean getOperatorAlgaeHold() {
-    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.AlgaeHold.getButtonVal());
+  public boolean getOperatorAlgaeZero() {
+    return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.ZeroAlgae.getButtonVal());
   }
 
   public boolean getOperatorAlgaeEject() {
     return getOperatorSecondaryRawButton(SECONDARYPADBUTTONS.AlgaeEject.getButtonVal());
   }
 
-  public boolean getOperatorFloorIntake() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.IntakeAlgae.getButtonVal());
+  public boolean getOperatorFloorAlgaeScore() {
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.processorScore.getButtonVal());
   }
 
-  public boolean getOperatorFloorScoreCoral() {
-    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.floorScoreCoral.getButtonVal());
+  public boolean getOperatorFloorLoadAlgae() {
+    return getOperatorPrimaryRawButton(PRIMARYPADBUTTONS.floorLoadAlgae.getButtonVal());
   }
 
   public boolean getOperatorTwoPlayerButton() {

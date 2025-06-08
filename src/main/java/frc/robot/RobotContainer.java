@@ -129,7 +129,7 @@ public class RobotContainer implements Consumer<String> // need the interface fo
   private final SmartAlign cmd_smartAlignReefCenter = new SmartAlign(m_drivetrain, m_localizer, m_commandStates, m_fieldMap, m_MapDisplay, m_coralElevator, m_lidar, m_aprilTagFinder, 0);
   private final FloorPickupCollectTeleop cmd_floorPickupCollectTeleop = new FloorPickupCollectTeleop(m_floorPickupCollect);
   private final FloorPickupPivotTeleop cmd_floorPickupPivotTeleop = new FloorPickupPivotTeleop(m_floorPickupPivot, m_OI);
-  private final ZeroFloorPivotPos cmd_zeroFloorPivotPos = new ZeroFloorPivotPos(m_floorPickupPivot);
+  private final ZeroFloorPivotPos cmd_zeroFloorPivotPos = new ZeroFloorPivotPos(m_floorPickupPivot, m_floorPickupCollect);
   private final FloorScoreCoral cmd_floorScoreCoral = new FloorScoreCoral(m_floorPickupCollect, m_floorPickupPivot);
   private final FloorLoadCoral cmd_floorLoadCoral = new FloorLoadCoral(m_floorPickupPivot, m_floorPickupCollect);
   private final FloorAlgaeCollect cmd_floorAlgaeCollect = new FloorAlgaeCollect(m_floorPickupCollect, m_floorPickupPivot);
@@ -218,8 +218,8 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     Trigger zeroClimber = new Trigger(m_OI::getOperatorZeroClimber);
       zeroClimber.onTrue(cmd_zeroClimber);
 
-    Trigger loadCoral = new Trigger(m_OI::getOperatorLoadCoral);
-      loadCoral.onTrue(cmd_loadCoral);
+    Trigger loadFloorCoral = new Trigger(m_OI::getOperatorFirstPlayer);
+      loadFloorCoral.whileTrue(cmd_floorLoadCoral);
 
     Trigger scoreCoral = new Trigger(m_OI::getOperatorScoralCoral);
       scoreCoral.onTrue(cmd_scoreCoral);
@@ -269,23 +269,23 @@ public class RobotContainer implements Consumer<String> // need the interface fo
     // Trigger elevatorHighAlgae = new Trigger(m_OI::getOperatorHighAlgae);
     //   elevatorHighAlgae.whileTrue(cmd_coralElevatorToHighA);
     
-    Trigger zeroAlgaePivot = new Trigger(m_OI::getOperatorTwoPlayerButton);
-      zeroAlgaePivot.onTrue(cmd_zeroAlgaePivot);
+    Trigger floorScoreCoral = new Trigger(m_OI::getOperatorTwoPlayerButton);
+      floorScoreCoral.whileTrue(cmd_floorScoreCoral);
 
     Trigger algaeOpen = new Trigger(m_OI::getOperatorAlgaeOpen);
     algaeOpen.onTrue(cmd_algaeOpen);
 
-    Trigger algaeHold = new Trigger(m_OI::getOperatorAlgaeHold);
-    algaeHold.onTrue(cmd_algaeHold);
+    Trigger algaeZero = new Trigger(m_OI::getOperatorAlgaeZero);
+    algaeZero.onTrue(cmd_zeroAlgaePivot);
 
     Trigger ejectAlgaeAuto = new Trigger(m_OI::getOperatorAlgaeEject);
       ejectAlgaeAuto.onTrue(cmd_algaeAutoEject);
     
-    Trigger floorScoreCoral = new Trigger(m_OI::getOperatorFloorScoreCoral);
-      floorScoreCoral.whileTrue(cmd_processorScore);
+    Trigger floorLoadAlgae = new Trigger(m_OI::getOperatorFloorLoadAlgae);
+      floorLoadAlgae.whileTrue(cmd_floorAlgaeCollect);
     
-    Trigger floorLoadCoral = new Trigger(m_OI::getOperatorFloorIntake);
-      floorLoadCoral.whileTrue(cmd_floorAlgaeCollect);
+    Trigger floorScoreAlgae = new Trigger(m_OI::getOperatorFloorAlgaeScore);
+      floorScoreAlgae.whileTrue(cmd_processorScore);
     
     Trigger zeroFloorMech = new Trigger(m_OI::getOperatorFloorMechUp);
       zeroFloorMech.whileTrue(cmd_zeroFloorPivotPos);

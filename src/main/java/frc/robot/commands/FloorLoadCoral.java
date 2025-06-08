@@ -46,7 +46,7 @@ public class FloorLoadCoral extends Command {
       floorPickupCollect.setVelocity(velocity);
       floorPickupPivot.setRotatorPos(pickUpPos);
       if(floorPickupCollect.getLoad() <= 20) {
-        velocity = 25;
+        velocity = 35;
       }
       floorPickupCollect.setVelocity(velocity);
     }

@@ -11,7 +11,7 @@ import frc.robot.subsystems.FloorPickupPivot;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ProcessorScore extends Command {
 
-  private final double pos = 5.03;
+  private final double pos = 3.0;
 
   FloorPickupCollect floorPickupCollect;
   FloorPickupPivot floorPickupPivot;
@@ -32,7 +32,7 @@ public class ProcessorScore extends Command {
   public void execute() {
     floorPickupPivot.setRotatorPos(pos);
     if (floorPickupCollect.getLoad() <= 16){
-      floorPickupCollect.setVelocity(30);
+      floorPickupCollect.setVelocity(50);
     }
     else{
       floorPickupCollect.setVelocity(0);

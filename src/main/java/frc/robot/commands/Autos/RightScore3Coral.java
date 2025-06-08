@@ -162,8 +162,7 @@ public class RightScore3Coral
                                                               new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new CoralElevatorToHeight(elevator, 5, true),
-                new DrivePath(drivetrain, path2, localizer),
-                new DriveBack(drivetrain, localizer)
+                new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.
             // TODO: Load and drive in parallel. Every second counts.
@@ -187,8 +186,7 @@ public class RightScore3Coral
                                                               new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
-                new DrivePath(drivetrain, path4, localizer),
-                new DriveBack(drivetrain, localizer)
+                new DrivePath(drivetrain, path4, localizer)
             ),
             new ParallelRaceGroup(
                 new LoadCoral(endEffector),

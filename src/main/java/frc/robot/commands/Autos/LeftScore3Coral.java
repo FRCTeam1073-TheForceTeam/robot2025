@@ -22,7 +22,6 @@ import frc.robot.commands.ScoreCoral;
 import frc.robot.commands.Path.Point;
 import frc.robot.commands.Path.Segment;
 import frc.robot.commands.ZeroElevator;
-import frc.robot.commands.DriveBack;
 import frc.robot.subsystems.AprilTagFinder;
 import frc.robot.subsystems.CommandStates;
 import frc.robot.subsystems.CoralElevator;
@@ -163,8 +162,7 @@ public class LeftScore3Coral
                                                               new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new CoralElevatorToHeight(elevator, 5, true),
-                new DrivePath(drivetrain, path2, localizer),
-                new DriveBack(drivetrain, localizer)
+                new DrivePath(drivetrain, path2, localizer)
             ),
             // TODO: Consider using wait in stead of using load as wait.
             // TODO: Load and drive in parallel. Every second counts.
@@ -188,8 +186,7 @@ public class LeftScore3Coral
                                                               new WaitCommand(AutoConstants.scoreDelay))),
             new ParallelCommandGroup(
                 new ZeroElevator(elevator),
-                new DrivePath(drivetrain, path4, localizer),
-                new DriveBack(drivetrain, localizer)
+                new DrivePath(drivetrain, path4, localizer)
             ),
             new ParallelRaceGroup(
                 new LoadCoral(endEffector),

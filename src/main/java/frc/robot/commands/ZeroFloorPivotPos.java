@@ -6,25 +6,26 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.FloorPickupCollect;
 import frc.robot.subsystems.FloorPickupPivot;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ZeroFloorPivotPos extends Command {
 
   FloorPickupPivot pivot;
-  int count;
+  FloorPickupCollect collect;
 
   /** Creates a new ZeroFloorPivotPos. */
-  public ZeroFloorPivotPos(FloorPickupPivot pivot) {
+  public ZeroFloorPivotPos(FloorPickupPivot pivot, FloorPickupCollect collect) {
     this.pivot = pivot;
+    this.collect = collect;
 
-    addRequirements(pivot);
+    addRequirements(pivot, collect);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    count = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +39,7 @@ public class ZeroFloorPivotPos extends Command {
     //   count--;
     // }
     pivot.setRotatorPos(0);
-    SmartDashboard.putNumber("FloorPivot/Count", count);
+    collect.setVelocity(5);
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +50,6 @@ public class ZeroFloorPivotPos extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return count > 3;
+    return false;
   }
 }

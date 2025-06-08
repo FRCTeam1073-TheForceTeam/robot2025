@@ -60,7 +60,7 @@ public class AlgaePivotTeleop extends Command {
 
     SmartDashboard.putBoolean("AlgaeClaw/Algae Open Button", oi.getOperatorAlgaeOpen());
     SmartDashboard.putBoolean("AlgaeClaw/Algae Eject Button", oi.getOperatorAlgaeEject());
-    SmartDashboard.putBoolean("AlgaeClaw/Algae Hold Button", oi.getOperatorAlgaeHold());
+    SmartDashboard.putBoolean("AlgaeClaw/Algae Hold Button", oi.getOperatorAlgaeZero());
   }
 
   @Override

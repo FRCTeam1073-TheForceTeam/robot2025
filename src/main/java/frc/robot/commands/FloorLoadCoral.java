@@ -16,12 +16,13 @@ public class FloorLoadCoral extends Command {
   FloorPickupCollect floorPickupCollect;
 
   double pickUpPos = 20.509;
-  double timeStart;
   double velocity;
+  double timeStart;
 
-  public FloorLoadCoral(FloorPickupPivot floorPickupPivot, FloorPickupCollect floorPickupCollect){
-    this.floorPickupPivot = floorPickupPivot; 
+  public FloorLoadCoral(FloorPickupPivot floorPickupPivot, FloorPickupCollect floorPickupCollect) {
+    this.floorPickupPivot = floorPickupPivot;
     this.floorPickupCollect = floorPickupCollect;
+    velocity = 0;
 
     addRequirements(floorPickupPivot, floorPickupCollect);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,6 +45,10 @@ public class FloorLoadCoral extends Command {
     } 
       floorPickupCollect.setVelocity(velocity);
       floorPickupPivot.setRotatorPos(pickUpPos);
+      if(floorPickupCollect.getLoad() <= 20) {
+        velocity = 35;
+      }
+      floorPickupCollect.setVelocity(velocity);
     }
 
   // Called once the command ends or is interrupted.

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+  // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -19,32 +19,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class FloorPickupCollect extends SubsystemBase {
   /** Creates a new FloorPickupCollect. */
   private String kCANbus = "rio";
-  private double rollerkP = 0.5;
+  private double rollerkP = 0.2;
   private double rollerkI = 0.0;
-  private double rollerkD = 0.02;
-  private double rollerkV = 0.12;
-  private double rollerkA = 0.1;
+  private double rollerkD = 0.0;
+  private double rollerkV = 0.0;
+  private double rollerkA = 0.0;
 
   private double velocity = 0.0;
   private double commandedVelocity = 0.0;
   private double load;
   private double position;
-  private double commandedPosition;
   private LinearFilter filter;
 
   private TalonFX rollerMotor;
   private VelocityVoltage velocityVoltage;
-  private PositionVoltage collectPositionVoltage;
     
   public FloorPickupCollect() {
     rollerMotor = new TalonFX(27, kCANbus);
     filter = LinearFilter.singlePoleIIR(0.5, 0.02);
 
     commandedVelocity = 0.0;
-
-    // TODO: Separate slots if we're using both modes.
-    velocityVoltage = new VelocityVoltage(0).withSlot(0);
-    collectPositionVoltage = new PositionVoltage(0).withSlot(0);
+    velocityVoltage = new VelocityVoltage(0);
 
     configureHardware();
   }
@@ -53,16 +48,13 @@ public class FloorPickupCollect extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     velocity = rollerMotor.getVelocity().getValueAsDouble();
-    load = rollerMotor.getTorqueCurrent().getValueAsDouble();
+    load = filter.calculate(Math.abs(rollerMotor.getTorqueCurrent().getValueAsDouble()));
     position = rollerMotor.getPosition().getValueAsDouble();
-    commandedPosition = commandedPosition + (commandedVelocity * 0.02);
 
-    rollerMotor.setControl(collectPositionVoltage.withPosition(commandedPosition));
-    // rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity).withSlot(0));
+    rollerMotor.setControl(velocityVoltage.withVelocity(commandedVelocity));
 
     SmartDashboard.putNumber("Floor Collect/Velocity", velocity);
     SmartDashboard.putNumber("Floor Collect/Commanded Velocity", commandedVelocity);
-    SmartDashboard.putNumber("Floor Collect/Commanded Position", commandedPosition);
     SmartDashboard.putNumber("Floor Collect/Load", load);
   }
 
@@ -80,10 +72,6 @@ public class FloorPickupCollect extends SubsystemBase {
 
   public double getPosition(){
     return position;
-  }
-
-  public void setPosition(double pos){
-    commandedPosition = pos;
   }
 
   public void configureHardware() {

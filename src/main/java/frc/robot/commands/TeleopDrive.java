@@ -56,10 +56,6 @@ public class TeleopDrive extends Command
   private double vy;
   private double w;
   private double allianceSign = 1; // this is handled by setting the odometry orientation for each alliance
-  private SwerveModule fL;
-  private SwerveModule fR;
-  private SwerveModule bL;
-  private SwerveModule bR;
 
   double frontLeftTorque;
   double frontRightTorque;
@@ -86,10 +82,6 @@ public class TeleopDrive extends Command
     addRequirements(drivetrain);
 
     this.drivetrain = drivetrain;
-    this.fL =  drivetrain.getModules()[0];
-    this.fR = drivetrain.getModules()[1];
-    this.bL = drivetrain.getModules()[2];
-    this.bR = drivetrain.getModules()[3];
   }
 
   // Called when the command is initially scheduled.
@@ -147,8 +139,8 @@ public class TeleopDrive extends Command
       if(!dPadUp && !dPadDown && !dPadLeft && !dPadRight) {
 
       //multiples the angle by a number from 1 to the square root of 30:
-        mult1 = 1.0 + (m_OI.getDriverLeftTrigger() * ((Math.sqrt(25)) - 1));
-        mult2 = 1.0 + (m_OI.getDriverRightTrigger() * ((Math.sqrt(25)) - 1));
+        mult1 = 1.0 + (m_OI.getDriverLeftTrigger() * ((Math.sqrt(36)) - 1));
+        mult2 = 1.0 + (m_OI.getDriverRightTrigger() * ((Math.sqrt(36)) - 1));
 
         //sets deadzones on the controller to extend to .05:
         if(Math.abs(leftY) < .15) {leftY = 0;}

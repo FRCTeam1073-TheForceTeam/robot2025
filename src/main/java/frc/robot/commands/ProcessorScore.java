@@ -3,49 +3,44 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorPickupCollect;
 import frc.robot.subsystems.FloorPickupPivot;
+
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ZeroFloorPivotPos extends Command {
+public class ProcessorScore extends Command {
 
-  FloorPickupPivot pivot;
-  FloorPickupCollect collect;
+  private final double pos = 3.0;
 
-  /** Creates a new ZeroFloorPivotPos. */
-  public ZeroFloorPivotPos(FloorPickupPivot pivot, FloorPickupCollect collect) {
-    this.pivot = pivot;
-    this.collect = collect;
+  FloorPickupCollect floorPickupCollect;
+  FloorPickupPivot floorPickupPivot;
 
-    addRequirements(pivot, collect);
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ProcessorScore(FloorPickupCollect qfloorPickupCollect, FloorPickupPivot qfloorPickupPivot) {
+    floorPickupCollect = qfloorPickupCollect;
+    floorPickupPivot = qfloorPickupPivot;
+
+    addRequirements(floorPickupCollect , floorPickupPivot);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // pivot.setRotatorVel(-5);
-    // if(pivot.getRotatorLoad() > 9){
-    //   count++;
-    // }
-    // else if(pivot.getRotatorLoad() <= 8 && count > 0){
-    //   count--;
-    // }
-    pivot.setRotatorPos(0);
-    collect.setVelocity(5);
+    floorPickupPivot.setRotatorPos(pos);
+    if (floorPickupCollect.getLoad() <= 16){
+      floorPickupCollect.setVelocity(50);
+    }
+    else{
+      floorPickupCollect.setVelocity(0);
+    }
   }
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

@@ -152,7 +152,7 @@ public class AlignToTag extends Command
     SmartDashboard.putNumber("AlignToTag/error", Math.sqrt(Math.pow(targetPose.minus(currentPose).getX(), 2) + Math.pow(targetPose.minus(currentPose).getY(), 2)));
 
     drivetrain.setTargetChassisSpeeds(
-      ChassisSpeeds.fromFieldRelativeSpeeds (xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
+      ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, wVelocity, localizer.getPose().getRotation())
     );
   }
 

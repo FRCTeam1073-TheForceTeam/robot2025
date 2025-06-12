@@ -90,22 +90,24 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 |------------------|--------------------------|
 |Blue Top          |   Elevator L4            |
 |Blue Top Middle   |   Elevator L3            |
-|Blue Bottom Middle|   Elevator L3            |
+|Blue Bottom Middle|   Elevator L2            |
 |Blue Bottom       |   Elevator L1            |
+|Red Single        |   Zero Elavator          |
 |Yellow Top        |   Barge Score            |
 |Yellow Left       |   Disengage Climber      |
 |Yellow Middle     |   Zero Climber           |
 |Yellow Right      |   Engage Climber         |
 |Red Top           |   Floor Mech Up          |
-|Red Middle        |   Score Algae Processor  |
-|Red Bottom        |   Load Algae floor mech  |
-|Single Player     |   Load Coral             |
-|Two Player        |                          |
+|Red Middle        |   Load Floor Algae       |
+|Red Bottom        |   Score Floor Algae      |
+|Single Player     |   Floor Load Coral       |
+|Two Player        |   Floor Score Coral      |
 |Coin Button       |   Score Coral            |
-|Top Green         |   Zero Algae             |
-|Middle Green      |   Load Algae             |
+|Top Green         |   Load Algae             |
+|Middle Green      |   Zero Algae             |
 |Bottom Green      |   Score Algae            |
-|Left Joystick     |   Elevator Teleop        |
+|Joystick Y-Axis   |   Elevator Teleop        |
+|Joystick X-Axis   |   Algae Mech Teleop      |
 
 
 ## Robot LED codes

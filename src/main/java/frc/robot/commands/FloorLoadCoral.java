@@ -15,7 +15,7 @@ public class FloorLoadCoral extends Command {
   FloorPickupPivot floorPickupPivot;
   FloorPickupCollect floorPickupCollect;
 
-  double pickUpPos = 20.509;
+  double pickUpPos = 20.60;
   double velocity;
   double timeStart;
 
@@ -36,20 +36,20 @@ public class FloorLoadCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     if(floorPickupCollect.getLoad() <= 20) {
+    if(floorPickupCollect.getLoad() <= 20) {
       velocity = 25;
     }
     else {
 
       velocity = 0;
     } 
-      floorPickupCollect.setVelocity(velocity);
-      floorPickupPivot.setRotatorPos(pickUpPos);
-      if(floorPickupCollect.getLoad() <= 20) {
-        velocity = 35;
-      }
-      floorPickupCollect.setVelocity(velocity);
+    floorPickupCollect.setVelocity(velocity);
+    floorPickupPivot.setRotatorPos(pickUpPos);
+    if(floorPickupCollect.getLoad() <= 20) {
+      velocity = 25;
     }
+    floorPickupCollect.setVelocity(velocity);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

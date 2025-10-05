@@ -47,7 +47,7 @@ public class FloorPickupPivot extends SubsystemBase {
   private double rotations;
 
 
-  private double encoderOffset = 0.258;
+  private double encoderOffset = 0.784;
   private double encoderRatio = 45.19;
   private double encoderDiffThreshold = 0.2;
   private double encoderRotatePos;

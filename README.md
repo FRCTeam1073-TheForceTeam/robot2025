@@ -132,6 +132,6 @@ Swerve module #0 is front left, #1 is front right, #2 is back left, and #3 is ba
 ## Camera Names
 
 FrontCenterCamera
-FrontLeftCamera
+FroggyCamera
 FrontRightCamera
 RearCamera

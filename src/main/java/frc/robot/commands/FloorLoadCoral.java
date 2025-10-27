@@ -15,7 +15,7 @@ public class FloorLoadCoral extends Command {
   FloorPickupPivot floorPickupPivot;
   FloorPickupCollect floorPickupCollect;
 
-  double pickUpPos = 20.60;
+  double pickUpPos = 29.78;
   double velocity;
   double timeStart;
 
